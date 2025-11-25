@@ -3,16 +3,28 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Eiscafé Sanremo – Mitarbeiterportal (Tablet)</title>
+  <title>Eiscafé Sanremo – Mitarbeiterportal (Tablet & Handy)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Farbe der Browserleiste / App-Thema -->
+  <meta name="theme-color" content="#f0f2f5">
+
+  <!-- Manifest für die App-Installation (PWA) -->
+  <link rel="manifest" href="manifest.json">
+
   <style>
+    html, body {
+      height: 100%;
+    }
     body {
       font-family: Arial, sans-serif;
       padding: 16px;
       max-width: 900px;
       margin: 0 auto;
       background: #f0f2f5;
+      min-height: 100vh;
     }
+
     h3 { margin-top: 20px; }
 
     label {
@@ -111,23 +123,6 @@
       color: #555;
     }
 
-    /* CABEÇALHO COM LOGÓTIPO "HORIZONTAL" (LOGO + TEXTO AO LADO) */
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 10px;
-    }
-    .logo-img {
-      height: 70px;
-      width: auto;
-      object-fit: contain;
-    }
-    .logo-text-sub {
-      font-size: 13px;
-      color: #555;
-    }
-
     @media (min-width: 700px) {
       .grid {
         display: grid;
@@ -139,12 +134,12 @@
 </head>
 <body>
 
-  <!-- LOGÓTIPO + TEXTO (horizontal no topo) -->
-  <div class="header">
-    <img src="images/sanremo-logo.png" alt="Eiscafé Sanremo Logo" class="logo-img">
-    <div>
-      <div class="logo-text-sub">Mitarbeiterportal – Stempeluhr & Dienstplan</div>
-    </div>
+  <!-- BANNER COM GELADO + LOGO (50% / 50%) -->
+  <!-- Certifica-te que tens o ficheiro: images/banner-topo.png -->
+  <div style="width: 100%; margin-bottom: 20px;">
+    <img src="images/banner-topo.png"
+         alt="Eiscafé San Remo Banner"
+         style="width: 100%; height: auto; border-radius: 6px;">
   </div>
 
   <!-- LOGIN DO CHEFE -->
@@ -159,7 +154,7 @@
 
     <p id="chefLoginStatus"></p>
     <small>
-      Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten & Dienstplan / WhatsApp) freigeschaltet.
+      Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp & Monatsbericht) freigeschaltet.
     </small>
   </div>
 
@@ -230,6 +225,22 @@
             (Noch keine Nachricht)
           </p>
         </div>
+      </div>
+
+      <!-- MONATSBERICHT (CHEF) -->
+      <div class="section">
+        <h3>Monatsbericht (Chef)</h3>
+        <p style="font-size: 13px; margin-bottom:8px;">
+          Übersicht aller Mitarbeiter für den aktuellen Monat.
+        </p>
+
+        <div id="monthlyReportContainer">
+          <!-- tabela gerada por JavaScript -->
+        </div>
+
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()">
+          Drucken / als PDF speichern
+        </button>
       </div>
     </div>
 
@@ -432,6 +443,7 @@
             refreshEmployeeUI();
             updateHoursInfo();
             updatePlanHoursInfo();
+            renderMonthlyReport();
           }
         };
         row.appendChild(btnDel);
@@ -448,7 +460,6 @@
       }
     }
 
-    // eventos de selects
     employeeSelect.addEventListener('change', () => {
       updateHoursInfo();
       const empId = employeeSelect.value;
@@ -486,6 +497,7 @@
       empNameInput.value = '';
       empPhoneInput.value = '';
       refreshEmployeeUI();
+      renderMonthlyReport();
     });
 
     // ============ STEMPENUHR ============
@@ -553,6 +565,7 @@
 
       updateHoursInfo();
       updatePlanHoursInfo();
+      renderMonthlyReport();
     });
 
     // ============ WHATSAPP – CHEF ============
@@ -616,18 +629,89 @@
         return;
       }
 
-      const phone = emp.phone; // z.B. 4917...
+      const phone = emp.phone;
       const encodedMsg = encodeURIComponent(msg);
       const url = "https://wa.me/" + phone + "?text=" + encodedMsg;
 
       window.open(url, "_blank");
     });
 
+    // ============ MONATSBERICHT (CHEF) ============
+    function renderMonthlyReport() {
+      const container = document.getElementById('monthlyReportContainer');
+      if (!container) return;
+
+      if (!employees || employees.length === 0) {
+        container.innerHTML = '<em>Keine Mitarbeiter angelegt.</em>';
+        return;
+      }
+
+      let html = '<table style="width:100%; border-collapse: collapse; font-size:14px;">';
+      html += '<thead><tr>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Mitarbeiter</th>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Stunden im Monat</th>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Überstundenkonto</th>' +
+              '</tr></thead><tbody>';
+
+      let totalHoursAll = 0;
+      let totalBankAll = 0;
+
+      employees.forEach(emp => {
+        const { total, bank } = getHoursAndBank(emp);
+        totalHoursAll += total;
+        totalBankAll += bank;
+
+        html += '<tr>' +
+          '<td style="border-bottom:1px solid #eee; padding:4px;">' + emp.name + '</td>' +
+          '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + total.toFixed(2) + '</td>' +
+          '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + bank.toFixed(2) + '</td>' +
+          '</tr>';
+      });
+
+      html += '<tr>' +
+        '<td style="padding:4px; font-weight:bold; text-align:right;">Summe:</td>' +
+        '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalHoursAll.toFixed(2) + '</td>' +
+        '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalBankAll.toFixed(2) + '</td>' +
+        '</tr>';
+
+      html += '</tbody></table>';
+
+      container.innerHTML = html;
+    }
+
+    function printMonthlyReport() {
+      const container = document.getElementById('monthlyReportContainer');
+      if (!container) return;
+
+      const win = window.open('', '_blank');
+      win.document.write('<html><head><title>Monatsbericht – Eiscafé Sanremo</title>');
+      win.document.write('<meta charset="UTF-8">');
+      win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} table{width:100%;border-collapse:collapse;font-size:14px;} th,td{border:1px solid #ccc;padding:4px;} th{text-align:left;background:#f0f0f0;}</style>');
+      win.document.write('</head><body>');
+      win.document.write('<h2>Monatsbericht – Eiscafé Sanremo</h2>');
+      win.document.write('<p>Monat: ' + getCurrentMonthKey() + '</p>');
+      win.document.write(container.innerHTML);
+      win.document.write('</body></html>');
+      win.document.close();
+      win.focus();
+      win.print();
+    }
+
     // ============ INICIALIZAÇÃO ============
     loadEmployees();
     refreshEmployeeUI();
     updateHoursInfo();
     updatePlanHoursInfo();
+    renderMonthlyReport();
+  </script>
+
+  <!-- Registo do Service Worker para modo App (PWA) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(function (err) {
+        console.error('ServiceWorker-Fehler:', err);
+      });
+    }
   </script>
 
 </body>
