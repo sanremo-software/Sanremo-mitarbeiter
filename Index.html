@@ -1,1 +1,667 @@
 
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Eiscafé Sanremo – Mitarbeiterportal (Tablet)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #f0f2f5;
+    }
+    h2 { margin-bottom: 10px; }
+    h3 { margin-top: 20px; }
+
+    label {
+      display: block;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin-top: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    select, input {
+      width: 100%;
+    }
+
+    button {
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #1976d2;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #eee;
+      color: #333;
+    }
+    .btn-danger {
+      background: #d32f2f;
+      color: #fff;
+    }
+
+    .section {
+      border: 1px solid #ccc;
+      padding: 14px;
+      margin-top: 15px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    #status, #hoursInfo, #planHoursInfo {
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    #log {
+      margin-top: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 6px;
+    }
+
+    .employee-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+      gap: 8px;
+    }
+    .employee-row button {
+      padding: 6px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .warning {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+    .box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      background: #fafafa;
+      margin-top: 10px;
+    }
+    #chefLoginStatus {
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    small {
+      font-size: 12px;
+      color: #555;
+    }
+
+    /* LOGO NO TOPO */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .logo-img {
+      height: 70px;
+      max-width: 220px;
+      object-fit: contain;
+    }
+    .logo-text-sub {
+      font-size: 13px;
+      color: #555;
+    }
+
+    @media (min-width: 700px) {
+      .grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGÓTIPO HORIZONTAL -->
+  <div class="header">
+    <!-- imagem dentro da pasta images -->
+    <img src="images/sanremo-logo-horizontal.png" alt="Eiscafé Sanremo Logo" class="logo-img">
+    <div>
+      <div class="logo-text-sub">Mitarbeiterportal – Stempeluhr & Dienstplan</div>
+    </div>
+  </div>
+
+  <!-- LOGIN DO CHEFE -->
+  <div class="section">
+    <h3>Chef Login</h3>
+    <label for="chefPinInput">PIN eingeben:</label>
+    <input type="password" id="chefPinInput" placeholder="PIN">
+
+    <button id="btnChefLogin" class="btn-primary" style="width:100%; margin-top:8px;">
+      Login
+    </button>
+
+    <p id="chefLoginStatus"></p>
+    <small>
+      Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten & Dienstplan / WhatsApp) freigeschaltet.
+    </small>
+  </div>
+
+  <div class="grid">
+    <!-- ÁREA DO CHEFE (escondida até login) -->
+    <div id="chefArea" style="display:none;">
+
+      <!-- Gestão de empregados -->
+      <div class="section">
+        <h3>Mitarbeiter verwalten</h3>
+
+        <label for="empName">Name des Mitarbeiters:</label>
+        <input type="text" id="empName" placeholder="z.B. João, Maria, ...">
+
+        <label for="empPhone">WhatsApp / Telefonnummer (optional):</label>
+        <input type="text" id="empPhone" placeholder="z.B. 491701234567">
+
+        <button id="btnAddEmp" class="btn-primary" style="width:100%; margin-top:10px;">
+          Mitarbeiter hinzufügen
+        </button>
+
+        <div id="employeeList" style="margin-top:12px;">
+          <!-- lista de empregados -->
+        </div>
+
+        <small>
+          Mitarbeiterliste, Stunden und Überstunden werden im Browser (localStorage) gespeichert.
+        </small>
+      </div>
+
+      <!-- Plano + WhatsApp -->
+      <div class="section">
+        <h3>Dienstplan & WhatsApp</h3>
+
+        <label for="planEmployeeSelect">Mitarbeiter auswählen:</label>
+        <select id="planEmployeeSelect">
+          <option value="">-- Mitarbeiter wählen --</option>
+        </select>
+
+        <div id="planHoursInfo">
+          Stunden diesen Monat: 0 | Überstundenkonto: 0
+        </div>
+
+        <label for="date">Tag:</label>
+        <input type="date" id="date">
+
+        <label for="timeFrom">Von (Uhrzeit):</label>
+        <input type="time" id="timeFrom">
+
+        <label for="timeTo">Bis (Uhrzeit):</label>
+        <input type="time" id="timeTo">
+
+        <div class="box">
+          <button id="btnPreview" class="btn-secondary" style="width:100%; margin-bottom:6px;">
+            Nachricht anzeigen
+          </button>
+          <button id="btnWhatsapp" class="btn-primary" style="width:100%;">
+            WhatsApp öffnen
+          </button>
+          <p style="font-size:12px; margin-top:6px;">
+            WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.
+          </p>
+        </div>
+
+        <div class="box">
+          <b>Vorschau Nachricht:</b>
+          <p id="previewText" style="white-space: pre-wrap; margin-top: 8px;">
+            (Noch keine Nachricht)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) -->
+    <div>
+      <div class="section">
+        <h3>Stempeluhr (für Mitarbeiter)</h3>
+
+        <label for="employeeSelect">Mitarbeiter auswählen:</label>
+        <select id="employeeSelect">
+          <option value="">-- Mitarbeiter wählen --</option>
+        </select>
+
+        <div id="hoursInfo">
+          Stunden diesen Monat: 0 | Überstundenkonto: 0
+        </div>
+
+        <div id="status">Bereit zum Stempeln.</div>
+
+        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;">
+          Einstempeln
+        </button>
+        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;">
+          Ausstempeln
+        </button>
+
+        <div id="log"><b>Heutige Einträge:</b><br></div>
+
+        <small>
+          Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    //  CONFIG LOGIN DO CHEFE
+    // =========================
+    // ⚠️ MUDA ESTE PIN PARA UM QUE SÓ TU SABES
+    const CHEF_PIN = "1234";
+
+    const chefPinInput = document.getElementById('chefPinInput');
+    const btnChefLogin = document.getElementById('btnChefLogin');
+    const chefLoginStatus = document.getElementById('chefLoginStatus');
+    const chefArea = document.getElementById('chefArea');
+
+    btnChefLogin.addEventListener('click', () => {
+      const pin = chefPinInput.value.trim();
+      if (pin === CHEF_PIN) {
+        chefArea.style.display = 'block';
+        chefLoginStatus.style.color = 'green';
+        chefLoginStatus.textContent = 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.';
+        chefPinInput.value = '';
+      } else {
+        chefLoginStatus.style.color = 'red';
+        chefLoginStatus.textContent = 'Falscher PIN.';
+      }
+    });
+
+    // =========================
+    //  Dados & armazenamento
+    // =========================
+
+    let employees = [];
+
+    function loadEmployees() {
+      const data = localStorage.getItem('sanremoEmployees');
+      if (data) {
+        employees = JSON.parse(data);
+      } else {
+        employees = [];
+      }
+    }
+
+    function saveEmployees() {
+      localStorage.setItem('sanremoEmployees', JSON.stringify(employees));
+    }
+
+    function generateId() {
+      return 'emp_' + Math.random().toString(36).substring(2, 9);
+    }
+
+    // =========================
+    //  Elementos do DOM
+    // =========================
+
+    const empNameInput = document.getElementById('empName');
+    const empPhoneInput = document.getElementById('empPhone');
+    const btnAddEmp = document.getElementById('btnAddEmp');
+    const employeeListDiv = document.getElementById('employeeList');
+
+    const employeeSelect = document.getElementById('employeeSelect');
+    const statusEl = document.getElementById('status');
+    const hoursInfoEl = document.getElementById('hoursInfo');
+    const logEl = document.getElementById('log');
+    const btnIn = document.getElementById('btnIn');
+    const btnOut = document.getElementById('btnOut');
+
+    const planEmployeeSelect = document.getElementById('planEmployeeSelect');
+    const planHoursInfoEl = document.getElementById('planHoursInfo');
+    const dateInput = document.getElementById('date');
+    const timeFromInput = document.getElementById('timeFrom');
+    const timeToInput = document.getElementById('timeTo');
+    const btnPreview = document.getElementById('btnPreview');
+    const btnWhatsapp = document.getElementById('btnWhatsapp');
+    const previewText = document.getElementById('previewText');
+
+    const MAX_HOURS_PER_MONTH = 40; // regra: 40h/mês
+
+    // =========================
+    //  Helpers de data / horas
+    // =========================
+
+    function getCurrentMonthKey() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      return `${y}-${m}`;
+    }
+
+    function formatGermanDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T00:00:00");
+      return d.toLocaleDateString("de-DE", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+    }
+
+    // =========================
+    //  UI de empregados (Chef)
+    // =========================
+
+    function refreshEmployeeUI() {
+      // Select da Stempeluhr
+      employeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
+      // Select do plano
+      planEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
+
+      employees.forEach(emp => {
+        const opt1 = document.createElement('option');
+        opt1.value = emp.id;
+        opt1.textContent = emp.name;
+        employeeSelect.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = emp.id;
+        opt2.textContent = emp.name;
+        planEmployeeSelect.appendChild(opt2);
+      });
+
+      // Lista para o chefe
+      employeeListDiv.innerHTML = '';
+      employees.forEach(emp => {
+        const row = document.createElement('div');
+        row.className = 'employee-row';
+        row.innerHTML = `
+          <span>${emp.name} ${emp.phone ? '(' + emp.phone + ')' : ''}</span>
+        `;
+        const btnDel = document.createElement('button');
+        btnDel.textContent = 'Löschen';
+        btnDel.className = 'btn-danger';
+        btnDel.onclick = () => {
+          if (confirm('Mitarbeiter "' + emp.name + '" wirklich löschen?')) {
+            employees = employees.filter(e => e.id !== emp.id);
+            saveEmployees();
+            refreshEmployeeUI();
+            updateHoursInfo();
+            updatePlanHoursInfo();
+          }
+        };
+        row.appendChild(btnDel);
+        employeeListDiv.appendChild(row);
+      });
+
+      const disabled = employees.length === 0;
+      btnIn.disabled = disabled;
+      btnOut.disabled = disabled;
+      if (disabled) {
+        statusEl.textContent = 'Keine Mitarbeiter angelegt. Chef muss zuerst Mitarbeiter hinzufügen.';
+      } else {
+        statusEl.textContent = 'Bereit zum Stempeln.';
+      }
+    }
+
+    if (btnAddEmp) {
+      btnAddEmp.addEventListener('click', () => {
+        const name = empNameInput.value.trim();
+        const phone = empPhoneInput.value.trim();
+        if (!name) {
+          alert('Bitte einen Namen eingeben.');
+          return;
+        }
+        const emp = {
+          id: generateId(),
+          name,
+          phone: phone || '',
+          monthlyHours: {},   // { "2025-11": 23.5, ... }
+          timeBank: {},       // { "2025-11": 3.5, ... }
+          activeSessionStart: null
+        };
+        employees.push(emp);
+        saveEmployees();
+        empNameInput.value = '';
+        empPhoneInput.value = '';
+        refreshEmployeeUI();
+      });
+    }
+
+    // =========================
+    //  Info de horas / banco
+    // =========================
+
+    function getHoursAndBank(emp) {
+      const monthKey = getCurrentMonthKey();
+      const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
+      const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
+      return { total, bank };
+    }
+
+    function updateHoursInfo() {
+      const empId = employeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) {
+        hoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
+        return;
+      }
+      const { total, bank } = getHoursAndBank(emp);
+      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
+      if (total > MAX_HOURS_PER_MONTH) {
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
+      }
+      hoursInfoEl.innerHTML = text;
+    }
+
+    function updatePlanHoursInfo() {
+      const empId = planEmployeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) {
+        planHoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
+        return;
+      }
+      const { total, bank } = getHoursAndBank(emp);
+      let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
+      if (total > MAX_HOURS_PER_MONTH) {
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
+      }
+      planHoursInfoEl.innerHTML = text;
+    }
+
+    employeeSelect.addEventListener('change', () => {
+      updateHoursInfo();
+      const empId = employeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      if (emp && emp.activeSessionStart) {
+        statusEl.textContent = 'Mitarbeiter ist aktuell eingestempelt (seit ' +
+          new Date(emp.activeSessionStart).toLocaleString() + ').';
+      } else {
+        statusEl.textContent = 'Bereit zum Stempeln.';
+      }
+    });
+
+    if (planEmployeeSelect) {
+      planEmployeeSelect.addEventListener('change', () => {
+        updatePlanHoursInfo();
+      });
+    }
+
+    function addLog(text) {
+      const now = new Date().toLocaleString();
+      logEl.innerHTML += `${text} – <i>${now}</i><br>`;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // =========================
+    //  Einstempeln / Ausstempeln
+    // =========================
+
+    btnIn.addEventListener('click', () => {
+      const empId = employeeSelect.value;
+      if (!empId) {
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      if (emp.activeSessionStart) {
+        alert('Dieser Mitarbeiter ist bereits eingestempelt.');
+        return;
+      }
+
+      emp.activeSessionStart = new Date().toISOString();
+      saveEmployees();
+      statusEl.textContent = 'Eingestempelt um ' +
+        new Date(emp.activeSessionStart).toLocaleString() + '.';
+      addLog(emp.name + ' eingestempelt');
+    });
+
+    btnOut.addEventListener('click', () => {
+      const empId = employeeSelect.value;
+      if (!empId) {
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      if (!emp.activeSessionStart) {
+        alert('Dieser Mitarbeiter ist noch nicht eingestempelt.');
+        return;
+      }
+
+      const start = new Date(emp.activeSessionStart);
+      const end = new Date();
+      const diffMs = end - start;
+      const hours = diffMs / 1000 / 60 / 60; // duração em horas
+
+      const monthKey = getCurrentMonthKey();
+      if (!emp.monthlyHours) emp.monthlyHours = {};
+      if (!emp.timeBank) emp.timeBank = {};
+
+      const prevTotal = emp.monthlyHours[monthKey] || 0;
+      const newTotal = prevTotal + hours;
+      emp.monthlyHours[monthKey] = newTotal;
+
+      let bank = 0;
+      if (newTotal > MAX_HOURS_PER_MONTH) {
+        bank = newTotal - MAX_HOURS_PER_MONTH;
+      }
+      emp.timeBank[monthKey] = bank;
+
+      emp.activeSessionStart = null;
+      saveEmployees();
+
+      statusEl.textContent = 'Ausgestempelt. Gearbeitete Zeit: ' + hours.toFixed(2) +
+        ' Std. Gesamt in diesem Monat: ' + newTotal.toFixed(2) + ' Std.';
+      addLog(emp.name + ' ausgestempelt (' + hours.toFixed(2) + ' Std.)');
+
+      updateHoursInfo();
+      updatePlanHoursInfo();
+    });
+
+    // =========================
+    //  WhatsApp – painel do chefe
+    // =========================
+
+    function buildMessage() {
+      const empId = planEmployeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      const date = dateInput.value;
+      const tFrom = timeFromInput.value;
+      const tTo = timeToInput.value;
+
+      if (!emp || !date || !tFrom || !tTo) {
+        return "";
+      }
+
+      const dateDE = formatGermanDate(date);
+      const { total, bank } = getHoursAndBank(emp);
+
+      let hoursLine =
+        `Aktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)`;
+      if (total > MAX_HOURS_PER_MONTH) {
+        hoursLine += " – LIMIT 40h überschritten!";
+      }
+
+      const msg =
+        "Eiscafé Sanremo – Dienstplan\n\n" +
+        "Hallo " + emp.name + ",\n\n" +
+        "dein Dienst:\n" +
+        "📅 Datum: " + dateDE + "\n" +
+        "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
+        "📍 Ort: Eiscafé Sanremo, Bad Berleburg\n\n" +
+        hoursLine + "\n\n" +
+        "Bitte bestätige mit OK.";
+      return msg;
+    }
+
+    if (btnPreview) {
+      btnPreview.addEventListener('click', () => {
+        const msg = buildMessage();
+        if (!msg) {
+          alert("Bitte Mitarbeiter, Tag und Zeiten ausfüllen.");
+          return;
+        }
+        previewText.textContent = msg;
+      });
+    }
+
+    if (btnWhatsapp) {
+      btnWhatsapp.addEventListener('click', () => {
+        const empId = planEmployeeSelect.value;
+        const emp = employees.find(e => e.id === empId);
+        const msg = buildMessage();
+
+        if (!emp) {
+          alert("Bitte Mitarbeiter wählen.");
+          return;
+        }
+        if (!msg) {
+          alert("Bitte Tag und Zeiten eintragen.");
+          return;
+        }
+
+        if (!emp.phone) {
+          alert("Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.";
+          return;
+        }
+
+        const phone = emp.phone; // ex: 4917...
+        const encodedMsg = encodeURIComponent(msg);
+        const url = "https://wa.me/" + phone + "?text=" + encodedMsg;
+
+        window.open(url, "_blank");
+      });
+    }
+
+    // =========================
+    //  Inicialização
+    // =========================
+
+    loadEmployees();
+    refreshEmployeeUI();
+    updateHoursInfo();
+    updatePlanHoursInfo();
+  </script>
+
+</body>
+</html>
