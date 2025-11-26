@@ -5,11 +5,7 @@
   <meta charset="UTF-8">
   <title>Digitales Mitarbeiter-Kontrollsystem</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Farbe der Browserleiste / App-Thema -->
   <meta name="theme-color" content="#f0f2f5">
-
-  <!-- Manifest für die App-Installation (PWA) -->
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -72,6 +68,21 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.06);
     }
 
+    /* Fundo da casa do chefe com bandeira italiana */
+    .chef-section {
+      background: linear-gradient(90deg, #009246, #ffffff, #ce2b37);
+      border: none;
+    }
+    .chef-section h3,
+    .chef-section label,
+    .chef-section small,
+    .chef-section p {
+      color: #111;
+    }
+    .chef-section input {
+      background: #ffffff;
+    }
+
     #status, #hoursInfo, #planHoursInfo {
       font-size: 14px;
       margin-top: 6px;
@@ -131,7 +142,7 @@
       }
     }
 
-    /* BARRA DO TÍTULO + IDIOMA */
+    /* TOP BAR – título + idioma */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -152,12 +163,31 @@
     }
     .lang-switch {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-end;
       gap: 4px;
       white-space: nowrap;
     }
+    .lang-label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
     .lang-switch label {
       font-size: 12px;
+    }
+    .lang-flag {
+      padding: 2px 6px;
+      font-size: 14px;
+      border-radius: 999px;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+      line-height: 1.2;
+    }
+    .lang-flag.active {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 1px rgba(25,118,210,0.4);
     }
     .lang-switch select {
       padding: 6px 8px;
@@ -165,6 +195,7 @@
       border-radius: 6px;
       border: 1px solid #ccc;
       background: #fff;
+      width: 100%;
     }
 
     @media (max-width: 600px) {
@@ -173,11 +204,11 @@
         align-items: stretch;
       }
       .lang-switch {
-        justify-content: flex-end;
+        align-items: flex-start;
       }
     }
 
-    /* HERO BANNER NO TOPO */
+    /* HERO BANNER – só a foto, sem letras visíveis */
     .hero-banner {
       position: relative;
       margin-bottom: 24px;
@@ -185,86 +216,59 @@
       overflow: hidden;
       height: 210px;
       background-image:
-        linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.2)),
         url('IMG-20251125-WA0004.jpg');
       background-size: cover;
       background-position: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
 
+    /* Mantemos o hero-inner mas escondido, para o JS não partir */
     .hero-inner {
-      position: absolute;
-      left: 18px;
-      bottom: 18px;
-      right: 18px;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
-    }
-
-    .hero-title {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .hero-subtitle {
-      font-size: 14px;
-      opacity: 0.95;
-    }
-
-    .hero-badge {
-      margin-top: 6px;
-      display: inline-block;
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.20);
-      backdrop-filter: blur(3px);
+      display: none;
     }
 
     @media (min-width: 700px) {
       .hero-banner {
         height: 230px;
       }
-      .hero-title {
-        font-size: 26px;
-      }
-      .hero-subtitle {
-        font-size: 15px;
-      }
     }
   </style>
 </head>
 <body>
 
-  <!-- TÍTULO + ESCOLHA DE IDIOMA -->
+  <!-- TÍTULO + IDIOMA -->
   <div class="top-bar">
     <div id="systemTitle" class="system-title">
       Digitales Mitarbeiter-Kontrollsystem
     </div>
     <div class="lang-switch">
-      <label for="langSelect" id="langLabel">Sprache:</label>
+      <div class="lang-label-row">
+        <label for="langSelect" id="langLabel">Sprache:</label>
+        <button type="button" class="lang-flag" data-lang="de" id="flagDe">🇩🇪 DE</button>
+        <button type="button" class="lang-flag" data-lang="pt" id="flagPt">🇵🇹 PT</button>
+        <button type="button" class="lang-flag" data-lang="it" id="flagIt">🇮🇹 IT</button>
+      </div>
+      <!-- Dropdown extra (segunda opção) -->
       <select id="langSelect">
-        <option value="de">DE</option>
-        <option value="pt">PT</option>
-        <option value="it">IT</option>
+        <option value="de">Deutsch (DE)</option>
+        <option value="pt">Português (PT)</option>
+        <option value="it">Italiano (IT)</option>
       </select>
     </div>
   </div>
 
-  <!-- BANNER GRANDE COM FOTO -->
+  <!-- LOGÓTIPO / FOTO – sem letras -->
   <header class="hero-banner">
     <div class="hero-inner">
-      <div class="hero-title">Eiscafé Sanremo</div>
-      <div class="hero-subtitle" id="heroSubtitle">Mitarbeiterportal – Bad Berleburg</div>
-      <div class="hero-badge" id="heroBadge">Stempeluhr • Dienstplan • WhatsApp</div>
+      <!-- Estes textos ficam ocultos via CSS -->
+      <div class="hero-title" id="heroTitle" style="display:none;">Eiscafé Sanremo</div>
+      <div class="hero-subtitle" id="heroSubtitle" style="display:none;">Mitarbeiterportal – Bad Berleburg</div>
+      <div class="hero-badge" id="heroBadge" style="display:none;">Stempeluhr • Dienstplan • WhatsApp</div>
     </div>
   </header>
 
-  <!-- LOGIN DO CHEFE -->
-  <div class="section">
+  <!-- LOGIN DO CHEFE (com bandeira italiana de fundo) -->
+  <div class="section chef-section">
     <h3 id="chefLoginTitle">Chef Login</h3>
     <label for="chefPinInput" id="chefPinLabel">PIN eingeben:</label>
     <input type="password" id="chefPinInput" placeholder="PIN">
@@ -272,7 +276,6 @@
     <button id="btnChefLogin" class="btn-primary" style="width:100%; margin-top:8px;">
       Login
     </button>
-    <!-- LOGOUT -->
     <button id="btnChefLogout" class="btn-secondary" style="width:100%; margin-top:8px; display:none;">
       Logout
     </button>
@@ -284,7 +287,7 @@
   </div>
 
   <div class="grid">
-    <!-- ÁREA DO CHEFE (escondida até login) -->
+    <!-- ÁREA DO CHEFE -->
     <div id="chefArea" style="display:none;">
 
       <!-- Gestão de empregados -->
@@ -301,9 +304,7 @@
           Mitarbeiter hinzufügen
         </button>
 
-        <div id="employeeList" style="margin-top:12px;">
-          <!-- lista de empregados -->
-        </div>
+        <div id="employeeList" style="margin-top:12px;"></div>
 
         <small id="empStorageNote">
           Mitarbeiterliste, Stunden und Überstunden werden im Browser (localStorage) gespeichert.
@@ -352,30 +353,24 @@
         </div>
       </div>
 
-      <!-- MONATSBERICHT (CHEF) + EXPORT CSV -->
+      <!-- Monatsbericht + Export -->
       <div class="section">
         <h3 id="monthlyReportTitle">Monatsbericht (Chef)</h3>
         <p id="monthlyReportDesc" style="font-size: 13px; margin-bottom:8px;">
           Übersicht aller Mitarbeiter für den aktuellen Monat.
         </p>
 
-        <div id="monthlyReportContainer">
-          <!-- tabela gerada por JavaScript -->
-        </div>
+        <div id="monthlyReportContainer"></div>
 
         <button id="btnPrintMonthly" class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()">
           Drucken / als PDF speichern
         </button>
 
-        <!-- EXPORT MÊS COMPLETO TODOS -->
         <button id="btnExportMonthAll" class="btn-secondary" style="width:100%; margin-top:8px;">
           Gesamten Monat (alle Mitarbeiter) als CSV exportieren
         </button>
 
-        <!-- EXPORT INDIVIDUAL COM ESCOLHA DE MÊS -->
         <div style="margin-top:16px; border-top:1px solid #eee; padding-top:10px;">
-
-          <!-- mês -->
           <label for="exportMonth">Monat auswählen:</label>
           <input type="month" id="exportMonth" style="width:100%; margin-top:4px;">
 
@@ -391,7 +386,6 @@
             CSV-Datei mit Datum, Startzeit, Endzeit, Stunden pro Tag und Monatssumme – ideal für den Steuerberater.
           </small>
 
-          <!-- DRUCKER DETALHADO POR EMPREGADO -->
           <button id="btnPrintEmployeeDetail" class="btn-primary" style="width:100%; margin-top:8px;">
             Detaillierter Bericht (Drucker) für Mitarbeiter
           </button>
@@ -402,7 +396,7 @@
       </div>
     </div>
 
-    <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) -->
+    <!-- STEMPELUHR – Empregados -->
     <div>
       <div class="section">
         <h3 id="stempTitle">Stempeluhr (für Mitarbeiter)</h3>
@@ -425,7 +419,6 @@
           Ausstempeln
         </button>
 
-        <!-- ANULAR STEMPEL -->
         <button id="btnCancelStempel" class="btn-danger" style="width:100%; margin-top:8px;">
           Stempel annullieren (letzter Eintrag)
         </button>
@@ -439,7 +432,7 @@
     </div>
   </div>
 
-  <!-- RECHTLICHES / DATENSCHUTZ -->
+  <!-- DATENSCHUTZ & NUTZUNG (texto direto, em DE/PT/IT via JS se quiseres adaptar depois) -->
   <div class="section">
     <h3 id="legalTitle">Datenschutz & Nutzungshinweise</h3>
     <p id="legalIntro">
@@ -458,11 +451,11 @@
     </ol>
   </div>
 
-  <!-- FOOTER IMPRESSUM / DATENSCHUTZ -->
+  <!-- FOOTER -->
   <footer class="section" style="margin-top:20px; text-align:center; font-size:12px; opacity:0.9;">
-    <a href="https://SEU-LINK-IMPRESSUM.de" target="_blank" id="footerImpressum">Impressum</a>
+    <a href="impressum.html" id="footerImpressum">Impressum</a>
     <span> | </span>
-    <a href="https://SEU-LINK-DATENSCHUTZ.de" target="_blank" id="footerDatenschutz">Datenschutz</a>
+    <a href="datenschutz.html" id="footerDatenschutz">Datenschutz</a>
   </footer>
 
   <script>
@@ -535,14 +528,12 @@
         waLimitNote: ' – LIMIT 40h überschritten!',
         waConfirm: 'Bitte bestätige mit OK.',
 
-        // Legal
         legalTitle: 'Datenschutz & Nutzungshinweise',
         legalIntro: 'Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern gespeichert.',
         legalPoint1: 'Datenschutz: Zugriff auf die gespeicherten Daten haben nur der Betrieb/Chef und die von ihm autorisierten Personen. Der Arbeitgeber ist dafür verantwortlich, seine Mitarbeiter über die Datenerfassung zu informieren.',
         legalPoint2: 'Nutzung & Urheberrecht: Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche Zustimmung des Entwicklers ist untersagt.',
         legalPoint3: 'Haftungsausschluss: Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.',
 
-        // Footer
         footerImpressum: 'Impressum',
         footerDatenschutz: 'Datenschutz'
       },
@@ -699,7 +690,6 @@
     let employees = [];
     let currentLang = localStorage.getItem('sanremoLang') || 'de';
 
-    // DOM
     const chefPinInput = document.getElementById('chefPinInput');
     const btnChefLogin = document.getElementById('btnChefLogin');
     const btnChefLogout = document.getElementById('btnChefLogout');
@@ -731,6 +721,7 @@
     const monthlyReportContainer = document.getElementById('monthlyReportContainer');
 
     const langSelect = document.getElementById('langSelect');
+    const flagButtons = document.querySelectorAll('.lang-flag');
 
     const reportEmployeeSelect = document.getElementById('reportEmployeeSelect');
     const btnExportExcel = document.getElementById('btnExportExcel');
@@ -738,11 +729,22 @@
     const btnPrintEmployeeDetail = document.getElementById('btnPrintEmployeeDetail');
     const exportMonthInput = document.getElementById('exportMonth');
 
+    function setActiveFlag(lang) {
+      flagButtons.forEach(btn => {
+        if (btn.dataset.lang === lang) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
     function applyLanguage(lang) {
       const t = translations[lang] || translations.de;
       currentLang = lang;
       localStorage.setItem('sanremoLang', lang);
       langSelect.value = lang;
+      setActiveFlag(lang);
 
       document.getElementById('langLabel').textContent = t.langLabel;
       document.getElementById('systemTitle').textContent = t.systemTitle;
@@ -768,7 +770,6 @@
       btnWhatsapp.textContent = t.btnWhatsapp;
       document.getElementById('whatsappInfoText').textContent = t.whatsappInfoText;
       document.getElementById('previewTitle').textContent = t.previewTitle;
-      previewText.textContent = t.previewPlaceholder;
 
       document.getElementById('monthlyReportTitle').textContent = t.monthlyReportTitle;
       document.getElementById('monthlyReportDesc').textContent = t.monthlyReportDesc;
@@ -778,14 +779,12 @@
       document.getElementById('stempEmployeeLabel').textContent = t.stempEmployeeLabel;
       document.getElementById('ruleNote').textContent = t.ruleNote;
 
-      // Legal / Datenschutz
       document.getElementById('legalTitle').textContent = t.legalTitle;
       document.getElementById('legalIntro').textContent = t.legalIntro;
       document.getElementById('legalPoint1').textContent = t.legalPoint1;
       document.getElementById('legalPoint2').textContent = t.legalPoint2;
       document.getElementById('legalPoint3').textContent = t.legalPoint3;
 
-      // Footer links
       const fImp = document.getElementById('footerImpressum');
       const fDat = document.getElementById('footerDatenschutz');
       if (fImp) fImp.textContent = t.footerImpressum;
@@ -800,6 +799,7 @@
       } else {
         statusEl.textContent = t.statusReady;
       }
+      previewText.textContent = t.previewPlaceholder;
     }
 
     langSelect.addEventListener('change', (e) => {
@@ -809,13 +809,22 @@
       renderMonthlyReport();
     });
 
-    // LOGIN / LOGOUT CHEFE
+    flagButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        applyLanguage(lang);
+        updateHoursInfo();
+        updatePlanHoursInfo();
+        renderMonthlyReport();
+      });
+    });
+
     btnChefLogin.addEventListener('click', () => {
       const t = translations[currentLang];
       const pin = chefPinInput.value.trim();
       if (pin === CHEF_PIN) {
         chefArea.style.display = 'block';
-        if (btnChefLogout) btnChefLogout.style.display = 'block';
+        btnChefLogout.style.display = 'block';
         chefLoginStatus.style.color = 'green';
         chefLoginStatus.textContent = t.chefLoginSuccess;
         chefPinInput.value = '';
@@ -825,18 +834,15 @@
       }
     });
 
-    if (btnChefLogout) {
-      btnChefLogout.addEventListener('click', () => {
-        chefArea.style.display = 'none';
-        btnChefLogout.style.display = 'none';
-        chefLoginStatus.textContent = '';
-        chefLoginStatus.style.color = '';
-        chefPinInput.value = '';
-        alert('Logout abgeschlossen.');
-      });
-    }
+    btnChefLogout.addEventListener('click', () => {
+      chefArea.style.display = 'none';
+      btnChefLogout.style.display = 'none';
+      chefLoginStatus.textContent = '';
+      chefLoginStatus.style.color = '';
+      chefPinInput.value = '';
+      alert('Logout abgeschlossen.');
+    });
 
-    // DADOS
     function loadEmployees() {
       const data = localStorage.getItem('sanremoEmployees');
       if (data) {
@@ -863,7 +869,7 @@
 
     function getSelectedMonthKey() {
       if (exportMonthInput && exportMonthInput.value) {
-        return exportMonthInput.value; // AAAA-MM
+        return exportMonthInput.value;
       }
       return getCurrentMonthKey();
     }
@@ -952,9 +958,7 @@
       employees.forEach(emp => {
         const row = document.createElement('div');
         row.className = 'employee-row';
-        row.innerHTML = `
-          <span>${emp.name} ${emp.phone ? '(' + emp.phone + ')' : ''}</span>
-        `;
+        row.innerHTML = `<span>${emp.name} ${emp.phone ? '(' + emp.phone + ')' : ''}</span>`;
         const btnDel = document.createElement('button');
         btnDel.textContent = 'Löschen';
         btnDel.className = 'btn-danger';
@@ -1474,7 +1478,6 @@
     }
   </script>
 
-  <!-- Service Worker PWA -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(function (err) {
