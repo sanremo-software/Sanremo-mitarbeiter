@@ -6,341 +6,452 @@
   <title>Mitarbeiterportal – Zeit & Dienstplan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f0f2f5">
-  <link rel="manifest" href="manifest.json">
-
-  <!-- Biblioteca para export Word (DOCX) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.umd.min.js"
-          integrity="sha512-NzH6k3iCWaC+7Ns4Zwy9zcfJDoBbJx4F3jh6Bb3+1h3tqUeqS9pkLxyRQyThgOvGgZC9CgnB5Ty2hny0PRCAxg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
-    html, body { height: 100%; }
+    html, body {
+      height: 100%;
+    }
     body {
       font-family: Arial, sans-serif;
       padding: 16px;
-      max-width: 1050px;
+      max-width: 1000px;
       margin: 0 auto;
       background: #f0f2f5;
       min-height: 100vh;
     }
-    h2, h3 { margin-top: 0; }
-    label { display:block; margin-top:8px; font-weight:bold; }
+
+    h2, h3 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
     input, select, button {
-      padding:10px; margin-top:4px; font-size:16px; box-sizing:border-box;
+      padding: 10px;
+      margin-top: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
-    select, input { width:100%; }
+
+    select, input {
+      width: 100%;
+    }
+
     button {
-      cursor:pointer; border-radius:6px; border:none;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
     }
-    .btn-primary { background:#1976d2; color:#fff; }
-    .btn-secondary { background:#eee; color:#333; }
-    .btn-danger { background:#d32f2f; color:#fff; }
-    .btn-ghost { background:transparent; color:#1976d2; border:1px solid #1976d2; }
+
+    .btn-primary {
+      background: #1976d2;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #eee;
+      color: #333;
+    }
+    .btn-danger {
+      background: #d32f2f;
+      color: #fff;
+    }
 
     .section {
-      border:1px solid #ccc; padding:14px; margin-top:15px;
-      border-radius:10px; background:#fff;
-      box-shadow:0 2px 4px rgba(0,0,0,0.06);
+      border: 1px solid #ccc;
+      padding: 14px;
+      margin-top: 15px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
     }
 
-    #status, #hoursInfo, #planHoursInfo, #exportInfo {
-      font-size:14px; margin-top:6px;
+    #status, #hoursInfo, #planHoursInfo {
+      font-size: 14px;
+      margin-top: 6px;
     }
+
     #log {
-      margin-top:10px; max-height:220px; overflow-y:auto;
-      background:#fff; border:1px solid #ddd; padding:8px;
-      font-size:13px; border-radius:6px;
+      margin-top: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 6px;
     }
 
     .employee-row {
-      display:flex; justify-content:space-between; align-items:center;
-      font-size:14px; padding:4px 0; border-bottom:1px solid #eee; gap:8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+      gap: 8px;
     }
     .employee-row button {
-      padding:6px 10px; font-size:12px; white-space:nowrap;
+      padding: 6px 10px;
+      font-size: 12px;
+      white-space: nowrap;
     }
 
-    .warning { color:#d32f2f; font-weight:bold; }
+    .warning {
+      color: #d32f2f;
+      font-weight: bold;
+    }
     .box {
-      border:1px solid #ccc; padding:10px; border-radius:8px;
-      background:#fafafa; margin-top:10px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      background: #fafafa;
+      margin-top: 10px;
     }
-    small { font-size:12px; color:#555; }
-
-    @media (min-width:850px) {
-      .grid { display:grid; grid-template-columns:1.1fr 1fr; gap:16px; }
+    #chefLoginStatus {
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    small {
+      font-size: 12px;
+      color: #555;
     }
 
-    /* HERO topo */
+    @media (min-width: 800px) {
+      .grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 16px;
+      }
+    }
+
+    /* HERO BANNER NO TOPO */
     .hero-banner {
-      position:relative; margin-bottom:24px; border-radius:16px;
-      overflow:hidden; height:210px;
+      position: relative;
+      margin-bottom: 24px;
+      border-radius: 18px;
+      overflow: hidden;
+      height: 210px;
       background-image:
         linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.2)),
         url('IMG-20251125-WA0004.jpg');
-      background-size:cover; background-position:center;
-      box-shadow:0 4px 12px rgba(0,0,0,0.12); color:#fff;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
-    .hero-overlay {
-      position:absolute; left:18px; right:18px; bottom:18px;
-      display:flex; justify-content:space-between; align-items:flex-end; gap:12px;
+
+    .hero-inner {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      right: 18px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
-    .hero-text { max-width:70%; text-shadow:0 2px 4px rgba(0,0,0,0.6); }
-    .hero-title { font-size:22px; font-weight:700; }
-    .hero-subtitle { font-size:14px; opacity:0.95; }
+
+    .hero-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
     .hero-badge {
-      margin-top:6px; display:inline-block; font-size:11px;
-      padding:3px 10px; border-radius:999px;
-      background:rgba(0,0,0,0.55);
+      margin-top: 6px;
+      display: inline-block;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.20);
+      backdrop-filter: blur(3px);
     }
 
-    .neutral-logo {
-      width:76px; height:76px; border-radius:20px; background:#fff;
-      display:flex; align-items:center; justify-content:center;
-      box-shadow:0 2px 6px rgba(0,0,0,0.35);
-      color:#1976d2; font-size:34px;
+    @media (min-width: 800px) {
+      .hero-banner {
+        height: 230px;
+      }
+      .hero-title {
+        font-size: 26px;
+      }
+      .hero-subtitle {
+        font-size: 15px;
+      }
     }
 
-    .lang-switcher {
-      position:absolute; top:10px; right:14px; display:flex; gap:4px;
+    /* cartão login com cores da bandeira italiana */
+    .chef-login-card {
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+      padding: 14px;
+      margin-top: 10px;
     }
-    .lang-btn {
-      font-size:11px; padding:2px 8px; border-radius:999px;
-      border:none; cursor:pointer; background:rgba(255,255,255,0.85);
-    }
-    .lang-btn.active { background:#1976d2; color:#fff; }
-
-    /* Login chefe fundo bandeira */
-    .chef-login-section {
-      background:linear-gradient(
-        90deg,
-        #008C45 0%, #008C45 33%,
-        #F4F5F0 33%, #F4F5F0 66%,
-        #CD212A 66%, #CD212A 100%
-      );
-      padding:3px; border-radius:12px; margin-bottom:12px;
-    }
-    .chef-login-inner {
-      background:#fff; border-radius:10px; padding:14px;
+    .chef-login-card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      z-index: -1;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #008C45, #F4F5F0, #CD212A);
     }
 
-    /* Legal cards */
-    .legal-grid { display:grid; grid-template-columns:1fr; gap:10px; }
-    @media (min-width:700px) {
-      .legal-grid { grid-template-columns:repeat(3,1fr); }
+    /* Datenschutz box */
+    #datenschutzBox {
+      display: none;
+      margin-top: 20px;
     }
-    .legal-card {
-      background:#fafafa; border-radius:8px; padding:10px;
-      border:1px solid #ddd; font-size:13px;
+    .ds-block {
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      padding: 10px 12px;
+      background: #fafafa;
+      margin-top: 10px;
+      font-size: 13px;
     }
-    .legal-card h4 { margin:0 0 6px 0; font-size:14px; }
+    .ds-block h4 {
+      margin: 0 0 6px 0;
+    }
 
     footer {
-      margin-top:20px; text-align:center; font-size:12px; color:#555;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+    footer a {
+      color: #1976d2;
+      text-decoration: none;
+      margin: 0 4px;
     }
   </style>
 </head>
 <body>
-  <!-- BANNER -->
+
+  <!-- BANNER COM FOTO (podes trocar a imagem no URL) -->
   <header class="hero-banner">
-    <div class="lang-switcher">
-      <button class="lang-btn active" data-lang="de">DE</button>
-      <button class="lang-btn" data-lang="pt">PT</button>
-      <button class="lang-btn" data-lang="it">IT</button>
-    </div>
-    <div class="hero-overlay">
-      <div class="hero-text">
-        <div class="hero-title" data-i18n="heroTitle">
-          Mitarbeiterportal – Zeit &amp; Dienstplan
-        </div>
-        <div class="hero-subtitle" data-i18n="heroSubtitle">
-          Tablet-optimiertes System zur Arbeitszeiterfassung und Schichtplanung.
-        </div>
-        <div class="hero-badge" data-i18n="heroBadge">
-          Lokal im Betrieb · Keine Cloud · Ideal für kleine Teams
-        </div>
+    <div class="hero-inner">
+      <div class="hero-title">Mitarbeiterportal – Zeit &amp; Dienstplan</div>
+      <div class="hero-subtitle">
+        Tablet-optimiertes System zur Arbeitszeiterfassung und Schichtplanung.
       </div>
-      <div class="neutral-logo">⏱</div>
+      <div class="hero-badge">
+        Lokal im Betrieb • Keine Cloud • Ideal für kleine Teams
+      </div>
     </div>
   </header>
 
-  <!-- LOGIN CHEFE -->
-  <div class="chef-login-section">
-    <div class="chef-login-inner">
-      <div class="section" style="margin-top:0; box-shadow:none; border:none; padding:0;">
-        <h3 data-i18n="chefLoginTitle">Chef Login</h3>
-        <label for="chefPinInput" data-i18n="chefPinLabel">PIN eingeben:</label>
-        <input type="password" id="chefPinInput" placeholder="PIN">
+  <!-- LOGIN DO CHEFE -->
+  <div class="section chef-login-card">
+    <h3>Chef Login</h3>
+    <label for="chefPinInput">PIN eingeben:</label>
+    <input type="password" id="chefPinInput" placeholder="PIN">
 
-        <div style="display:flex; gap:8px; margin-top:8px;">
-          <button id="btnChefLogin" class="btn-primary" style="flex:1;" data-i18n="chefLoginBtn">Login</button>
-          <button id="btnChefLogout" class="btn-secondary" style="flex:0.7;" data-i18n="chefLogoutBtn" disabled>Logout</button>
-        </div>
-
-        <p id="chefLoginStatus"></p>
-        <small data-i18n="chefLoginHint">
-          Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp, Export &amp; Datenschutz) freigeschaltet.
-        </small>
-      </div>
+    <div style="display:flex; gap:10px; margin-top:8px;">
+      <button id="btnChefLogin" class="btn-primary" style="flex:1;">
+        Login
+      </button>
+      <button id="btnChefLogout" class="btn-secondary" style="flex:1;">
+        Logout
+      </button>
     </div>
+
+    <p id="chefLoginStatus"></p>
+    <small>
+      Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten,
+      Dienstplan / WhatsApp, Monatsbericht &amp; Export, Datenschutz) freigeschaltet.
+    </small>
   </div>
 
   <div class="grid">
-    <!-- ÁREA DO CHEFE -->
+    <!-- ÁREA DO CHEFE (escondida até login) -->
     <div id="chefArea" style="display:none;">
-      <!-- Gestão empregados -->
+
+      <!-- Gestão de empregados -->
       <div class="section">
-        <h3 data-i18n="manageEmployeesTitle">Mitarbeiter verwalten</h3>
+        <h3>Mitarbeiter verwalten</h3>
 
-        <label for="empName" data-i18n="empNameLabel">Name des Mitarbeiters:</label>
-        <input type="text" id="empName" data-i18n-placeholder="empNamePlaceholder" placeholder="z.B. João, Maria, ...">
+        <label for="empName">Name des Mitarbeiters:</label>
+        <input type="text" id="empName" placeholder="z.B. João, Maria, ...">
 
-        <label for="empPhone" data-i18n="empPhoneLabel">WhatsApp / Telefonnummer (optional):</label>
-        <input type="text" id="empPhone" data-i18n-placeholder="empPhonePlaceholder" placeholder="z.B. 491701234567">
+        <label for="empPhone">WhatsApp / Telefonnummer (optional):</label>
+        <input type="text" id="empPhone" placeholder="z.B. 491701234567">
 
-        <button id="btnAddEmp" class="btn-primary" style="width:100%; margin-top:10px;" data-i18n="addEmpBtn">
+        <button id="btnAddEmp" class="btn-primary" style="width:100%; margin-top:10px;">
           Mitarbeiter hinzufügen
         </button>
 
-        <div id="employeeList" style="margin-top:12px;"></div>
+        <div id="employeeList" style="margin-top:12px;">
+          <!-- lista de empregados -->
+        </div>
 
-        <small data-i18n="manageEmployeesInfo">
-          Mitarbeiterliste und Arbeitszeiten werden nur lokal im Browser/Tablet gespeichert (localStorage). Es werden keine Daten an Server gesendet.
+        <small>
+          Mitarbeiterliste, Stunden, Überstunden und Historie werden im Browser (localStorage) gespeichert.
         </small>
       </div>
 
-      <!-- Dienstplan + WhatsApp -->
+      <!-- Plano + WhatsApp -->
       <div class="section">
-        <h3 data-i18n="planTitle">Dienstplan &amp; WhatsApp</h3>
+        <h3>Dienstplan &amp; WhatsApp</h3>
 
-        <label for="planEmployeeSelect" data-i18n="planEmpSelectLabel">Mitarbeiter auswählen:</label>
+        <label for="planEmployeeSelect">Mitarbeiter auswählen:</label>
         <select id="planEmployeeSelect">
-          <option value="" data-i18n="selectEmployeeOption">-- Mitarbeiter wählen --</option>
+          <option value="">-- Mitarbeiter wählen --</option>
         </select>
 
-        <div id="planHoursInfo">Stunden diesen Monat: 0 | Überstundenkonto: 0</div>
+        <div id="planHoursInfo">
+          Stunden diesen Monat: 0 | Überstundenkonto: 0
+        </div>
 
-        <label for="date" data-i18n="planDateLabel">Tag:</label>
+        <label for="date">Tag:</label>
         <input type="date" id="date">
 
-        <label for="timeFrom" data-i18n="planFromLabel">Von (Uhrzeit):</label>
+        <label for="timeFrom">Von (Uhrzeit):</label>
         <input type="time" id="timeFrom">
 
-        <label for="timeTo" data-i18n="planToLabel">Bis (Uhrzeit):</label>
+        <label for="timeTo">Bis (Uhrzeit):</label>
         <input type="time" id="timeTo">
 
         <div class="box">
-          <button id="btnPreview" class="btn-secondary" style="width:100%; margin-bottom:6px;" data-i18n="previewMsgBtn">
+          <button id="btnPreview" class="btn-secondary" style="width:100%; margin-bottom:6px;">
             Nachricht anzeigen
           </button>
-          <button id="btnWhatsapp" class="btn-primary" style="width:100%;" data-i18n="openWhatsappBtn">
+          <button id="btnWhatsapp" class="btn-primary" style="width:100%;">
             WhatsApp öffnen
           </button>
-          <p style="font-size:12px; margin-top:6px;" data-i18n="whatsappInfo">
+          <p style="font-size:12px; margin-top:6px;">
             WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.
           </p>
         </div>
 
         <div class="box">
-          <b data-i18n="previewTitle">Vorschau Nachricht:</b>
-          <p id="previewText" style="white-space: pre-wrap; margin-top: 8px;">(Noch keine Nachricht)</p>
+          <b>Vorschau Nachricht:</b>
+          <p id="previewText" style="white-space: pre-wrap; margin-top: 8px;">
+            (Noch keine Nachricht)
+          </p>
         </div>
       </div>
 
-      <!-- Monatsbericht (sumário) -->
+      <!-- MONATSBERICHT (CHEF) -->
       <div class="section">
-        <h3 data-i18n="monthlyReportTitle">Monatsbericht (Übersicht)</h3>
-        <p style="font-size:13px; margin-bottom:8px;" data-i18n="monthlyReportInfo">
-          Übersicht aller Mitarbeiter für den aktuellen Monat – Gesamtstunden und Überstundenkonto.
+        <h3>Monatsbericht (Chef)</h3>
+        <p style="font-size: 13px; margin-bottom:8px;">
+          Übersicht aller Mitarbeiter für den aktuellen Monat.
         </p>
-        <div id="monthlyReportContainer"></div>
-        <button class="btn-secondary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()" data-i18n="printReportBtn">
+
+        <div id="monthlyReportContainer">
+          <!-- tabela gerada por JavaScript -->
+        </div>
+
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()">
           Drucken / als PDF speichern
         </button>
       </div>
 
-      <!-- Monats-Export (Word) -->
-      <div class="section" id="monthlyExportSection">
-        <h3 data-i18n="monthly_export_title">Monats-Export (Word)</h3>
-        <p style="font-size:13px; margin-bottom:8px;" data-i18n="monthly_export_desc">
-          Export pro Mitarbeiter und Monat – ideal für den Steuerberater. Die Datei wird als Word-Dokument (.docx) mit einer Tabelle wie dem Stundennachweis erstellt.
+      <!-- MONATS-EXPORT COM HISTÓRICO DETALHADO -->
+      <div class="section" id="exportSection">
+        <h3>Monats-Export (Word / Drucker)</h3>
+        <p style="font-size:13px; margin-bottom:10px;">
+          Export pro Mitarbeiter und Monat – ideal für den Steuerberater.
+          Es wird ein Monatsblatt mit allen Tagen, Arbeitsbeginn und Arbeitsende erstellt,
+          das du drucken oder als PDF speichern kannst.
         </p>
 
-        <label for="exportEmployeeSelect" data-i18n="monthly_export_employee">Mitarbeiter auswählen:</label>
+        <label for="exportEmployeeSelect"><b>Mitarbeiter auswählen:</b></label>
         <select id="exportEmployeeSelect">
-          <option value="" data-i18n="selectEmployeeOption">-- Mitarbeiter wählen --</option>
+          <option value="">-- Mitarbeiter wählen --</option>
         </select>
 
-        <label for="exportMonthSelect" style="margin-top:10px;" data-i18n="monthly_export_month">Monat auswählen:</label>
-        <select id="exportMonthSelect"></select>
+        <label for="exportMonthSelect" style="margin-top:10px;"><b>Monat auswählen:</b></label>
+        <select id="exportMonthSelect">
+          <!-- wird per JavaScript mit Monaten gefüllt -->
+        </select>
 
-        <button type="button"
-                class="btn-primary"
-                style="width:100%; margin-top:12px;"
-                onclick="exportMonthlyWord()"
-                data-i18n="monthly_export_btn">
-          Word-Export erstellen
+        <button id="btnExportWord" class="btn-primary" style="width:100%; margin-top:14px;">
+          Word / Drucker – Monatsblatt erstellen
         </button>
 
-        <p id="exportInfo" style="font-size:12px; margin-top:8px; color:#555;"></p>
+        <small id="exportInfo" style="display:block; margin-top:8px; font-size:12px; color:#555;">
+          Hinweis: Es wird ein neues Fenster mit einer Tabelle geöffnet.
+          Von dort kannst du direkt drucken oder als PDF speichern.
+        </small>
       </div>
 
-      <!-- Legal / Datenschutz -->
-      <div class="section" id="legalSection">
-        <h3 data-i18n="legalTitle">Datenschutz &amp; Nutzungshinweise</h3>
-        <p style="font-size:13px;" data-i18n="legalIntro">
-          Kurze Zusammenfassung der wichtigsten Punkte. Details können Sie Ihrem Steuerberater / Rechtsberater zeigen.
-        </p>
+      <!-- DATENSCHUTZ & NUTZUNG – só para o chefe -->
+      <div class="section" id="datenschutzBox">
+        <h3>Datenschutz &amp; Nutzungshinweise</h3>
 
-        <div class="legal-grid">
-          <div class="legal-card">
-            <h4 data-i18n="legalCard1Title">1. Datenschutz</h4>
-            <p data-i18n="legalCard1Text">
-              Alle Daten werden nur lokal im Browser/Tablet des Betriebs gespeichert. Es werden keine Daten auf externe Server übertragen.
-            </p>
-          </div>
-          <div class="legal-card">
-            <h4 data-i18n="legalCard2Title">2. Nutzung &amp; Urheberrecht</h4>
-            <p data-i18n="legalCard2Text">
-              Die Anwendung ist nur für den lizenzierten Betrieb bestimmt. Weitergabe, Kopieren oder Verkauf ohne schriftliche Zustimmung des Entwicklers ist untersagt.
-            </p>
-          </div>
-          <div class="legal-card">
-            <h4 data-i18n="legalCard3Title">3. Haftung</h4>
-            <p data-i18n="legalCard3Text">
-              Die App unterstützt bei der Erfassung von Arbeitszeiten. Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.
-            </p>
-          </div>
+        <div class="ds-block">
+          <h4>1. Datenschutz</h4>
+          <p>
+            Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs.
+            Es werden keine Daten auf externen Servern gespeichert. Zugriff auf die
+            gespeicherten Daten haben nur der Betrieb/Chef und die von ihm
+            autorisierten Personen. Der Arbeitgeber ist dafür verantwortlich,
+            seine Mitarbeiter über die Datenerfassung zu informieren.
+          </p>
+        </div>
+
+        <div class="ds-block">
+          <h4>2. Nutzung &amp; Urheberrecht</h4>
+          <p>
+            Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine
+            Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des
+            Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche
+            Zustimmung des Entwicklers ist untersagt.
+          </p>
+        </div>
+
+        <div class="ds-block">
+          <h4>3. Haftungsausschluss</h4>
+          <p>
+            Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die
+            rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher
+            Vorschriften bleiben in der Verantwortung des Arbeitgebers.
+          </p>
         </div>
       </div>
+
     </div>
 
-    <!-- STEMPELUHR EMPREGADOS -->
+    <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) -->
     <div>
       <div class="section">
-        <h3 data-i18n="clockTitle">Stempeluhr (für Mitarbeiter)</h3>
+        <h3>Stempeluhr (für Mitarbeiter)</h3>
 
-        <label for="employeeSelect" data-i18n="clockEmpSelectLabel">Mitarbeiter auswählen:</label>
+        <label for="employeeSelect">Mitarbeiter auswählen:</label>
         <select id="employeeSelect">
-          <option value="" data-i18n="selectEmployeeOption">-- Mitarbeiter wählen --</option>
+          <option value="">-- Mitarbeiter wählen --</option>
         </select>
 
-        <div id="hoursInfo">Stunden diesen Monat: 0 | Überstundenkonto: 0</div>
-        <div id="status" data-i18n="clockReady">Bereit zum Stempeln.</div>
+        <div id="hoursInfo">
+          Stunden diesen Monat: 0 | Überstundenkonto: 0
+        </div>
 
-        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;" data-i18n="clockInBtn">
+        <div id="status">Bereit zum Stempeln.</div>
+
+        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;">
           Einstempeln
         </button>
-        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;" data-i18n="clockOutBtn">
+        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;">
           Ausstempeln
         </button>
-        <button id="btnUndo" class="btn-ghost" style="width:100%; margin-top:8px;" data-i18n="clockUndoBtn">
-          Letzten Stempel löschen
+        <button id="btnUndo" class="btn-danger" style="width:100%; margin-top:8px;">
+          Letzten Eintrag löschen
         </button>
 
-        <div id="log"><b data-i18n="todayEntriesTitle">Heutige Einträge:</b><br></div>
+        <div id="log"><b>Heutige Einträge:</b><br></div>
 
-        <small data-i18n="clockRule">
+        <small>
           Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).
         </small>
       </div>
@@ -348,262 +459,80 @@
   </div>
 
   <footer>
-    &copy; <span id="year"></span> – <span data-i18n="footerText">Lokales Mitarbeiterportal zur Arbeitszeiterfassung.</span>
+    <a href="#" id="linkImpressum">Impressum</a> |
+    <a href="#" id="linkDatenschutz">Datenschutz</a>
   </footer>
 
   <script>
-    /* TRADUÇÕES */
-    const translations = {
-      de: {
-        heroTitle: 'Mitarbeiterportal – Zeit & Dienstplan',
-        heroSubtitle: 'Tablet-optimiertes System zur Arbeitszeiterfassung und Schichtplanung.',
-        heroBadge: 'Lokal im Betrieb · Keine Cloud · Ideal für kleine Teams',
+    // ================== CONFIG LOGIN DO CHEFE ==================
+    const CHEF_PIN = "1234"; // MUDA ESTE PIN SE QUISERES
 
-        chefLoginTitle: 'Chef Login',
-        chefPinLabel: 'PIN eingeben:',
-        chefLoginBtn: 'Login',
-        chefLogoutBtn: 'Logout',
-        chefLoginHint: 'Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp, Export & Datenschutz) freigeschaltet.',
-        chefLoginOk: 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.',
-        chefLoginFail: 'Falscher PIN.',
-        chefLogoutMsg: 'Logout erfolgreich.',
+    const chefPinInput   = document.getElementById('chefPinInput');
+    const btnChefLogin   = document.getElementById('btnChefLogin');
+    const btnChefLogout  = document.getElementById('btnChefLogout');
+    const chefLoginStatus = document.getElementById('chefLoginStatus');
+    const chefArea       = document.getElementById('chefArea');
+    const datenschutzBox = document.getElementById('datenschutzBox');
 
-        manageEmployeesTitle: 'Mitarbeiter verwalten',
-        empNameLabel: 'Name des Mitarbeiters:',
-        empNamePlaceholder: 'z.B. João, Maria, ...',
-        empPhoneLabel: 'WhatsApp / Telefonnummer (optional):',
-        empPhonePlaceholder: 'z.B. 491701234567',
-        addEmpBtn: 'Mitarbeiter hinzufügen',
-        manageEmployeesInfo: 'Mitarbeiterliste und Arbeitszeiten werden nur lokal im Browser/Tablet gespeichert (localStorage). Es werden keine Daten an Server gesendet.',
-        deleteEmpConfirm: 'Mitarbeiter wirklich löschen?',
+    let isChefLoggedIn = false;
 
-        planTitle: 'Dienstplan & WhatsApp',
-        planEmpSelectLabel: 'Mitarbeiter auswählen:',
-        planDateLabel: 'Tag:',
-        planFromLabel: 'Von (Uhrzeit):',
-        planToLabel: 'Bis (Uhrzeit):',
-        previewMsgBtn: 'Nachricht anzeigen',
-        openWhatsappBtn: 'WhatsApp öffnen',
-        whatsappInfo: 'WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.',
-        previewTitle: 'Vorschau Nachricht:',
-        selectEmployeeOption: '-- Mitarbeiter wählen --',
-
-        monthlyReportTitle: 'Monatsbericht (Übersicht)',
-        monthlyReportInfo: 'Übersicht aller Mitarbeiter für den aktuellen Monat – Gesamtstunden und Überstundenkonto.',
-        printReportBtn: 'Drucken / als PDF speichern',
-
-        monthly_export_title: 'Monats-Export (Word)',
-        monthly_export_desc: 'Export pro Mitarbeiter und Monat – ideal für den Steuerberater. Die Datei wird als Word-Dokument (.docx) mit einer Tabelle wie dem Stundennachweis erstellt.',
-        monthly_export_employee: 'Mitarbeiter auswählen:',
-        monthly_export_month: 'Monat auswählen:',
-        monthly_export_btn: 'Word-Export erstellen',
-
-        legalTitle: 'Datenschutz & Nutzungshinweise',
-        legalIntro: 'Kurze Zusammenfassung der wichtigsten Punkte. Details können Sie Ihrem Steuerberater / Rechtsberater zeigen.',
-        legalCard1Title: '1. Datenschutz',
-        legalCard1Text: 'Alle Daten werden nur lokal im Browser/Tablet des Betriebs gespeichert. Es werden keine Daten auf externe Server übertragen.',
-        legalCard2Title: '2. Nutzung & Urheberrecht',
-        legalCard2Text: 'Die Anwendung ist nur für den lizenzierten Betrieb bestimmt. Weitergabe, Kopieren oder Verkauf ohne schriftliche Zustimmung des Entwicklers ist untersagt.',
-        legalCard3Title: '3. Haftung',
-        legalCard3Text: 'Die App unterstützt bei der Erfassung von Arbeitszeiten. Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.',
-
-        clockTitle: 'Stempeluhr (für Mitarbeiter)',
-        clockEmpSelectLabel: 'Mitarbeiter auswählen:',
-        clockReady: 'Bereit zum Stempeln.',
-        clockInBtn: 'Einstempeln',
-        clockOutBtn: 'Ausstempeln',
-        clockUndoBtn: 'Letzten Stempel löschen',
-        todayEntriesTitle: 'Heutige Einträge:',
-        clockRule: 'Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).',
-        clockAlreadyIn: 'Dieser Mitarbeiter ist bereits eingestempelt.',
-        clockNotIn: 'Dieser Mitarbeiter ist noch nicht eingestempelt.',
-        clockSelectEmp: 'Bitte zuerst einen Mitarbeiter auswählen.',
-        clockUndoNoEntries: 'Keine Einträge zum Löschen vorhanden.',
-
-        msgMissingFields: 'Bitte Mitarbeiter, Tag und Zeiten ausfüllen.',
-        msgMissingEmp: 'Bitte Mitarbeiter wählen.',
-        msgNoPhone: 'Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.',
-
-        footerText: 'Lokales Mitarbeiterportal zur Arbeitszeiterfassung.'
-      },
-      pt: {
-        heroTitle: 'Portal de Funcionários – Horas & Turnos',
-        heroSubtitle: 'Sistema optimizado para tablet para registar horas e organizar turnos.',
-        heroBadge: 'Dados apenas locais · Sem cloud · Ideal para equipas pequenas',
-
-        chefLoginTitle: 'Login do chefe',
-        chefPinLabel: 'Introduzir PIN:',
-        chefLoginBtn: 'Login',
-        chefLogoutBtn: 'Logout',
-        chefLoginHint: 'Depois do login activam-se as áreas do chefe (gestão de funcionários, turnos / WhatsApp, exportação & protecção de dados).',
-        chefLoginOk: 'Login com sucesso. Áreas do chefe activadas.',
-        chefLoginFail: 'PIN errado.',
-        chefLogoutMsg: 'Sessão terminada.',
-
-        manageEmployeesTitle: 'Gestão de funcionários',
-        empNameLabel: 'Nome do funcionário:',
-        empNamePlaceholder: 'Ex.: João, Maria, ...',
-        empPhoneLabel: 'WhatsApp / Telemóvel (opcional):',
-        empPhonePlaceholder: 'Ex.: 491701234567',
-        addEmpBtn: 'Adicionar funcionário',
-        manageEmployeesInfo: 'Lista de funcionários e horas são guardadas apenas localmente no tablet (localStorage). Nada é enviado para servidores externos.',
-        deleteEmpConfirm: 'Eliminar este funcionário?',
-
-        planTitle: 'Plano de serviço & WhatsApp',
-        planEmpSelectLabel: 'Escolher funcionário:',
-        planDateLabel: 'Dia:',
-        planFromLabel: 'Das (hora):',
-        planToLabel: 'Até (hora):',
-        previewMsgBtn: 'Mostrar mensagem',
-        openWhatsappBtn: 'Abrir WhatsApp',
-        whatsappInfo: 'O WhatsApp abre com mensagem preparada. Tu decides se envias.',
-        previewTitle: 'Pré-visualização da mensagem:',
-        selectEmployeeOption: '-- Escolher funcionário --',
-
-        monthlyReportTitle: 'Relatório mensal (vista geral)',
-        monthlyReportInfo: 'Vista geral de todos os funcionários no mês actual – horas totais e banco de horas.',
-        printReportBtn: 'Imprimir / guardar em PDF',
-
-        monthly_export_title: 'Exportação mensal (Word)',
-        monthly_export_desc: 'Exportação por funcionário e mês – ideal para o contabilista. O ficheiro é criado em Word (.docx) com uma tabela tipo folha de horas.',
-        monthly_export_employee: 'Escolher funcionário:',
-        monthly_export_month: 'Escolher mês:',
-        monthly_export_btn: 'Criar Word',
-
-        legalTitle: 'Protecção de dados & utilização',
-        legalIntro: 'Resumo curto dos pontos principais. Mostra os detalhes ao teu contabilista / advogado se precisares.',
-        legalCard1Title: '1. Dados',
-        legalCard1Text: 'Todos os dados são guardados apenas localmente no tablet. Nada é enviado para servidores externos.',
-        legalCard2Title: '2. Utilização & direitos de autor',
-        legalCard2Text: 'A aplicação é apenas para o negócio licenciado. É proibido copiar, revender ou partilhar sem autorização escrita do criador.',
-        legalCard3Title: '3. Responsabilidade',
-        legalCard3Text: 'A app ajuda a registar horas. O cálculo final de salários e o cumprimento da lei laboral continuam responsabilidade do empregador.',
-
-        clockTitle: 'Relógio de ponto (empregados)',
-        clockEmpSelectLabel: 'Escolher funcionário:',
-        clockReady: 'Pronto para picar.',
-        clockInBtn: 'Entrar (Einstempeln)',
-        clockOutBtn: 'Sair (Ausstempeln)',
-        clockUndoBtn: 'Anular último registo',
-        todayEntriesTitle: 'Registos de hoje:',
-        clockRule: 'Regra: máximo 40 horas por mês. O resto vai para banco de horas.',
-        clockAlreadyIn: 'Esse funcionário já está picado como presente.',
-        clockNotIn: 'Esse funcionário ainda não picou entrada.',
-        clockSelectEmp: 'Escolhe primeiro um funcionário.',
-        clockUndoNoEntries: 'Não há registos para apagar.',
-
-        msgMissingFields: 'Escolhe funcionário, dia e horas.',
-        msgMissingEmp: 'Escolhe um funcionário.',
-        msgNoPhone: 'Não está guardado número de telefone para este funcionário.',
-
-        footerText: 'Portal local de funcionários para registo de horas.'
-      },
-      it: {
-        heroTitle: 'Portale Dipendenti – Ore & Turni',
-        heroSubtitle: 'Sistema ottimizzato per tablet per registrare le ore e gestire i turni.',
-        heroBadge: 'Dati solo locali · Nessun cloud · Ideale per piccoli team',
-
-        chefLoginTitle: 'Login del capo',
-        chefPinLabel: 'Inserire PIN:',
-        chefLoginBtn: 'Login',
-        chefLogoutBtn: 'Logout',
-        chefLoginHint: 'Dopo il login si attivano le aree del capo (gestione dipendenti, turni / WhatsApp, export & privacy).',
-        chefLoginOk: 'Login riuscito. Aree del capo attivate.',
-        chefLoginFail: 'PIN errato.',
-        chefLogoutMsg: 'Logout eseguito.',
-
-        manageEmployeesTitle: 'Gestione dipendenti',
-        empNameLabel: 'Nome del dipendente:',
-        empNamePlaceholder: 'Es.: Marco, Maria, ...',
-        empPhoneLabel: 'WhatsApp / Telefono (opzionale):',
-        empPhonePlaceholder: 'Es.: 491701234567',
-        addEmpBtn: 'Aggiungi dipendente',
-        manageEmployeesInfo: 'Elenco dipendenti e ore vengono salvati solo in locale sul tablet (localStorage). Nessun dato viene inviato a server esterni.',
-        deleteEmpConfirm: 'Vuoi davvero cancellare questo dipendente?',
-
-        planTitle: 'Pianificazione turni & WhatsApp',
-        planEmpSelectLabel: 'Seleziona dipendente:',
-        planDateLabel: 'Giorno:',
-        planFromLabel: 'Da (ora):',
-        planToLabel: 'A (ora):',
-        previewMsgBtn: 'Mostra messaggio',
-        openWhatsappBtn: 'Apri WhatsApp',
-        whatsappInfo: 'WhatsApp si apre con un messaggio precompilato. Decidi tu se inviarlo.',
-        previewTitle: 'Anteprima messaggio:',
-        selectEmployeeOption: '-- Seleziona dipendente --',
-
-        monthlyReportTitle: 'Report mensile (panoramica)',
-        monthlyReportInfo: 'Panoramica di tutti i dipendenti nel mese corrente – ore totali e banca ore.',
-        printReportBtn: 'Stampa / salva in PDF',
-
-        monthly_export_title: 'Export mensile (Word)',
-        monthly_export_desc: 'Export per dipendente e mese – ideale per il commercialista. Il file Word (.docx) contiene una tabella tipo foglio ore.',
-        monthly_export_employee: 'Seleziona dipendente:',
-        monthly_export_month: 'Seleziona mese:',
-        monthly_export_btn: 'Crea Word',
-
-        legalTitle: 'Privacy & condizioni d’uso',
-        legalIntro: 'Breve riassunto dei punti principali. Puoi mostrare i dettagli al tuo commercialista / consulente.',
-        legalCard1Title: '1. Dati',
-        legalCard1Text: 'Tutti i dati vengono salvati solo in locale sul tablet. Nessun dato viene inviato a server esterni.',
-        legalCard2Title: '2. Uso & copyright',
-        legalCard2Text: 'L’applicazione è solo per l’esercizio autorizzato. È vietato copiare, rivendere o condividere senza autorizzazione scritta dello sviluppatore.',
-        legalCard3Title: '3. Responsabilità',
-        legalCard3Text: 'L’app aiuta a registrare le ore. Il calcolo delle paghe e il rispetto delle norme di lavoro restano responsabilità del datore di lavoro.',
-
-        clockTitle: 'Timbro orario (dipendenti)',
-        clockEmpSelectLabel: 'Seleziona dipendente:',
-        clockReady: 'Pronto per timbrare.',
-        clockInBtn: 'Entrata',
-        clockOutBtn: 'Uscita',
-        clockUndoBtn: 'Annulla ultima timbratura',
-        todayEntriesTitle: 'Registrazioni di oggi:',
-        clockRule: 'Regola: massimo 40 ore al mese. Il resto va nella banca ore.',
-        clockAlreadyIn: 'Questo dipendente risulta già in servizio.',
-        clockNotIn: 'Questo dipendente non ha ancora timbrato l’entrata.',
-        clockSelectEmp: 'Seleziona prima un dipendente.',
-        clockUndoNoEntries: 'Nessuna registrazione da cancellare.',
-
-        msgMissingFields: 'Seleziona dipendente, giorno e orari.',
-        msgMissingEmp: 'Seleziona un dipendente.',
-        msgNoPhone: 'Per questo dipendente non è salvato alcun numero di telefono.',
-
-        footerText: 'Portale locale dipendenti per la registrazione delle ore.'
+    function setChefLoggedIn(state) {
+      isChefLoggedIn = state;
+      if (state) {
+        chefArea.style.display = 'block';
+        datenschutzBox.style.display = 'block';
+        chefLoginStatus.style.color = 'green';
+        chefLoginStatus.textContent = 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.';
+        chefPinInput.value = '';
+      } else {
+        chefArea.style.display = 'none';
+        datenschutzBox.style.display = 'none';
+        chefLoginStatus.style.color = '#555';
+        chefLoginStatus.textContent = 'Abgemeldet.';
+        chefPinInput.value = '';
       }
-    };
-
-    let currentLang = 'de';
-    let currentTexts = translations[currentLang];
-
-    function applyTranslations() {
-      currentTexts = translations[currentLang];
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (currentTexts[key]) el.innerHTML = currentTexts[key];
-      });
-
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        if (currentTexts[key]) el.setAttribute('placeholder', currentTexts[key]);
-      });
-
-      const ft = document.querySelector('[data-i18n="footerText"]');
-      if (ft) ft.textContent = currentTexts.footerText;
     }
 
-    /* CONFIG GER
-AL */
-    const CHEF_PIN = "4729";
+    btnChefLogin.addEventListener('click', () => {
+      const pin = chefPinInput.value.trim();
+      if (pin === CHEF_PIN) {
+        setChefLoggedIn(true);
+      } else {
+        chefLoginStatus.style.color = 'red';
+        chefLoginStatus.textContent = 'Falscher PIN.';
+      }
+    });
 
-    const chefPinInput = document.getElementById('chefPinInput');
-    const btnChefLogin = document.getElementById('btnChefLogin');
-    const btnChefLogout = document.getElementById('btnChefLogout');
-    const chefLoginStatus = document.getElementById('chefLoginStatus');
-    const chefArea = document.getElementById('chefArea');
+    btnChefLogout.addEventListener('click', () => {
+      setChefLoggedIn(false);
+    });
 
+    // ================== DADOS & ARMAZENAMENTO ==================
     let employees = [];
 
+    function normalizeEmployees() {
+      employees.forEach(e => {
+        if (!e.monthlyHours) e.monthlyHours = {};
+        if (!e.timeBank) e.timeBank = {};
+        if (!e.sessions) e.sessions = [];
+      });
+    }
+
+    function loadEmployees() {
+      const data = localStorage.getItem('sanremoEmployees');
+      employees = data ? JSON.parse(data) : [];
+      normalizeEmployees();
+    }
+
+    function saveEmployees() {
+      localStorage.setItem('sanremoEmployees', JSON.stringify(employees));
+    }
+
+    function generateId() {
+      return 'emp_' + Math.random().toString(36).substring(2, 9);
+    }
+
+    // ================== ELEMENTOS DO DOM ==================
     const empNameInput = document.getElementById('empName');
     const empPhoneInput = document.getElementById('empPhone');
     const btnAddEmp = document.getElementById('btnAddEmp');
@@ -627,65 +556,62 @@ AL */
     const previewText = document.getElementById('previewText');
 
     const exportEmployeeSelect = document.getElementById('exportEmployeeSelect');
-    const exportMonthSelect = document.getElementById('exportMonthSelect');
-    const exportInfoEl = document.getElementById('exportInfo');
+    const exportMonthSelect    = document.getElementById('exportMonthSelect');
+    const btnExportWord        = document.getElementById('btnExportWord');
 
     const MAX_HOURS_PER_MONTH = 40;
 
-    function loadEmployees() {
-      const data = localStorage.getItem('sanremoEmployees_v2');
-      employees = data ? JSON.parse(data) : [];
-    }
-    function saveEmployees() {
-      localStorage.setItem('sanremoEmployees_v2', JSON.stringify(employees));
-    }
-    function generateId() {
-      return 'emp_' + Math.random().toString(36).substring(2, 9);
-    }
-    function maskPhone(phone) {
-      if (!phone) return '';
-      const last = phone.slice(-4);
-      return '***' + last;
-    }
-
+    // ================== HELPERS DE DATA/HORA ==================
     function getCurrentMonthKey() {
       const now = new Date();
       const y = now.getFullYear();
       const m = String(now.getMonth() + 1).padStart(2, '0');
       return `${y}-${m}`;
     }
-    function getMonthKeyFromDate(d) {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      return `${y}-${m}`;
-    }
-    function formatGermanDate(dateObj) {
-      return dateObj.toLocaleDateString("de-DE", {
-        weekday: "short", day: "2-digit", month: "2-digit", year: "numeric"
+
+    function formatGermanDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T00:00:00");
+      return d.toLocaleDateString("de-DE", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
       });
-    }
-    function formatTimeHHMM(d) {
-      const hh = String(d.getHours()).padStart(2, '0');
-      const mm = String(d.getMinutes()).padStart(2, '0');
-      return `${hh}:${mm}`;
     }
 
-    function getMonthEntries(emp, monthKey) {
-      const entries = emp.entries || [];
-      return entries.filter(entry => {
-        const d = new Date(entry.start);
-        return getMonthKeyFromDate(d) === monthKey;
-      });
+    function getMonthLabel(year, month) {
+      const d = new Date(year, month - 1, 1);
+      return d.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
     }
-    function getMonthTotals(emp, monthKey) {
-      const entries = getMonthEntries(emp, monthKey);
-      let total = 0;
-      entries.forEach(e => total += e.hours);
-      const bank = Math.max(0, total - MAX_HOURS_PER_MONTH);
-      return { total, bank, entries };
+
+    function buildExportMonthOptions() {
+      if (!exportMonthSelect) return;
+      exportMonthSelect.innerHTML = '';
+      const now = new Date();
+      const year = now.getFullYear();
+      for (let m = 1; m <= 12; m++) {
+        const value = `${year}-${String(m).padStart(2,'0')}`;
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = getMonthLabel(year, m);
+        exportMonthSelect.appendChild(opt);
+      }
+      exportMonthSelect.value = getCurrentMonthKey();
     }
-    function getCurrentMonthTotals(emp) {
-      return getMonthTotals(emp, getCurrentMonthKey());
+
+    // ================== HORAS & BANCO ==================
+    function getHoursAndBank(emp) {
+      const monthKey = getCurrentMonthKey();
+      const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
+      const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
+      return { total, bank };
+    }
+
+    function getHoursAndBankForMonth(emp, monthKey) {
+      const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
+      const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
+      return { total, bank };
     }
 
     function updateHoursInfo() {
@@ -695,10 +621,10 @@ AL */
         hoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
         return;
       }
-      const { total, bank } = getCurrentMonthTotals(emp);
+      const { total, bank } = getHoursAndBank(emp);
       let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
       if (total > MAX_HOURS_PER_MONTH) {
-        text += ` – <span class="warning">Limit 40h überschritten!</span>`;
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
       }
       hoursInfoEl.innerHTML = text;
     }
@@ -710,80 +636,72 @@ AL */
         planHoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0';
         return;
       }
-      const { total, bank } = getCurrentMonthTotals(emp);
+      const { total, bank } = getHoursAndBank(emp);
       let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
       if (total > MAX_HOURS_PER_MONTH) {
-        text += ` – <span class="warning">Limit 40h überschritten!</span>`;
+        text += ' – <span class="warning">Limit 40h überschritten!</span>';
       }
       planHoursInfoEl.innerHTML = text;
     }
 
-    function renderTodayLog() {
-      const empId = employeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      const today = new Date();
-      const todayKey = today.toISOString().slice(0,10);
-
-      let html = `<b>${currentTexts.todayEntriesTitle}</b><br>`;
-      if (!emp || !(emp.entries && emp.entries.length)) {
-        logEl.innerHTML = html;
-        return;
-      }
-      emp.entries.forEach(entry => {
-        const start = new Date(entry.start);
-        const end = new Date(entry.end);
-        const key = entry.start.slice(0,10);
-        if (key === todayKey) {
-          const dateStr = formatGermanDate(start);
-          html += `${dateStr}: ${formatTimeHHMM(start)} – ${formatTimeHHMM(end)} (${entry.hours.toFixed(2)} h)<br>`;
-        }
-      });
-      logEl.innerHTML = html;
+    function addLog(text) {
+      const now = new Date().toLocaleString();
+      logEl.innerHTML += `${text} – <i>${now}</i><br>`;
+      logEl.scrollTop = logEl.scrollHeight;
     }
 
+    function maskPhone(phone) {
+      if (!phone) return '';
+      if (phone.length <= 4) return phone;
+      return phone.slice(0, 3) + '****' + phone.slice(-2);
+    }
+
+    // ================== UI DE EMPREGADOS ==================
     function refreshEmployeeUI() {
-      employeeSelect.innerHTML = `<option value="">${currentTexts.selectEmployeeOption}</option>`;
-      planEmployeeSelect.innerHTML = `<option value="">${currentTexts.selectEmployeeOption}</option>`;
-      if (exportEmployeeSelect) {
-        exportEmployeeSelect.innerHTML = `<option value="">${currentTexts.selectEmployeeOption}</option>`;
-      }
+      // Select da Stempeluhr
+      employeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
+      // Select do plano
+      planEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
+
+      // Select do export
+      exportEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
 
       employees.forEach(emp => {
         const opt1 = document.createElement('option');
-        opt1.value = emp.id; opt1.textContent = emp.name;
+        opt1.value = emp.id;
+        opt1.textContent = emp.name;
         employeeSelect.appendChild(opt1);
 
         const opt2 = document.createElement('option');
-        opt2.value = emp.id; opt2.textContent = emp.name;
+        opt2.value = emp.id;
+        opt2.textContent = emp.name;
         planEmployeeSelect.appendChild(opt2);
 
-        if (exportEmployeeSelect) {
-          const opt3 = document.createElement('option');
-          opt3.value = emp.id; opt3.textContent = emp.name;
-          exportEmployeeSelect.appendChild(opt3);
-        }
+        const opt3 = document.createElement('option');
+        opt3.value = emp.id;
+        opt3.textContent = emp.name;
+        exportEmployeeSelect.appendChild(opt3);
       });
 
+      // Lista para o chefe
       employeeListDiv.innerHTML = '';
       employees.forEach(emp => {
         const row = document.createElement('div');
         row.className = 'employee-row';
-        const span = document.createElement('span');
-        span.textContent = emp.name + (emp.phone ? ' (' + maskPhone(emp.phone) + ')' : '');
-        row.appendChild(span);
-
+        row.innerHTML = `
+          <span>${emp.name} ${emp.phone ? '(' + maskPhone(emp.phone) + ')' : ''}</span>
+        `;
         const btnDel = document.createElement('button');
         btnDel.textContent = 'Löschen';
         btnDel.className = 'btn-danger';
         btnDel.onclick = () => {
-          if (confirm(currentTexts.deleteEmpConfirm)) {
+          if (confirm('Mitarbeiter "' + emp.name + '" wirklich löschen?')) {
             employees = employees.filter(e => e.id !== emp.id);
             saveEmployees();
             refreshEmployeeUI();
             updateHoursInfo();
             updatePlanHoursInfo();
             renderMonthlyReport();
-            renderTodayLog();
           }
         };
         row.appendChild(btnDel);
@@ -797,10 +715,241 @@ AL */
       if (disabled) {
         statusEl.textContent = 'Keine Mitarbeiter angelegt. Chef muss zuerst Mitarbeiter hinzufügen.';
       } else {
-        statusEl.textContent = currentTexts.clockReady;
+        statusEl.textContent = 'Bereit zum Stempeln.';
       }
+
+      buildExportMonthOptions();
     }
 
+    employeeSelect.addEventListener('change', () => {
+      updateHoursInfo();
+      const empId = employeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      if (emp && emp.activeSessionStart) {
+        statusEl.textContent = 'Mitarbeiter ist aktuell eingestempelt (seit ' +
+          new Date(emp.activeSessionStart).toLocaleString() + ').';
+      } else {
+        statusEl.textContent = 'Bereit zum Stempeln.';
+      }
+    });
+
+    planEmployeeSelect.addEventListener('change', () => {
+      updatePlanHoursInfo();
+    });
+
+    // ================== ADICIONAR EMPREGADOS ==================
+    btnAddEmp.addEventListener('click', () => {
+      const name = empNameInput.value.trim();
+      const phone = empPhoneInput.value.trim();
+      if (!name) {
+        alert('Bitte einen Namen eingeben.');
+        return;
+      }
+      const emp = {
+        id: generateId(),
+        name,
+        phone: phone || '',
+        monthlyHours: {},
+        timeBank: {},
+        activeSessionStart: null,
+        sessions: []
+      };
+      employees.push(emp);
+      saveEmployees();
+      empNameInput.value = '';
+      empPhoneInput.value = '';
+      refreshEmployeeUI();
+      renderMonthlyReport();
+    });
+
+    // ================== STEMPENUHR ==================
+    btnIn.addEventListener('click', () => {
+      const empId = employeeSelect.value;
+      if (!empId) {
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      if (emp.activeSessionStart) {
+        alert('Dieser Mitarbeiter ist bereits eingestempelt.');
+        return;
+      }
+
+      emp.activeSessionStart = new Date().toISOString();
+      saveEmployees();
+      statusEl.textContent = 'Eingestempelt um ' +
+        new Date(emp.activeSessionStart).toLocaleString() + '.';
+      addLog(emp.name + ' eingestempelt');
+    });
+
+    btnOut.addEventListener('click', () => {
+      const empId = employeeSelect.value;
+      if (!empId) {
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      if (!emp.activeSessionStart) {
+        alert('Dieser Mitarbeiter ist noch nicht eingestempelt.');
+        return;
+      }
+
+      const start = new Date(emp.activeSessionStart);
+      const end = new Date();
+      const diffMs = end - start;
+      const hours = diffMs / 1000 / 60 / 60;
+
+      const monthKey = getCurrentMonthKey();
+      if (!emp.monthlyHours) emp.monthlyHours = {};
+      if (!emp.timeBank) emp.timeBank = {};
+
+      const prevTotal = emp.monthlyHours[monthKey] || 0;
+      const newTotal = prevTotal + hours;
+      emp.monthlyHours[monthKey] = newTotal;
+
+      let bank = 0;
+      if (newTotal > MAX_HOURS_PER_MONTH) {
+        bank = newTotal - MAX_HOURS_PER_MONTH;
+      }
+      emp.timeBank[monthKey] = bank;
+
+      // guardar sessão completa
+      if (!emp.sessions) emp.sessions = [];
+      emp.sessions.push({
+        start: start.toISOString(),
+        end: end.toISOString(),
+        hours: hours
+      });
+
+      emp.activeSessionStart = null;
+      saveEmployees();
+
+      statusEl.textContent = 'Ausgestempelt. Gearbeitete Zeit: ' +
+        hours.toFixed(2) + ' Std. Gesamt in diesem Monat: ' +
+        newTotal.toFixed(2) + ' Std.';
+      addLog(emp.name + ' ausgestempelt (' + hours.toFixed(2) + ' Std.)');
+
+      updateHoursInfo();
+      updatePlanHoursInfo();
+      renderMonthlyReport();
+    });
+
+    // anular último registo
+    btnUndo.addEventListener('click', () => {
+      const empId = employeeSelect.value;
+      if (!empId) {
+        alert('Bitte zuerst einen Mitarbeiter auswählen.');
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (!emp || !emp.sessions || emp.sessions.length === 0) {
+        alert('Keine Einträge zum Löschen vorhanden.');
+        return;
+      }
+
+      if (!confirm('Letzten Eintrag für "' + emp.name + '" wirklich löschen?')) {
+        return;
+      }
+
+      const last = emp.sessions.pop();
+      const dateKey = last.start.substring(0, 7); // YYYY-MM
+      // Recalcular horas para esse mês
+      let sum = 0;
+      emp.sessions.forEach(s => {
+        if (s.start.substring(0, 7) === dateKey) {
+          sum += (s.hours || 0);
+        }
+      });
+      if (!emp.monthlyHours) emp.monthlyHours = {};
+      if (!emp.timeBank) emp.timeBank = {};
+      emp.monthlyHours[dateKey] = sum;
+      emp.timeBank[dateKey] = sum > MAX_HOURS_PER_MONTH ? (sum - MAX_HOURS_PER_MONTH) : 0;
+
+      saveEmployees();
+      updateHoursInfo();
+      updatePlanHoursInfo();
+      renderMonthlyReport();
+      addLog(emp.name + ' – letzter Eintrag gelöscht');
+    });
+
+    // ================== WHATSAPP – CHEF ==================
+    function getHoursAndBankForCurrentMonth(emp) {
+      const monthKey = getCurrentMonthKey();
+      return getHoursAndBankForMonth(emp, monthKey);
+    }
+
+    function buildMessage() {
+      const empId = planEmployeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      const date = dateInput.value;
+      const tFrom = timeFromInput.value;
+      const tTo = timeToInput.value;
+
+      if (!emp || !date || !tFrom || !tTo) {
+        return "";
+      }
+
+      const dateDE = formatGermanDate(date);
+      const { total, bank } = getHoursAndBankForCurrentMonth(emp);
+
+      let hoursLine =
+        `Aktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)`;
+      if (total > MAX_HOURS_PER_MONTH) {
+        hoursLine += " – LIMIT 40h überschritten!";
+      }
+
+      const msg =
+        "Eiscafé Sanremo – Dienstplan\n\n" +
+        "Hallo " + emp.name + ",\n\n" +
+        "dein Dienst:\n" +
+        "📅 Datum: " + dateDE + "\n" +
+        "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
+        "📍 Ort: Eiscafé Sanremo, Bad Berleburg\n\n" +
+        hoursLine + "\n\n" +
+        "Bitte bestätige mit OK.";
+      return msg;
+    }
+
+    btnPreview.addEventListener('click', () => {
+      const msg = buildMessage();
+      if (!msg) {
+        alert("Bitte Mitarbeiter, Tag und Zeiten ausfüllen.");
+        return;
+      }
+      previewText.textContent = msg;
+    });
+
+    btnWhatsapp.addEventListener('click', () => {
+      const empId = planEmployeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      const msg = buildMessage();
+
+      if (!emp) {
+        alert("Bitte Mitarbeiter wählen.");
+        return;
+      }
+      if (!msg) {
+        alert("Bitte Tag und Zeiten eintragen.");
+        return;
+      }
+
+      if (!emp.phone) {
+        alert("Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.");
+        return;
+      }
+
+      const phone = emp.phone;
+      const encodedMsg = encodeURIComponent(msg);
+      const url = "https://wa.me/" + phone + "?text=" + encodedMsg;
+
+      window.open(url, "_blank");
+    });
+
+    // ================== MONATSBERICHT (CHEF) ==================
     function renderMonthlyReport() {
       const container = document.getElementById('monthlyReportContainer');
       if (!container) return;
@@ -811,6 +960,7 @@ AL */
       }
 
       const monthKey = getCurrentMonthKey();
+
       let html = '<table style="width:100%; border-collapse: collapse; font-size:14px;">';
       html += '<thead><tr>' +
               '<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Mitarbeiter</th>' +
@@ -822,7 +972,7 @@ AL */
       let totalBankAll = 0;
 
       employees.forEach(emp => {
-        const { total, bank } = getMonthTotals(emp, monthKey);
+        const { total, bank } = getHoursAndBankForMonth(emp, monthKey);
         totalHoursAll += total;
         totalBankAll += bank;
 
@@ -840,6 +990,7 @@ AL */
         '</tr>';
 
       html += '</tbody></table>';
+
       container.innerHTML = html;
     }
 
@@ -848,11 +999,11 @@ AL */
       if (!container) return;
 
       const win = window.open('', '_blank');
-      win.document.write('<html><head><title>Monatsbericht</title>');
+      win.document.write('<html><head><title>Monatsbericht – Mitarbeiterportal</title>');
       win.document.write('<meta charset="UTF-8">');
       win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} table{width:100%;border-collapse:collapse;font-size:14px;} th,td{border:1px solid #ccc;padding:4px;} th{text-align:left;background:#f0f0f0;}</style>');
       win.document.write('</head><body>');
-      win.document.write('<h2>Monatsbericht</h2>');
+      win.document.write('<h2>Monatsbericht – Mitarbeiterportal</h2>');
       win.document.write('<p>Monat: ' + getCurrentMonthKey() + '</p>');
       win.document.write(container.innerHTML);
       win.document.write('</body></html>');
@@ -861,405 +1012,165 @@ AL */
       win.print();
     }
 
-    function buildMessage() {
-      const empId = planEmployeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      const dateVal = dateInput.value;
-      const tFrom = timeFromInput.value;
-      const tTo = timeToInput.value;
-
-      if (!emp || !dateVal || !tFrom || !tTo) return "";
-
-      const dateObj = new Date(dateVal + "T00:00:00");
-      const { total, bank } = getCurrentMonthTotals(emp);
-      let hoursLine = `Aktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)`;
-      if (total > MAX_HOURS_PER_MONTH) {
-        hoursLine += " – LIMIT 40h überschritten!";
-      }
-
-      const dateDE = formatGermanDate(dateObj);
-
-      const msg =
-        "Dienstplan\n\n" +
-        "Hallo " + emp.name + ",\n\n" +
-        "dein Dienst:\n" +
-        "📅 Datum: " + dateDE + "\n" +
-        "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
-        "📍 Ort: Betrieb\n\n" +
-        hoursLine + "\n\n" +
-        "Bitte bestätige mit OK.";
-      return msg;
-    }
-
-    function fillExportMonthSelect() {
-      const sel = exportMonthSelect;
-      if (!sel) return;
-
-      sel.innerHTML = '';
-
-      const now = new Date();
-      const currentYear = now.getFullYear();
-      const currentMonth = now.getMonth() + 1;
-
-      for (let m = 1; m <= 12; m++) {
-        const date = new Date(currentYear, m - 1, 1);
-        const label = date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
-        const opt = document.createElement('option');
-        opt.value = `${currentYear}-${String(m).padStart(2, '0')}`;
-        opt.textContent = label;
-        if (m === currentMonth) opt.selected = true;
-        sel.appendChild(opt);
-      }
-    }
-
-    function exportMonthlyWord() {
-      if (!exportEmployeeSelect || !exportMonthSelect) return;
-
-      const empId = exportEmployeeSelect.value;
-      const monthValue = exportMonthSelect.value;
-
-      if (!empId) {
-        alert(currentTexts.msgMissingEmp);
-        return;
-      }
-      if (!monthValue) {
-        alert('Bitte Monat auswählen.');
-        return;
-      }
-
-      const emp = employees.find(e => e.id === empId);
-      if (!emp) {
-        alert('Mitarbeiter nicht gefunden.');
-        return;
-      }
-
-      const [yearStr, monthStr] = monthValue.split('-');
-      const year = parseInt(yearStr, 10);
-      const month = parseInt(monthStr, 10);
+    // ================= MONATS-EXPORT: HISTÓRICO + DRUCKER =================
+    function buildMonthlyRowsForEmployee(emp, year, month) {
+      const rows = [];
       const daysInMonth = new Date(year, month, 0).getDate();
+      let totalHours = 0;
 
-      const docxLib = window.docx;
-      const { Document, Packer, Paragraph, Table, TableRow, TableCell, TextRun, WidthType, HeadingLevel } = docxLib;
-
-      const headerRow = new TableRow({
-        children: [
-          new TableCell({ children: [new Paragraph('Tag')] }),
-          new TableCell({ children: [new Paragraph('Arbeitsbeginn')] }),
-          new TableCell({ children: [new Paragraph('Arbeitsende')] }),
-          new TableCell({ children: [new Paragraph('Pausenbeginn')] }),
-          new TableCell({ children: [new Paragraph('Pausenende')] }),
-          new TableCell({ children: [new Paragraph('Arbeitszeit (Std)')] }),
-          new TableCell({ children: [new Paragraph('Entlohnungsart')] })
-        ]
-      });
-
-      const rows = [headerRow];
+      const sessions = emp.sessions || [];
 
       for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month - 1, day);
-        const dateStr = date.toLocaleDateString('de-DE', {
-          day: '2-digit', month: '2-digit', year: 'numeric'
+        const dayStr = String(day).padStart(2, '0');
+        const dateIsoPrefix = `${year}-${String(month).padStart(2,'0')}-${dayStr}`;
+
+        const daySessions = sessions.filter(s => {
+          const sDate = s.start ? s.start.substring(0,10) : '';
+          return sDate === dateIsoPrefix;
         });
 
-        rows.push(new TableRow({
-          children: [
-            new TableCell({ children: [new Paragraph(dateStr)] }),
-            new TableCell({ children: [new Paragraph('')] }),
-            new TableCell({ children: [new Paragraph('')] }),
-            new TableCell({ children: [new Paragraph('')] }),
-            new TableCell({ children: [new Paragraph('')] }),
-            new TableCell({ children: [new Paragraph('')] }),
-            new TableCell({ children: [new Paragraph('')] })
-          ]
-        }));
+        if (daySessions.length === 0) {
+          rows.push({
+            date: `${dayStr}.${String(month).padStart(2,'0')}.${year}`,
+            start: '',
+            end: '',
+            breakFrom: '',
+            breakTo: '',
+            hours: '',
+            payType: ''
+          });
+        } else {
+          daySessions.forEach((s, idx) => {
+            const start = new Date(s.start);
+            const end   = new Date(s.end);
+            const h     = (s.hours != null ? s.hours :
+                          (end - start) / 1000 / 60 / 60);
+            totalHours += h;
+
+            rows.push({
+              date: idx === 0 ? `${dayStr}.${String(month).padStart(2,'0')}.${year}` : '',
+              start: start.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' }),
+              end:   end.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' }),
+              breakFrom: '',
+              breakTo: '',
+              hours: h.toFixed(2).replace('.', ','),
+              payType: ''
+            });
+          });
+        }
       }
 
-      rows.push(
-        new TableRow({
-          children: [
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [new TextRun({ text: 'Summe Arbeitsstunden:', bold: true })]
-                })
-              ],
-              columnSpan: 5
-            }),
-            new TableCell({
-              children: [
-                new Paragraph({
-                  children: [new TextRun({ text: '0,00', bold: true })]
-                })
-              ]
-            }),
-            new TableCell({ children: [new Paragraph('')] })
-          ]
-        })
-      );
+      return { rows, totalHours };
+    }
 
-      const table = new Table({
-        rows,
-        width: { size: 100, type: WidthType.PERCENTAGE }
+    function openMonthlyPrintWindow(emp, year, month) {
+      const { rows, totalHours } = buildMonthlyRowsForEmployee(emp, year, month);
+      const monthLabel = getMonthLabel(year, month);
+
+      const win = window.open('', '_blank');
+      win.document.write('<html><head><meta charset="UTF-8">');
+      win.document.write('<title>Stundennachweis – ' + emp.name + ' – ' + monthLabel + '</title>');
+      win.document.write('<style>');
+      win.document.write('body{font-family:Arial,sans-serif;padding:16px;}');
+      win.document.write('h2,h3{margin:4px 0;}');
+      win.document.write('table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}');
+      win.document.write('th,td{border:1px solid #ccc;padding:4px;text-align:left;}');
+      win.document.write('th{text-align:center;background:#f0f0f0;}');
+      win.document.write('tfoot td{font-weight:bold;}');
+      win.document.write('</style></head><body>');
+
+      win.document.write('<h2>Stundennachweis</h2>');
+      win.document.write('<h3>Mitarbeiter: ' + emp.name + '</h3>');
+      win.document.write('<p>Monat: ' + monthLabel + '</p>');
+
+      win.document.write('<table>');
+      win.document.write('<thead><tr>');
+      win.document.write('<th>Tag</th>');
+      win.document.write('<th>Arbeitsbeginn</th>');
+      win.document.write('<th>Arbeitsende</th>');
+      win.document.write('<th>Pausenzeiten<br>von</th>');
+      win.document.write('<th>Pausenzeiten<br>bis</th>');
+      win.document.write('<th>Arbeitszeit (Std.)</th>');
+      win.document.write('<th>Entlohnungsart</th>');
+      win.document.write('</tr></thead><tbody>');
+
+      rows.forEach(r => {
+        win.document.write('<tr>');
+        win.document.write('<td>' + r.date      + '</td>');
+        win.document.write('<td>' + r.start     + '</td>');
+        win.document.write('<td>' + r.end       + '</td>');
+        win.document.write('<td>' + r.breakFrom + '</td>');
+        win.document.write('<td>' + r.breakTo   + '</td>');
+        win.document.write('<td style="text-align:right;">' + r.hours + '</td>');
+        win.document.write('<td>' + r.payType   + '</td>');
+        win.document.write('</tr>');
       });
 
-      const monthLabel = new Date(year, month - 1, 1).toLocaleDateString('de-DE', {
-        month: 'long', year: 'numeric'
-      });
+      win.document.write('</tbody><tfoot><tr>');
+      win.document.write('<td colspan="5" style="text-align:right;">Summe Arbeitsstunden:</td>');
+      win.document.write('<td style="text-align:right;">' + totalHours.toFixed(2).replace('.', ',') + '</td>');
+      win.document.write('<td></td>');
+      win.document.write('</tr></tfoot></table>');
 
-      const doc = new Document({
-        sections: [
-          {
-            properties: {},
-            children: [
-              new Paragraph({ text: 'Arbeitszeitnachweis', heading: HeadingLevel.HEADING_1 }),
-              new Paragraph(''),
-              new Paragraph(`Mitarbeiter: ${emp.name}`),
-              new Paragraph(`Monat: ${monthLabel}`),
-              new Paragraph(''),
-              table
-            ]
-          }
-        ]
-      });
+      win.document.write('</body></html>');
+      win.document.close();
+      win.focus();
+      // aqui o chefe escolhe "Drucken" ou "Als PDF speichern"
+    }
 
-      Packer.toBlob(doc).then(blob => {
-        const fileName = `stunden_${emp.name}_${year}-${String(month).padStart(2, '0')}.docx`;
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    if (btnExportWord) {
+      btnExportWord.addEventListener('click', () => {
+        const empId = exportEmployeeSelect.value;
+        const monthValue = exportMonthSelect.value;
 
-        if (exportInfoEl) exportInfoEl.textContent = `Export erstellt: ${fileName}`;
-      }).catch(err => {
-        console.error(err);
-        alert('Fehler beim Erstellen des Word-Dokuments.');
+        if (!empId) {
+          alert('Bitte einen Mitarbeiter auswählen.');
+          return;
+        }
+        if (!monthValue) {
+          alert('Bitte einen Monat auswählen.');
+          return;
+        }
+
+        const emp = employees.find(e => e.id === empId);
+        if (!emp) {
+          alert('Mitarbeiter nicht gefunden.');
+          return;
+        }
+
+        const [yearStr, monthStr] = monthValue.split('-');
+        const year  = parseInt(yearStr, 10);
+        const month = parseInt(monthStr, 10);
+
+        openMonthlyPrintWindow(emp, year, month);
       });
     }
 
-    /* EVENTOS */
-
-    btnChefLogin.addEventListener('click', () => {
-      const pin = chefPinInput.value.trim();
-      if (pin === CHEF_PIN) {
-        chefArea.style.display = 'block';
-        chefLoginStatus.style.color = 'green';
-        chefLoginStatus.textContent = currentTexts.chefLoginOk;
-        chefPinInput.value = '';
-        btnChefLogout.disabled = false;
-      } else {
-        chefLoginStatus.style.color = 'red';
-        chefLoginStatus.textContent = currentTexts.chefLoginFail;
+    // ================== FOOTER LINKS ==================
+    document.getElementById('linkDatenschutz').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (!isChefLoggedIn) {
+        alert('Datenschutzhinweise sind nur nach Chef-Login sichtbar.');
+        return;
       }
+      if (datenschutzBox.style.display === 'none') {
+        datenschutzBox.style.display = 'block';
+      }
+      datenschutzBox.scrollIntoView({ behavior: 'smooth' });
     });
 
-    btnChefLogout.addEventListener('click', () => {
-      chefArea.style.display = 'none';
-      chefLoginStatus.style.color = '#333';
-      chefLoginStatus.textContent = currentTexts.chefLogoutMsg;
-      btnChefLogout.disabled = true;
+    document.getElementById('linkImpressum').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Impressum: Hier kannst du deine Firmenadresse und Kontaktdaten ergänzen.');
     });
 
-    btnAddEmp.addEventListener('click', () => {
-      const name = empNameInput.value.trim();
-      const phone = empPhoneInput.value.trim();
-      if (!name) {
-        alert('Bitte einen Namen eingeben.');
-        return;
-      }
-      const emp = {
-        id: generateId(),
-        name,
-        phone: phone || '',
-        activeSessionStart: null,
-        entries: []
-      };
-      employees.push(emp);
-      saveEmployees();
-      empNameInput.value = '';
-      empPhoneInput.value = '';
-      refreshEmployeeUI();
-      renderMonthlyReport();
-    });
-
-    employeeSelect.addEventListener('change', () => {
-      updateHoursInfo();
-      const empId = employeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      if (emp && emp.activeSessionStart) {
-        statusEl.textContent = 'Mitarbeiter ist aktuell eingestempelt (seit ' +
-          new Date(emp.activeSessionStart).toLocaleString() + ').';
-      } else {
-        statusEl.textContent = currentTexts.clockReady;
-      }
-      renderTodayLog();
-    });
-
-    planEmployeeSelect.addEventListener('change', () => {
-      updatePlanHoursInfo();
-    });
-
-    btnIn.addEventListener('click', () => {
-      const empId = employeeSelect.value;
-      if (!empId) {
-        alert(currentTexts.clockSelectEmp);
-        return;
-      }
-      const emp = employees.find(e => e.id === empId);
-      if (!emp) return;
-
-      if (emp.activeSessionStart) {
-        alert(currentTexts.clockAlreadyIn);
-        return;
-      }
-
-      emp.activeSessionStart = new Date().toISOString();
-      saveEmployees();
-      statusEl.textContent = 'Eingestempelt um ' +
-        new Date(emp.activeSessionStart).toLocaleString() + '.';
-      renderTodayLog();
-    });
-
-    btnOut.addEventListener('click', () => {
-      const empId = employeeSelect.value;
-      if (!empId) {
-        alert(currentTexts.clockSelectEmp);
-        return;
-      }
-      const emp = employees.find(e => e.id === empId);
-      if (!emp) return;
-
-      if (!emp.activeSessionStart) {
-        alert(currentTexts.clockNotIn);
-        return;
-      }
-
-      const start = new Date(emp.activeSessionStart);
-      const end = new Date();
-      const diffMs = end - start;
-      const hours = diffMs / 1000 / 60 / 60;
-
-      if (!emp.entries) emp.entries = [];
-      emp.entries.push({
-        start: start.toISOString(),
-        end: end.toISOString(),
-        hours
-      });
-
-      emp.activeSessionStart = null;
-      saveEmployees();
-
-      const monthTotals = getCurrentMonthTotals(emp);
-
-      statusEl.textContent =
-        `Ausgestempelt. Gearbeitete Zeit: ${hours.toFixed(2)} Std. ` +
-        `Gesamt in diesem Monat: ${monthTotals.total.toFixed(2)} Std.`;
-
-      updateHoursInfo();
-      updatePlanHoursInfo();
-      renderTodayLog();
-      renderMonthlyReport();
-    });
-
-    btnUndo.addEventListener('click', () => {
-      const empId = employeeSelect.value;
-      if (!empId) {
-        alert(currentTexts.clockSelectEmp);
-        return;
-      }
-      const emp = employees.find(e => e.id === empId);
-      if (!emp) return;
-
-      if (emp.activeSessionStart) {
-        alert('Mitarbeiter ist aktuell eingestempelt. Zuerst ausstempeln.');
-        return;
-      }
-
-      if (!emp.entries || emp.entries.length === 0) {
-        alert(currentTexts.clockUndoNoEntries);
-        return;
-      }
-
-      const last = emp.entries[emp.entries.length - 1];
-      const start = new Date(last.start);
-      const end = new Date(last.end);
-
-      if (!confirm(
-        `Letzten Eintrag löschen?\n` +
-        `${formatGermanDate(start)} ${formatTimeHHMM(start)} – ${formatTimeHHMM(end)}\n` +
-        `(${last.hours.toFixed(2)} Std.)`
-      )) {
-        return;
-      }
-
-      emp.entries.pop();
-      saveEmployees();
-      updateHoursInfo();
-      updatePlanHoursInfo();
-      renderTodayLog();
-      renderMonthlyReport();
-    });
-
-    btnPreview.addEventListener('click', () => {
-      const msg = buildMessage();
-      if (!msg) {
-        alert(currentTexts.msgMissingFields);
-        return;
-      }
-      previewText.textContent = msg;
-    });
-
-    btnWhatsapp.addEventListener('click', () => {
-      const empId = planEmployeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      const msg = buildMessage();
-
-      if (!emp) {
-        alert(currentTexts.msgMissingEmp);
-        return;
-      }
-      if (!msg) {
-        alert(currentTexts.msgMissingFields);
-        return;
-      }
-      if (!emp.phone) {
-        alert(currentTexts.msgNoPhone);
-        return;
-      }
-
-      const phone = emp.phone;
-      const encodedMsg = encodeURIComponent(msg);
-      const url = "https://wa.me/" + phone + "?text=" + encodedMsg;
-      window.open(url, "_blank");
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const lang = btn.getAttribute('data-lang');
-          currentLang = lang;
-          document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          applyTranslations();
-          updateHoursInfo();
-          updatePlanHoursInfo();
-          renderTodayLog();
-        });
-      });
-
-      applyTranslations();
-      loadEmployees();
-      refreshEmployeeUI();
-      updateHoursInfo();
-      updatePlanHoursInfo();
-      renderMonthlyReport();
-      renderTodayLog();
-      fillExportMonthSelect();
-    });
+    // ================== INICIALIZAÇÃO ==================
+    loadEmployees();
+    refreshEmployeeUI();
+    updateHoursInfo();
+    updatePlanHoursInfo();
+    renderMonthlyReport();
+    buildExportMonthOptions();
   </script>
 </body>
 </html>
