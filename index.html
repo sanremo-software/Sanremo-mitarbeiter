@@ -397,7 +397,7 @@
         </button>
 
         <small data-i18n="exportInfo">
-          Es wird eine CSV-Datei mit Name, Datum, Start, Ende und Stunden pro Tag erstellt – plus Monatssumme.
+          Es wird eine CSV-Datei mit Name, Datum, Start, Ende, Stunden und Überstundenkonto erstellt – plus Monatssumme.
         </small>
       </div>
 
@@ -504,7 +504,6 @@
       } else {
         employees = [];
       }
-      // garantir que todos têm "entries"
       employees.forEach(e => {
         if (!e.entries) e.entries = [];
         if (!e.monthlyHours) e.monthlyHours = {};
@@ -579,6 +578,23 @@
       const hh = String(dateObj.getHours()).padStart(2, '0');
       const mm = String(dateObj.getMinutes()).padStart(2, '0');
       return `${hh}:${mm}`;
+    }
+
+    // Totais por mês só a partir dos "entries"
+    function getMonthTotalsFromEntries(emp, monthKey) {
+      let total = 0;
+      if (!emp.entries) return { total: 0, bank: 0 };
+      emp.entries.forEach(entry => {
+        const d = new Date(entry.start);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const key = `${y}-${m}`;
+        if (key === monthKey) {
+          total += entry.hours;
+        }
+      });
+      const bank = total > MAX_HOURS_PER_MONTH ? (total - MAX_HOURS_PER_MONTH) : 0;
+      return { total, bank };
     }
 
     // ============ HORAS & BANCO ============
@@ -677,9 +693,8 @@
       employees.forEach(emp => {
         const row = document.createElement('div');
         row.className = 'employee-row';
-        row.innerHTML = `
-          <span>${emp.name} ${emp.phone ? '(' + emp.phone + ')' : ''}</span>
-        `;
+        const phoneIcon = emp.phone ? ' 📱' : '';
+        row.innerHTML = `<span>${emp.name}${phoneIcon}</span>`;
         const btnDel = document.createElement('button');
         btnDel.textContent = currentTexts.btnDelete;
         btnDel.className = 'btn-danger';
@@ -828,14 +843,12 @@
       const emp = employees.find(e => e.id === empId);
       if (!emp) return;
 
-      // Se está com entrada ativa (carregou "Einstempeln" errado)
       if (emp.activeSessionStart) {
         emp.activeSessionStart = null;
         saveEmployees();
         statusEl.textContent = currentTexts.cancelActive;
         addLog(emp.name + ' ' + currentTexts.logCancelActive);
       } else if (emp.entries && emp.entries.length > 0) {
-        // Anular último registo completo
         emp.entries.pop();
         recalcEmployeeHours(emp);
         saveEmployees();
@@ -990,7 +1003,7 @@
       const emp = employees.find(e => e.id === empId);
       if (!emp) return;
 
-      const monthVal = exportMonth.value; // "YYYY-MM" ou ""
+      const monthVal = exportMonth.value;
       const monthKey = monthVal || getCurrentMonthKey();
 
       const entries = (emp.entries || []).filter(entry => {
@@ -1006,7 +1019,11 @@
         return;
       }
 
-      let header = currentTexts.exportCsvHeader; // ex: "Name;Datum;Start;Ende;Stunden"
+      const totals = getMonthTotalsFromEntries(emp, monthKey);
+      const monthTotal = totals.total;
+      const monthBank = totals.bank;
+
+      let header = currentTexts.exportCsvHeader; // Name;Datum;Start;Ende;Stunden;Überstundenkonto
       let csv = header + '\n';
 
       let totalHours = 0;
@@ -1017,11 +1034,11 @@
         const startStr = formatTimeHHMM(start);
         const endStr = formatTimeHHMM(end);
         totalHours += entry.hours;
-        csv += `${emp.name};${dateStr};${startStr};${endStr};${entry.hours.toFixed(2)}\n`;
+        csv += `${emp.name};${dateStr};${startStr};${endStr};${entry.hours.toFixed(2)};${monthBank.toFixed(2)}\n`;
       });
 
-      csv += `;;;;
-${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
+      csv += `;;;;${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
+      csv += `;;;;${currentTexts.exportBankLabel};${monthBank.toFixed(2)}\n`;
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -1076,11 +1093,12 @@ ${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
         exportEmpLabel: 'Mitarbeiter für Export auswählen:',
         exportMonthLabel: 'Monat wählen:',
         btnExportCsv: 'Export als CSV (Excel)',
-        exportInfo: 'Es wird eine CSV-Datei mit Name, Datum, Start, Ende und Stunden pro Tag erstellt – plus Monatssumme.',
+        exportInfo: 'Es wird eine CSV-Datei mit Name, Datum, Start, Ende, Stunden und Überstundenkonto erstellt – plus Monatssumme.',
         exportNoEmp: 'Bitte Mitarbeiter für den Export auswählen.',
         exportNoEntries: 'Keine Einträge für diesen Monat gefunden.',
-        exportCsvHeader: 'Name;Datum;Start;Ende;Stunden',
+        exportCsvHeader: 'Name;Datum;Start;Ende;Stunden;Überstundenkonto',
         exportTotalLabel: 'Gesamtstunden',
+        exportBankLabel: 'Überstundenkonto (Monat)',
 
         legalTitle: 'Datenschutz & Nutzungshinweise',
         legalIntro: 'Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern gespeichert.',
@@ -1171,11 +1189,12 @@ ${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
         exportEmpLabel: 'Escolher funcionário para exportar:',
         exportMonthLabel: 'Escolher mês:',
         btnExportCsv: 'Exportar como CSV (Excel)',
-        exportInfo: 'É criado um ficheiro CSV com nome, data, hora de entrada, saída e horas por dia – mais o total do mês.',
+        exportInfo: 'É criado um ficheiro CSV com nome, data, hora de entrada, saída, horas por dia e banco de horas do mês – e no fim o total.',
         exportNoEmp: 'Escolhe um funcionário para exportar.',
         exportNoEntries: 'Não há registos para esse mês.',
-        exportCsvHeader: 'Nome;Data;Entrada;Saída;Horas',
+        exportCsvHeader: 'Nome;Data;Entrada;Saída;Horas;Banco de horas',
         exportTotalLabel: 'Total de horas',
+        exportBankLabel: 'Banco de horas (mês)',
 
         legalTitle: 'Proteção de dados & utilização',
         legalIntro: 'Este sistema guarda dados apenas localmente no navegador/tablet do estabelecimento. Nenhum dado é guardado em servidores externos.',
@@ -1266,11 +1285,12 @@ ${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
         exportEmpLabel: 'Seleziona dipendente per export:',
         exportMonthLabel: 'Seleziona mese:',
         btnExportCsv: 'Esporta come CSV (Excel)',
-        exportInfo: 'Viene creato un file CSV con nome, data, ora di entrata, uscita e ore per giorno – più il totale del mese.',
+        exportInfo: 'Viene creato un file CSV con nome, data, orario di entrata, uscita, ore al giorno e banca ore del mese – più il totale.',
         exportNoEmp: 'Seleziona un dipendente per l’export.',
         exportNoEntries: 'Nessuna registrazione per questo mese.',
-        exportCsvHeader: 'Nome;Data;Entrata;Uscita;Ore',
+        exportCsvHeader: 'Nome;Data;Entrata;Uscita;Ore;Banca ore',
         exportTotalLabel: 'Ore totali',
+        exportBankLabel: 'Banca ore (mese)',
 
         legalTitle: 'Protezione dati & utilizzo',
         legalIntro: 'Questo sistema salva i dati solo localmente nel browser/tablet dell’esercizio. Nessun dato viene salvato su server esterni.',
@@ -1357,7 +1377,7 @@ ${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
       });
     });
 
-    // LOGIN / LOGOUT handlers (precisam de currentTexts já definido)
+    // LOGIN / LOGOUT handlers
     btnChefLogin.addEventListener('click', () => {
       const pin = chefPinInput.value.trim();
       if (pin === CHEF_PIN) {
