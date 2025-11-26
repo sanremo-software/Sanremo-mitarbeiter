@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -271,7 +272,7 @@
     <button id="btnChefLogin" class="btn-primary" style="width:100%; margin-top:8px;">
       Login
     </button>
-    <!-- NOVO: LOGOUT -->
+    <!-- LOGOUT -->
     <button id="btnChefLogout" class="btn-secondary" style="width:100%; margin-top:8px; display:none;">
       Logout
     </button>
@@ -389,6 +390,14 @@
           <small style="font-size:12px; color:#555;">
             CSV-Datei mit Datum, Startzeit, Endzeit, Stunden pro Tag und Monatssumme – ideal für den Steuerberater.
           </small>
+
+          <!-- DRUCKER DETALHADO POR EMPREGADO -->
+          <button id="btnPrintEmployeeDetail" class="btn-primary" style="width:100%; margin-top:8px;">
+            Detaillierter Bericht (Drucker) für Mitarbeiter
+          </button>
+          <small style="font-size:12px; color:#555;">
+            Druckfertiger Bericht mit Datum, Einstempelzeit, Ausstempelzeit und Stunden – nur für den ausgewählten Mitarbeiter.
+          </small>
         </div>
       </div>
     </div>
@@ -416,7 +425,7 @@
           Ausstempeln
         </button>
 
-        <!-- NOVO: ANULAR STEMPEL -->
+        <!-- ANULAR STEMPEL -->
         <button id="btnCancelStempel" class="btn-danger" style="width:100%; margin-top:8px;">
           Stempel annullieren (letzter Eintrag)
         </button>
@@ -671,6 +680,7 @@
     const reportEmployeeSelect = document.getElementById('reportEmployeeSelect');
     const btnExportExcel = document.getElementById('btnExportExcel');
     const btnExportMonthAll = document.getElementById('btnExportMonthAll');
+    const btnPrintEmployeeDetail = document.getElementById('btnPrintEmployeeDetail');
     const exportMonthInput = document.getElementById('exportMonth');
 
     // LÍNGUA
@@ -787,7 +797,7 @@
 
     function getSelectedMonthKey() {
       if (exportMonthInput && exportMonthInput.value) {
-        return exportMonthInput.value; // já vem AAAA-MM
+        return exportMonthInput.value; // AAAA-MM
       }
       return getCurrentMonthKey();
     }
@@ -803,7 +813,7 @@
       });
     }
 
-    // HORAS & BANCO
+    // HORAS & BANCO (SIEMPRE MÊS ATUAL PARA STEMPENUHR)
     function getHoursAndBank(emp) {
       const monthKey = getCurrentMonthKey();
       const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
@@ -1032,7 +1042,7 @@
       renderMonthlyReport();
     });
 
-    // ANULAR STEMPEL (1 e 2)
+    // ANULAR STEMPEL
     if (btnCancelStempel) {
       btnCancelStempel.addEventListener('click', () => {
         const empId = employeeSelect.value;
@@ -1046,7 +1056,7 @@
         const monthKey = getCurrentMonthKey();
         const t = translations[currentLang];
 
-        // 1) se está atualmente eingestempelt → cancelar IN
+        // 1) está eingestempelt → cancelar IN
         if (emp.activeSessionStart) {
           emp.activeSessionStart = null;
           saveEmployees();
@@ -1055,7 +1065,7 @@
           return;
         }
 
-        // 2) se não está eingestempelt → apagar último registo completo
+        // 2) não está eingestempelt → apagar último registo completo
         if (!emp.workLog || !emp.workLog[monthKey] || emp.workLog[monthKey].length === 0) {
           alert('Kein Eintrag zum Annullieren für diesen Monat.');
           return;
@@ -1165,7 +1175,7 @@
       window.open(url, "_blank");
     });
 
-    // MONATSBERICHT
+    // MONATSBERICHT (RESUMO)
     function renderMonthlyReport() {
       const t = translations[currentLang];
       if (!monthlyReportContainer) return;
@@ -1228,7 +1238,7 @@
 
     window.printMonthlyReport = printMonthlyReport;
 
-    // EXPORT CSV INDIVIDUAL (MÊS ESCOLHIDO)
+    // EXPORT CSV INDIVIDUAL (MÊS ESCOLHIDO) – FORMATO EXCEL EM TABELA
     function exportEmployeeMonthToCSV() {
       if (!reportEmployeeSelect) return;
       const empId = reportEmployeeSelect.value;
@@ -1251,7 +1261,8 @@
         return;
       }
 
-      let csv = 'Name;Monat;Datum;Startzeit;Endzeit;Stunden\n';
+      // Cabeçalho em colunas
+      let csv = 'Mitarbeiter;Datum;Einstempelzeit;Ausstempelzeit;Stunden\n';
 
       let totalHours = 0;
       logs.forEach(entry => {
@@ -1264,10 +1275,10 @@
         const hours = entry.hours || 0;
         totalHours += hours;
 
-        csv += `${emp.name};${monthKey};${date};${startStr};${endStr};${hours.toFixed(2)}\n`;
+        csv += `${emp.name};${date};${startStr};${endStr};${hours.toFixed(2)}\n`;
       });
 
-      csv += `;;;;Gesamt;${totalHours.toFixed(2)}\n`;
+      csv += `Gesamt;;;;${totalHours.toFixed(2)}\n`;
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -1279,6 +1290,81 @@
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+    }
+
+    // DRUCKER DETALHADO POR EMPREGADO
+    function printEmployeeDetailReport() {
+      if (!reportEmployeeSelect) return;
+      const empId = reportEmployeeSelect.value;
+      if (!empId) {
+        alert('Bitte zuerst einen Mitarbeiter für den Bericht wählen.');
+        return;
+      }
+
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) {
+        alert('Mitarbeiter nicht gefunden.');
+        return;
+      }
+
+      const monthKey = getSelectedMonthKey();
+      const logs = (emp.workLog && emp.workLog[monthKey]) ? emp.workLog[monthKey] : [];
+
+      if (!logs.length) {
+        alert('Für diesen Monat gibt es keine Einträge für diesen Mitarbeiter.');
+        return;
+      }
+
+      let tableHtml = '<table style="width:100%; border-collapse:collapse; font-size:14px;">';
+      tableHtml += '<thead><tr>' +
+        '<th style="border:1px solid #ccc; padding:4px; text-align:left;">Mitarbeiter</th>' +
+        '<th style="border:1px solid #ccc; padding:4px; text-align:left;">Datum</th>' +
+        '<th style="border:1px solid #ccc; padding:4px; text-align:left;">Einstempelzeit</th>' +
+        '<th style="border:1px solid #ccc; padding:4px; text-align:left;">Ausstempelzeit</th>' +
+        '<th style="border:1px solid #ccc; padding:4px; text-align:right;">Stunden</th>' +
+        '</tr></thead><tbody>';
+
+      let totalHours = 0;
+
+      logs.forEach(entry => {
+        const date = entry.date;
+        const startTime = new Date(entry.start);
+        const endTime = new Date(entry.end);
+        const hours = entry.hours || 0;
+        totalHours += hours;
+
+        const startStr = startTime.toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
+        const endStr = endTime.toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
+
+        tableHtml += '<tr>' +
+          '<td style="border:1px solid #ccc; padding:4px;">' + emp.name + '</td>' +
+          '<td style="border:1px solid #ccc; padding:4px;">' + date + '</td>' +
+          '<td style="border:1px solid #ccc; padding:4px;">' + startStr + '</td>' +
+          '<td style="border:1px solid #ccc; padding:4px;">' + endStr + '</td>' +
+          '<td style="border:1px solid #ccc; padding:4px; text-align:right;">' + hours.toFixed(2) + '</td>' +
+          '</tr>';
+      });
+
+      tableHtml += '<tr>' +
+        '<td colspan="4" style="border:1px solid #ccc; padding:4px; text-align:right; font-weight:bold;">Gesamt</td>' +
+        '<td style="border:1px solid #ccc; padding:4px; text-align:right; font-weight:bold;">' + totalHours.toFixed(2) + '</td>' +
+        '</tr>';
+
+      tableHtml += '</tbody></table>';
+
+      const win = window.open('', '_blank');
+      win.document.write('<html><head><title>Stundenbericht – ' + emp.name + ' – ' + monthKey + '</title>');
+      win.document.write('<meta charset="UTF-8">');
+      win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} h2,h3{margin:0 0 8px 0;}</style>');
+      win.document.write('</head><body>');
+      win.document.write('<h2>Stundenbericht</h2>');
+      win.document.write('<h3>Mitarbeiter: ' + emp.name + '</h3>');
+      win.document.write('<p>Monat: ' + monthKey + '</p>');
+      win.document.write(tableHtml);
+      win.document.write('</body></html>');
+      win.document.close();
+      win.focus();
+      win.print();
     }
 
     // EXPORT CSV MÊS COMPLETO (TODOS)
@@ -1331,6 +1417,9 @@
     }
     if (btnExportMonthAll) {
       btnExportMonthAll.addEventListener('click', exportMonthAllToCSV);
+    }
+    if (btnPrintEmployeeDetail && reportEmployeeSelect) {
+      btnPrintEmployeeDetail.addEventListener('click', printEmployeeDetailReport);
     }
   </script>
 
