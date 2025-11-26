@@ -8,9 +8,7 @@
   <meta name="theme-color" content="#f0f2f5">
 
   <style>
-    html, body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
     body {
       font-family: Arial, sans-serif;
       padding: 16px;
@@ -21,47 +19,27 @@
     }
 
     h2, h3 { margin-top: 0; }
-
     label {
       display: block;
       margin-top: 8px;
       font-weight: bold;
     }
-
     input, select, button {
       padding: 10px;
       margin-top: 4px;
       font-size: 16px;
       box-sizing: border-box;
     }
-
-    select, input {
-      width: 100%;
-    }
-
+    select, input { width: 100%; }
     button {
       cursor: pointer;
       border-radius: 6px;
       border: none;
     }
-
-    .btn-primary {
-      background: #1976d2;
-      color: #fff;
-    }
-    .btn-secondary {
-      background: #eee;
-      color: #333;
-    }
-    .btn-danger {
-      background: #d32f2f;
-      color: #fff;
-    }
-    .btn-ghost {
-      background: transparent;
-      color: #1976d2;
-      border: 1px solid #1976d2;
-    }
+    .btn-primary { background: #1976d2; color: #fff; }
+    .btn-secondary { background: #eee; color: #333; }
+    .btn-danger { background: #d32f2f; color: #fff; }
+    .btn-ghost { background: transparent; color: #1976d2; border: 1px solid #1976d2; }
 
     .section {
       border: 1px solid #ccc;
@@ -76,7 +54,6 @@
       font-size: 14px;
       margin-top: 6px;
     }
-
     #log {
       margin-top: 10px;
       max-height: 220px;
@@ -103,10 +80,7 @@
       white-space: nowrap;
     }
 
-    .warning {
-      color: #d32f2f;
-      font-weight: bold;
-    }
+    .warning { color: #d32f2f; font-weight: bold; }
     .box {
       border: 1px solid #ccc;
       padding: 10px;
@@ -114,14 +88,8 @@
       background: #fafafa;
       margin-top: 10px;
     }
-    #chefLoginStatus {
-      font-size: 13px;
-      margin-top: 6px;
-    }
-    small {
-      font-size: 12px;
-      color: #555;
-    }
+    #chefLoginStatus { font-size: 13px; margin-top: 6px; }
+    small { font-size: 12px; color: #555; }
 
     @media (min-width: 850px) {
       .grid {
@@ -131,7 +99,7 @@
       }
     }
 
-    /* HERO BANNER – simples e responsivo */
+    /* HERO BANNER topo */
     .hero-banner {
       position: relative;
       margin-bottom: 24px;
@@ -140,13 +108,12 @@
       height: 210px;
       background-image:
         linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.2)),
-        url('IMG-20251125-WA0004.jpg'); /* tua foto do gelado */
+        url('IMG-20251125-WA0004.jpg'); /* a tua foto */
       background-size: cover;
       background-position: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       color: #fff;
     }
-
     .hero-overlay {
       position: absolute;
       left: 18px;
@@ -157,22 +124,12 @@
       align-items: flex-end;
       gap: 12px;
     }
-
     .hero-text {
       max-width: 70%;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
-
-    .hero-title {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .hero-subtitle {
-      font-size: 14px;
-      opacity: 0.95;
-    }
-
+    .hero-title { font-size: 22px; font-weight: 700; }
+    .hero-subtitle { font-size: 14px; opacity: 0.95; }
     .hero-badge {
       margin-top: 6px;
       display: inline-block;
@@ -195,7 +152,7 @@
       font-size: 34px;
     }
 
-    /* seletor de língua */
+    /* seletor língua */
     .lang-switcher {
       position: absolute;
       top: 10px;
@@ -211,10 +168,7 @@
       cursor: pointer;
       background: rgba(255,255,255,0.85);
     }
-    .lang-btn.active {
-      background: #1976d2;
-      color: #fff;
-    }
+    .lang-btn.active { background: #1976d2; color: #fff; }
 
     /* CHEF LOGIN – fundo bandeira italiana */
     .chef-login-section {
@@ -241,9 +195,7 @@
       gap: 10px;
     }
     @media (min-width: 700px) {
-      .legal-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .legal-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .legal-card {
       background: #fafafa;
@@ -262,11 +214,6 @@
       text-align: center;
       font-size: 12px;
       color: #555;
-    }
-    footer a {
-      color: #1976d2;
-      text-decoration: underline;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -492,16 +439,17 @@
   </div>
 
   <footer>
-    <span>&copy; <span id="year"></span> – <span data-i18n="footerText">Lokales Mitarbeiterportal zur Arbeitszeiterfassung.</span></span>
+    &copy; <span id="year"></span> – <span data-i18n="footerText">Lokales Mitarbeiterportal zur Arbeitszeiterfassung.</span>
   </footer>
 
   <script>
-    /* --- TRADUÇÕES (mesmo código que já tinhas, só mantido) --- */
+    /* TRADUÇÕES */
     const translations = {
       de: {
         heroTitle: 'Mitarbeiterportal – Zeit & Dienstplan',
         heroSubtitle: 'Tablet-optimiertes System zur Arbeitszeiterfassung und Schichtplanung.',
         heroBadge: 'Lokal im Betrieb · Keine Cloud · Ideal für kleine Teams',
+
         chefLoginTitle: 'Chef Login',
         chefPinLabel: 'PIN eingeben:',
         chefLoginBtn: 'Login',
@@ -510,6 +458,7 @@
         chefLoginOk: 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.',
         chefLoginFail: 'Falscher PIN.',
         chefLogoutMsg: 'Logout erfolgreich.',
+
         manageEmployeesTitle: 'Mitarbeiter verwalten',
         empNameLabel: 'Name des Mitarbeiters:',
         empNamePlaceholder: 'z.B. João, Maria, ...',
@@ -518,6 +467,7 @@
         addEmpBtn: 'Mitarbeiter hinzufügen',
         manageEmployeesInfo: 'Mitarbeiterliste und Arbeitszeiten werden nur lokal im Browser/Tablet gespeichert (localStorage). Es werden keine Daten an Server gesendet.',
         deleteEmpConfirm: 'Mitarbeiter wirklich löschen?',
+
         planTitle: 'Dienstplan & WhatsApp',
         planEmpSelectLabel: 'Mitarbeiter auswählen:',
         planDateLabel: 'Tag:',
@@ -528,6 +478,7 @@
         whatsappInfo: 'WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.',
         previewTitle: 'Vorschau Nachricht:',
         selectEmployeeOption: '-- Mitarbeiter wählen --',
+
         exportTitle: 'Monats-Export (CSV / Excel)',
         exportInfo: 'Export pro Mitarbeiter und Monat – ideal für den Steuerberater. Die Datei kann in Excel, Google Sheets oder LibreOffice geöffnet werden.',
         exportEmpLabel: 'Mitarbeiter auswählen:',
@@ -535,12 +486,14 @@
         exportBtn: 'CSV / Excel exportieren',
         exportNoEmp: 'Bitte einen Mitarbeiter auswählen.',
         exportNoEntries: 'Keine Einträge für diesen Monat vorhanden.',
-        exportCsvHeader: 'Name;Datum;Start;Ende;Stunden;Ueberstundenkonto_Monat',
-        exportTotalLabel: 'Gesamtstunden',
-        exportBankLabel: 'Ueberstundenkonto_Monat',
+        exportCsvHeader: 'Tag;Arbeitsbeginn;Arbeitsende;Pausenbeginn;Pausenende;Arbeitszeit;Entlohnungsart',
+        exportTotalLabel: 'Summe Arbeitsstunden',
+        exportBankLabel: 'Überstundenkonto (Monat)',
+
         monthlyReportTitle: 'Monatsbericht (Übersicht)',
         monthlyReportInfo: 'Übersicht aller Mitarbeiter für den aktuellen Monat – Gesamtstunden und Überstundenkonto.',
         printReportBtn: 'Drucken / als PDF speichern',
+
         legalTitle: 'Datenschutz & Nutzungshinweise',
         legalIntro: 'Kurze Zusammenfassung der wichtigsten Punkte. Details können Sie Ihrem Steuerberater / Rechtsberater zeigen.',
         legalCard1Title: '1. Datenschutz',
@@ -549,6 +502,7 @@
         legalCard2Text: 'Die Anwendung ist nur für den lizenzierten Betrieb bestimmt. Weitergabe, Kopieren oder Verkauf ohne schriftliche Zustimmung des Entwicklers ist untersagt.',
         legalCard3Title: '3. Haftung',
         legalCard3Text: 'Die App unterstützt bei der Erfassung von Arbeitszeiten. Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.',
+
         clockTitle: 'Stempeluhr (für Mitarbeiter)',
         clockEmpSelectLabel: 'Mitarbeiter auswählen:',
         clockReady: 'Bereit zum Stempeln.',
@@ -561,15 +515,19 @@
         clockNotIn: 'Dieser Mitarbeiter ist noch nicht eingestempelt.',
         clockSelectEmp: 'Bitte zuerst einen Mitarbeiter auswählen.',
         clockUndoNoEntries: 'Keine Einträge zum Löschen vorhanden.',
+
         msgMissingFields: 'Bitte Mitarbeiter, Tag und Zeiten ausfüllen.',
         msgMissingEmp: 'Bitte Mitarbeiter wählen.',
         msgNoPhone: 'Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.',
+
         footerText: 'Lokales Mitarbeiterportal zur Arbeitszeiterfassung.'
       },
+
       pt: {
         heroTitle: 'Portal de Funcionários – Horas & Turnos',
         heroSubtitle: 'Sistema optimizado para tablet para registar horas e organizar turnos.',
         heroBadge: 'Dados apenas locais · Sem cloud · Ideal para equipas pequenas',
+
         chefLoginTitle: 'Login do chefe',
         chefPinLabel: 'Introduzir PIN:',
         chefLoginBtn: 'Login',
@@ -578,6 +536,7 @@
         chefLoginOk: 'Login com sucesso. Áreas do chefe activadas.',
         chefLoginFail: 'PIN errado.',
         chefLogoutMsg: 'Sessão terminada.',
+
         manageEmployeesTitle: 'Gestão de funcionários',
         empNameLabel: 'Nome do funcionário:',
         empNamePlaceholder: 'Ex.: João, Maria, ...',
@@ -586,6 +545,7 @@
         addEmpBtn: 'Adicionar funcionário',
         manageEmployeesInfo: 'Lista de funcionários e horas são guardadas apenas localmente no tablet (localStorage). Nada é enviado para servidores externos.',
         deleteEmpConfirm: 'Eliminar este funcionário?',
+
         planTitle: 'Plano de serviço & WhatsApp',
         planEmpSelectLabel: 'Escolher funcionário:',
         planDateLabel: 'Dia:',
@@ -596,6 +556,7 @@
         whatsappInfo: 'O WhatsApp abre com mensagem preparada. Tu decides se envias.',
         previewTitle: 'Pré-visualização da mensagem:',
         selectEmployeeOption: '-- Escolher funcionário --',
+
         exportTitle: 'Exportação mensal (CSV / Excel)',
         exportInfo: 'Exportação por funcionário e mês – ideal para o contabilista. O ficheiro abre no Excel, Google Sheets ou LibreOffice.',
         exportEmpLabel: 'Escolher funcionário:',
@@ -603,12 +564,14 @@
         exportBtn: 'Exportar CSV / Excel',
         exportNoEmp: 'Escolhe primeiro um funcionário.',
         exportNoEntries: 'Não há registos para esse mês.',
-        exportCsvHeader: 'Nome;Data;Entrada;Saida;Horas;Banco_de_horas_Mes',
-        exportTotalLabel: 'Total_de_horas',
-        exportBankLabel: 'Banco_de_horas_Mes',
+        exportCsvHeader: 'Dia;Início do trabalho;Fim do trabalho;Pausa início;Pausa fim;Horas de trabalho;Tipo de pagamento',
+        exportTotalLabel: 'Total de horas de trabalho',
+        exportBankLabel: 'Banco de horas (mês)',
+
         monthlyReportTitle: 'Relatório mensal (vista geral)',
         monthlyReportInfo: 'Vista geral de todos os funcionários no mês actual – horas totais e banco de horas.',
         printReportBtn: 'Imprimir / guardar em PDF',
+
         legalTitle: 'Protecção de dados & utilização',
         legalIntro: 'Resumo curto dos pontos principais. Mostra os detalhes ao teu contabilista / advogado se precisares.',
         legalCard1Title: '1. Dados',
@@ -617,6 +580,7 @@
         legalCard2Text: 'A aplicação é apenas para o negócio licenciado. É proibido copiar, revender ou partilhar sem autorização escrita do criador.',
         legalCard3Title: '3. Responsabilidade',
         legalCard3Text: 'A app ajuda a registar horas. O cálculo final de salários e o cumprimento da lei laboral continuam responsabilidade do empregador.',
+
         clockTitle: 'Relógio de ponto (empregados)',
         clockEmpSelectLabel: 'Escolher funcionário:',
         clockReady: 'Pronto para picar.',
@@ -629,15 +593,19 @@
         clockNotIn: 'Esse funcionário ainda não picou entrada.',
         clockSelectEmp: 'Escolhe primeiro um funcionário.',
         clockUndoNoEntries: 'Não há registos para apagar.',
+
         msgMissingFields: 'Escolhe funcionário, dia e horas.',
         msgMissingEmp: 'Escolhe um funcionário.',
         msgNoPhone: 'Não está guardado número de telefone para este funcionário.',
+
         footerText: 'Portal local de funcionários para registo de horas.'
       },
+
       it: {
         heroTitle: 'Portale Dipendenti – Ore & Turni',
         heroSubtitle: 'Sistema ottimizzato per tablet per registrare le ore e gestire i turni.',
         heroBadge: 'Dati solo locali · Nessun cloud · Ideale per piccoli team',
+
         chefLoginTitle: 'Login del capo',
         chefPinLabel: 'Inserire PIN:',
         chefLoginBtn: 'Login',
@@ -646,6 +614,7 @@
         chefLoginOk: 'Login riuscito. Aree del capo attivate.',
         chefLoginFail: 'PIN errato.',
         chefLogoutMsg: 'Logout eseguito.',
+
         manageEmployeesTitle: 'Gestione dipendenti',
         empNameLabel: 'Nome del dipendente:',
         empNamePlaceholder: 'Es.: Marco, Maria, ...',
@@ -654,6 +623,7 @@
         addEmpBtn: 'Aggiungi dipendente',
         manageEmployeesInfo: 'Elenco dipendenti e ore vengono salvati solo in locale sul tablet (localStorage). Nessun dato viene inviato a server esterni.',
         deleteEmpConfirm: 'Vuoi davvero cancellare questo dipendente?',
+
         planTitle: 'Pianificazione turni & WhatsApp',
         planEmpSelectLabel: 'Seleziona dipendente:',
         planDateLabel: 'Giorno:',
@@ -664,6 +634,7 @@
         whatsappInfo: 'WhatsApp si apre con un messaggio precompilato. Decidi tu se inviarlo.',
         previewTitle: 'Anteprima messaggio:',
         selectEmployeeOption: '-- Seleziona dipendente --',
+
         exportTitle: 'Export mensile (CSV / Excel)',
         exportInfo: 'Export per dipendente e mese – ideale per il commercialista. Il file si apre in Excel, Google Sheets o LibreOffice.',
         exportEmpLabel: 'Seleziona dipendente:',
@@ -671,12 +642,14 @@
         exportBtn: 'Esporta CSV / Excel',
         exportNoEmp: 'Seleziona prima un dipendente.',
         exportNoEntries: 'Nessuna registrazione per questo mese.',
-        exportCsvHeader: 'Nome;Data;Entrata;Uscita;Ore;Banca_ore_mese',
-        exportTotalLabel: 'Ore_totali',
-        exportBankLabel: 'Banca_ore_mese',
+        exportCsvHeader: 'Giorno;Inizio lavoro;Fine lavoro;Pausa da;Pausa a;Ore di lavoro;Tipo di retribuzione',
+        exportTotalLabel: 'Totale ore di lavoro',
+        exportBankLabel: 'Banca ore (mese)',
+
         monthlyReportTitle: 'Report mensile (panoramica)',
         monthlyReportInfo: 'Panoramica di tutti i dipendenti nel mese corrente – ore totali e banca ore.',
         printReportBtn: 'Stampa / salva in PDF',
+
         legalTitle: 'Privacy & condizioni d’uso',
         legalIntro: 'Breve riassunto dei punti principali. Puoi mostrare i dettagli al tuo commercialista / consulente.',
         legalCard1Title: '1. Dati',
@@ -685,6 +658,7 @@
         legalCard2Text: 'L’applicazione è solo per l’esercizio autorizzato. È vietato copiare, rivendere o condividere senza autorizzazione scritta dello sviluppatore.',
         legalCard3Title: '3. Responsabilità',
         legalCard3Text: 'L’app aiuta a registrare le ore. Il calcolo delle paghe e il rispetto delle norme di lavoro restano responsabilità del datore di lavoro.',
+
         clockTitle: 'Timbro orario (dipendenti)',
         clockEmpSelectLabel: 'Seleziona dipendente:',
         clockReady: 'Pronto per timbrare.',
@@ -697,9 +671,11 @@
         clockNotIn: 'Questo dipendente non ha ancora timbrato l’entrata.',
         clockSelectEmp: 'Seleziona prima un dipendente.',
         clockUndoNoEntries: 'Nessuna registrazione da cancellare.',
+
         msgMissingFields: 'Seleziona dipendente, giorno e orari.',
         msgMissingEmp: 'Seleziona un dipendente.',
         msgNoPhone: 'Per questo dipendente non è salvato alcun numero di telefono.',
+
         footerText: 'Portale locale dipendenti per la registrazione delle ore.'
       }
     };
@@ -724,27 +700,7 @@
       if (ft) ft.textContent = currentTexts.footerText;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const lang = btn.getAttribute('data-lang');
-          currentLang = lang;
-          document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          applyTranslations();
-          updateHoursInfo();
-          updatePlanHoursInfo();
-          renderTodayLog();
-        });
-      });
-
-      applyTranslations();
-    });
-
-    /* --- resto do JS (igual ao que já tínhamos: PIN, horas, export, etc.) --- */
-
+    /* CONFIG GERAL */
     const CHEF_PIN = "4729";
 
     const chefPinInput = document.getElementById('chefPinInput');
@@ -753,47 +709,7 @@
     const chefLoginStatus = document.getElementById('chefLoginStatus');
     const chefArea = document.getElementById('chefArea');
 
-    btnChefLogin.addEventListener('click', () => {
-      const pin = chefPinInput.value.trim();
-      if (pin === CHEF_PIN) {
-        chefArea.style.display = 'block';
-        chefLoginStatus.style.color = 'green';
-        chefLoginStatus.textContent = currentTexts.chefLoginOk;
-        chefPinInput.value = '';
-        btnChefLogout.disabled = false;
-      } else {
-        chefLoginStatus.style.color = 'red';
-        chefLoginStatus.textContent = currentTexts.chefLoginFail;
-      }
-    });
-
-    btnChefLogout.addEventListener('click', () => {
-      chefArea.style.display = 'none';
-      chefLoginStatus.style.color = '#333';
-      chefLoginStatus.textContent = currentTexts.chefLogoutMsg;
-      btnChefLogout.disabled = true;
-    });
-
     let employees = [];
-
-    function loadEmployees() {
-      const data = localStorage.getItem('sanremoEmployees_v2');
-      employees = data ? JSON.parse(data) : [];
-    }
-
-    function saveEmployees() {
-      localStorage.setItem('sanremoEmployees_v2', JSON.stringify(employees));
-    }
-
-    function generateId() {
-      return 'emp_' + Math.random().toString(36).substring(2, 9);
-    }
-
-    function maskPhone(phone) {
-      if (!phone) return '';
-      const last = phone.slice(-4);
-      return '***' + last;
-    }
 
     const empNameInput = document.getElementById('empName');
     const empPhoneInput = document.getElementById('empPhone');
@@ -824,19 +740,33 @@
 
     const MAX_HOURS_PER_MONTH = 40;
 
+    function loadEmployees() {
+      const data = localStorage.getItem('sanremoEmployees_v2');
+      employees = data ? JSON.parse(data) : [];
+    }
+    function saveEmployees() {
+      localStorage.setItem('sanremoEmployees_v2', JSON.stringify(employees));
+    }
+    function generateId() {
+      return 'emp_' + Math.random().toString(36).substring(2, 9);
+    }
+    function maskPhone(phone) {
+      if (!phone) return '';
+      const last = phone.slice(-4);
+      return '***' + last;
+    }
+
     function getCurrentMonthKey() {
       const now = new Date();
       const y = now.getFullYear();
       const m = String(now.getMonth() + 1).padStart(2, '0');
       return `${y}-${m}`;
     }
-
     function getMonthKeyFromDate(d) {
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, '0');
       return `${y}-${m}`;
     }
-
     function formatGermanDate(dateObj) {
       return dateObj.toLocaleDateString("de-DE", {
         weekday: "short",
@@ -845,11 +775,9 @@
         year: "numeric"
       });
     }
-
     function formatDateForCsv(d) {
       return d.toLocaleDateString("de-DE");
     }
-
     function formatTimeHHMM(d) {
       const hh = String(d.getHours()).padStart(2, '0');
       const mm = String(d.getMinutes()).padStart(2, '0');
@@ -863,7 +791,6 @@
         return getMonthKeyFromDate(d) === monthKey;
       });
     }
-
     function getMonthTotals(emp, monthKey) {
       const entries = getMonthEntries(emp, monthKey);
       let total = 0;
@@ -871,7 +798,6 @@
       const bank = Math.max(0, total - MAX_HOURS_PER_MONTH);
       return { total, bank, entries };
     }
-
     function getCurrentMonthTotals(emp) {
       return getMonthTotals(emp, getCurrentMonthKey());
     }
@@ -936,18 +862,15 @@
 
       employees.forEach(emp => {
         const opt1 = document.createElement('option');
-        opt1.value = emp.id;
-        opt1.textContent = emp.name;
+        opt1.value = emp.id; opt1.textContent = emp.name;
         employeeSelect.appendChild(opt1);
 
         const opt2 = document.createElement('option');
-        opt2.value = emp.id;
-        opt2.textContent = emp.name;
+        opt2.value = emp.id; opt2.textContent = emp.name;
         planEmployeeSelect.appendChild(opt2);
 
         const opt3 = document.createElement('option');
-        opt3.value = emp.id;
-        opt3.textContent = emp.name;
+        opt3.value = emp.id; opt3.textContent = emp.name;
         exportEmployeeSelect.appendChild(opt3);
       });
 
@@ -988,21 +911,118 @@
       }
     }
 
-    employeeSelect.addEventListener('change', () => {
-      updateHoursInfo();
-      const empId = employeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      if (emp && emp.activeSessionStart) {
-        statusEl.textContent = 'Mitarbeiter ist aktuell eingestempelt (seit ' +
-          new Date(emp.activeSessionStart).toLocaleString() + ').';
-      } else {
-        statusEl.textContent = currentTexts.clockReady;
+    function renderMonthlyReport() {
+      const container = document.getElementById('monthlyReportContainer');
+      if (!container) return;
+
+      if (!employees || employees.length === 0) {
+        container.innerHTML = '<em>Keine Mitarbeiter angelegt.</em>';
+        return;
       }
-      renderTodayLog();
+
+      const monthKey = getCurrentMonthKey();
+      let html = '<table style="width:100%; border-collapse: collapse; font-size:14px;">';
+      html += '<thead><tr>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Mitarbeiter</th>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Stunden im Monat</th>' +
+              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Überstundenkonto</th>' +
+              '</tr></thead><tbody>';
+
+      let totalHoursAll = 0;
+      let totalBankAll = 0;
+
+      employees.forEach(emp => {
+        const { total, bank } = getMonthTotals(emp, monthKey);
+        totalHoursAll += total;
+        totalBankAll += bank;
+
+        html += '<tr>' +
+          '<td style="border-bottom:1px solid #eee; padding:4px;">' + emp.name + '</td>' +
+          '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + total.toFixed(2) + '</td>' +
+          '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + bank.toFixed(2) + '</td>' +
+          '</tr>';
+      });
+
+      html += '<tr>' +
+        '<td style="padding:4px; font-weight:bold; text-align:right;">Summe:</td>' +
+        '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalHoursAll.toFixed(2) + '</td>' +
+        '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalBankAll.toFixed(2) + '</td>' +
+        '</tr>';
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function printMonthlyReport() {
+      const container = document.getElementById('monthlyReportContainer');
+      if (!container) return;
+
+      const win = window.open('', '_blank');
+      win.document.write('<html><head><title>Monatsbericht</title>');
+      win.document.write('<meta charset="UTF-8">');
+      win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} table{width:100%;border-collapse:collapse;font-size:14px;} th,td{border:1px solid #ccc;padding:4px;} th{text-align:left;background:#f0f0f0;}</style>');
+      win.document.write('</head><body>');
+      win.document.write('<h2>Monatsbericht</h2>');
+      win.document.write('<p>Monat: ' + getCurrentMonthKey() + '</p>');
+      win.document.write(container.innerHTML);
+      win.document.write('</body></html>');
+      win.document.close();
+      win.focus();
+      win.print();
+    }
+
+    function buildMessage() {
+      const empId = planEmployeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      const dateVal = dateInput.value;
+      const tFrom = timeFromInput.value;
+      const tTo = timeToInput.value;
+
+      if (!emp || !dateVal || !tFrom || !tTo) return "";
+
+      const dateObj = new Date(dateVal + "T00:00:00");
+      const { total, bank } = getCurrentMonthTotals(emp);
+      let hoursLine =
+        `Aktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)`;
+      if (total > MAX_HOURS_PER_MONTH) {
+        hoursLine += " – LIMIT 40h überschritten!";
+      }
+
+      const dateDE = formatGermanDate(dateObj);
+
+      const msg =
+        "Dienstplan\n\n" +
+        "Hallo " + emp.name + ",\n\n" +
+        "dein Dienst:\n" +
+        "📅 Datum: " + dateDE + "\n" +
+        "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
+        "📍 Ort: Betrieb\n\n" +
+        hoursLine + "\n\n" +
+        "Bitte bestätige mit OK.";
+      return msg;
+    }
+
+    /* EVENTOS */
+
+    btnChefLogin.addEventListener('click', () => {
+      const pin = chefPinInput.value.trim();
+      if (pin === CHEF_PIN) {
+        chefArea.style.display = 'block';
+        chefLoginStatus.style.color = 'green';
+        chefLoginStatus.textContent = currentTexts.chefLoginOk;
+        chefPinInput.value = '';
+        btnChefLogout.disabled = false;
+      } else {
+        chefLoginStatus.style.color = 'red';
+        chefLoginStatus.textContent = currentTexts.chefLoginFail;
+      }
     });
 
-    planEmployeeSelect.addEventListener('change', () => {
-      updatePlanHoursInfo();
+    btnChefLogout.addEventListener('click', () => {
+      chefArea.style.display = 'none';
+      chefLoginStatus.style.color = '#333';
+      chefLoginStatus.textContent = currentTexts.chefLogoutMsg;
+      btnChefLogout.disabled = true;
     });
 
     btnAddEmp.addEventListener('click', () => {
@@ -1025,6 +1045,23 @@
       empPhoneInput.value = '';
       refreshEmployeeUI();
       renderMonthlyReport();
+    });
+
+    employeeSelect.addEventListener('change', () => {
+      updateHoursInfo();
+      const empId = employeeSelect.value;
+      const emp = employees.find(e => e.id === empId);
+      if (emp && emp.activeSessionStart) {
+        statusEl.textContent = 'Mitarbeiter ist aktuell eingestempelt (seit ' +
+          new Date(emp.activeSessionStart).toLocaleString() + ').';
+      } else {
+        statusEl.textContent = currentTexts.clockReady;
+      }
+      renderTodayLog();
+    });
+
+    planEmployeeSelect.addEventListener('change', () => {
+      updatePlanHoursInfo();
     });
 
     btnIn.addEventListener('click', () => {
@@ -1126,39 +1163,6 @@
       renderMonthlyReport();
     });
 
-    function buildMessage() {
-      const empId = planEmployeeSelect.value;
-      const emp = employees.find(e => e.id === empId);
-      const dateVal = dateInput.value;
-      const tFrom = timeFromInput.value;
-      const tTo = timeToInput.value;
-
-      if (!emp || !dateVal || !tFrom || !tTo) {
-        return "";
-      }
-
-      const dateObj = new Date(dateVal + "T00:00:00");
-      const { total, bank } = getCurrentMonthTotals(emp);
-      let hoursLine =
-        `Aktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)`;
-      if (total > MAX_HOURS_PER_MONTH) {
-        hoursLine += " – LIMIT 40h überschritten!";
-      }
-
-      const dateDE = formatGermanDate(dateObj);
-
-      const msg =
-        "Dienstplan\n\n" +
-        "Hallo " + emp.name + ",\n\n" +
-        "dein Dienst:\n" +
-        "📅 Datum: " + dateDE + "\n" +
-        "⏰ Zeit: " + tFrom + " – " + tTo + " Uhr\n" +
-        "📍 Ort: Betrieb\n\n" +
-        hoursLine + "\n\n" +
-        "Bitte bestätige mit OK.";
-      return msg;
-    }
-
     btnPreview.addEventListener('click', () => {
       const msg = buildMessage();
       if (!msg) {
@@ -1197,37 +1201,71 @@
     btnExportCsv.addEventListener('click', () => {
       const empId = exportEmployeeSelect.value;
       if (!empId) {
-        alert(currentTexts.exportNoEmp);
+        alert(currentTexts.exportNoEmp || 'Bitte Mitarbeiter wählen.');
         return;
       }
       const emp = employees.find(e => e.id === empId);
       if (!emp) return;
 
       const monthVal = exportMonth.value;
-      const monthKey = monthVal || getCurrentMonthKey();
+      const monthKey = monthVal || getCurrentMonthKey(); // ex: "2025-06"
 
       const { total, bank, entries } = getMonthTotals(emp, monthKey);
-      if (!entries.length) {
-        alert(currentTexts.exportNoEntries);
-        return;
-      }
 
-      let header = currentTexts.exportCsvHeader;
-      let csv = header + '\n';
-
-      let totalHours = 0;
+      const dayMap = {};
       entries.forEach(entry => {
         const start = new Date(entry.start);
-        const end = new Date(entry.end);
-        const dateStr = formatDateForCsv(start);
-        const startStr = formatTimeHHMM(start);
-        const endStr = formatTimeHHMM(end);
-        totalHours += entry.hours;
+        const end   = new Date(entry.end);
+        const dKey  = entry.start.slice(0, 10);
 
-        csv += `${emp.name};${dateStr};${startStr};${endStr};${entry.hours.toFixed(2)};${bank.toFixed(2)}\n`;
+        if (!dayMap[dKey]) {
+          dayMap[dKey] = {
+            earliestStart: start,
+            latestEnd: end,
+            hours: 0
+          };
+        }
+        const d = dayMap[dKey];
+        if (start < d.earliestStart) d.earliestStart = start;
+        if (end   > d.latestEnd)     d.latestEnd     = end;
+        d.hours += entry.hours;
       });
 
-      csv += `;;;${currentTexts.exportTotalLabel};${totalHours.toFixed(2)};${bank.toFixed(2)}\n`;
+      const [yearStr, monthStr] = monthKey.split('-');
+      const year  = parseInt(yearStr, 10);
+      const month = parseInt(monthStr, 10);
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      const monthLabel = `${monthStr}.${yearStr}`;
+      const header = currentTexts.exportCsvHeader;
+
+      let csv = `Name;${emp.name};Monat;${monthLabel}\n`;
+      csv += header + '\n';
+
+      let totalHours = 0;
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dStr = String(day).padStart(2, '0');
+        const key = `${yearStr}-${monthStr}-${dStr}`;
+        const dateLabel = `${dStr}.${monthStr}.${yearStr}`;
+
+        let startStr = '';
+        let endStr   = '';
+        let hoursStr = '';
+
+        if (dayMap[key]) {
+          const info = dayMap[key];
+          startStr = formatTimeHHMM(info.earliestStart);
+          endStr   = formatTimeHHMM(info.latestEnd);
+          hoursStr = info.hours.toFixed(2);
+          totalHours += info.hours;
+        }
+
+        csv += `${dateLabel};${startStr};${endStr};;;${hoursStr};\n`;
+      }
+
+      csv += `;;;;;${currentTexts.exportTotalLabel};${totalHours.toFixed(2)}\n`;
+      csv += `;;;;;${currentTexts.exportBankLabel};${bank.toFixed(2)}\n`;
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -1242,77 +1280,30 @@
       exportInfoEl.textContent = `Export erstellt: stunden_${emp.name}_${monthKey}.csv`;
     });
 
-    function renderMonthlyReport() {
-      const container = document.getElementById('monthlyReportContainer');
-      if (!container) return;
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
 
-      if (!employees || employees.length === 0) {
-        container.innerHTML = '<em>Keine Mitarbeiter angelegt.</em>';
-        return;
-      }
-
-      const monthKey = getCurrentMonthKey();
-      let html = '<table style="width:100%; border-collapse: collapse; font-size:14px;">';
-      html += '<thead><tr>' +
-              '<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Mitarbeiter</th>' +
-              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Stunden im Monat</th>' +
-              '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Überstundenkonto</th>' +
-              '</tr></thead><tbody>';
-
-      let totalHoursAll = 0;
-      let totalBankAll = 0;
-
-      employees.forEach(emp => {
-        const { total, bank } = getMonthTotals(emp, monthKey);
-        totalHoursAll += total;
-        totalBankAll += bank;
-
-        html += '<tr>' +
-          '<td style="border-bottom:1px solid #eee; padding:4px;">' + emp.name + '</td>' +
-          '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + total.toFixed(2) + '</td>' +
-          '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + bank.toFixed(2) + '</td>' +
-          '</tr>';
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+          currentLang = lang;
+          document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          applyTranslations();
+          updateHoursInfo();
+          updatePlanHoursInfo();
+          renderTodayLog();
+        });
       });
 
-      html += '<tr>' +
-        '<td style="padding:4px; font-weight:bold; text-align:right;">Summe:</td>' +
-        '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalHoursAll.toFixed(2) + '</td>' +
-        '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalBankAll.toFixed(2) + '</td>' +
-        '</tr>';
-
-      html += '</tbody></table>';
-
-      container.innerHTML = html;
-    }
-
-    function printMonthlyReport() {
-      const container = document.getElementById('monthlyReportContainer');
-      if (!container) return;
-
-      const win = window.open('', '_blank');
-      win.document.write('<html><head><title>Monatsbericht</title>');
-      win.document.write('<meta charset="UTF-8">');
-      win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} table{width:100%;border-collapse:collapse;font-size:14px;} th,td{border:1px solid #ccc;padding:4px;} th{text-align:left;background:#f0f0f0;}</style>');
-      win.document.write('</head><body>');
-      win.document.write('<h2>Monatsbericht</h2>');
-      win.document.write('<p>Monat: ' + getCurrentMonthKey() + '</p>');
-      win.document.write(container.innerHTML);
-      win.document.write('</body></html>');
-      win.document.close();
-      win.focus();
-      win.print();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
+      applyTranslations();
       loadEmployees();
       refreshEmployeeUI();
       updateHoursInfo();
       updatePlanHoursInfo();
       renderMonthlyReport();
       renderTodayLog();
-      applyTranslations();
     });
   </script>
-
 </body>
 </html>
