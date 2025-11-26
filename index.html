@@ -131,75 +131,68 @@
       }
     }
 
-    /* HERO BANNER – topo neutro */
+    /* HERO BANNER – simples e responsivo */
     .hero-banner {
       position: relative;
       margin-bottom: 24px;
       border-radius: 16px;
       overflow: hidden;
       height: 210px;
-      background: #f5f5f5;
-      display: flex;
-      align-items: stretch;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    }
-    .hero-left,
-    .hero-right {
-      flex: 1;
+      background-image:
+        linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.2)),
+        url('IMG-20251125-WA0004.jpg'); /* tua foto do gelado */
       background-size: cover;
       background-position: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      color: #fff;
     }
-    .hero-left {
-      background-image: url('IMG-20251125-WA0004.jpg'); /* foto de gelado do teu tablet */
-    }
-    .hero-right {
-      background-image: url('IMG-20251117-WA0002.jpg'); /* imagem com logo / neutra */
-    }
+
     .hero-overlay {
       position: absolute;
       left: 18px;
-      bottom: 18px;
       right: 18px;
-      color: #fff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      bottom: 18px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       gap: 12px;
     }
+
     .hero-text {
       max-width: 70%;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
+
     .hero-title {
       font-size: 22px;
       font-weight: 700;
     }
+
     .hero-subtitle {
       font-size: 14px;
       opacity: 0.95;
     }
+
     .hero-badge {
       margin-top: 6px;
       display: inline-block;
       font-size: 11px;
       padding: 3px 10px;
       border-radius: 999px;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0,0,0,0.55);
     }
+
     .neutral-logo {
       width: 76px;
       height: 76px;
       border-radius: 20px;
-      background: #fff;
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-      overflow: hidden;
-    }
-    .neutral-logo img {
-      max-width: 70%;
-      height: auto;
+      color: #1976d2;
+      font-size: 34px;
     }
 
     /* seletor de língua */
@@ -281,8 +274,12 @@
 
   <!-- BANNER -->
   <header class="hero-banner">
-    <div class="hero-left"></div>
-    <div class="hero-right"></div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" data-lang="de">DE</button>
+      <button class="lang-btn" data-lang="pt">PT</button>
+      <button class="lang-btn" data-lang="it">IT</button>
+    </div>
+
     <div class="hero-overlay">
       <div class="hero-text">
         <div class="hero-title" data-i18n="heroTitle">
@@ -296,15 +293,7 @@
         </div>
       </div>
       <div class="neutral-logo">
-        <!-- logótipo neutro (ícone relógio + pessoas) -->
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Font_Awesome_5_solid_users-clock.svg"
-             alt="Logo Mitarbeiterkontrolle">
-      </div>
-
-      <div class="lang-switcher">
-        <button class="lang-btn active" data-lang="de">DE</button>
-        <button class="lang-btn" data-lang="pt">PT</button>
-        <button class="lang-btn" data-lang="it">IT</button>
+        ⏱
       </div>
     </div>
   </header>
@@ -507,13 +496,12 @@
   </footer>
 
   <script>
-    // ---------------- TRADUÇÕES ----------------
+    /* --- TRADUÇÕES (mesmo código que já tinhas, só mantido) --- */
     const translations = {
       de: {
         heroTitle: 'Mitarbeiterportal – Zeit & Dienstplan',
         heroSubtitle: 'Tablet-optimiertes System zur Arbeitszeiterfassung und Schichtplanung.',
         heroBadge: 'Lokal im Betrieb · Keine Cloud · Ideal für kleine Teams',
-
         chefLoginTitle: 'Chef Login',
         chefPinLabel: 'PIN eingeben:',
         chefLoginBtn: 'Login',
@@ -522,7 +510,6 @@
         chefLoginOk: 'Login erfolgreich. Chef-Bereiche sind freigeschaltet.',
         chefLoginFail: 'Falscher PIN.',
         chefLogoutMsg: 'Logout erfolgreich.',
-
         manageEmployeesTitle: 'Mitarbeiter verwalten',
         empNameLabel: 'Name des Mitarbeiters:',
         empNamePlaceholder: 'z.B. João, Maria, ...',
@@ -531,7 +518,6 @@
         addEmpBtn: 'Mitarbeiter hinzufügen',
         manageEmployeesInfo: 'Mitarbeiterliste und Arbeitszeiten werden nur lokal im Browser/Tablet gespeichert (localStorage). Es werden keine Daten an Server gesendet.',
         deleteEmpConfirm: 'Mitarbeiter wirklich löschen?',
-
         planTitle: 'Dienstplan & WhatsApp',
         planEmpSelectLabel: 'Mitarbeiter auswählen:',
         planDateLabel: 'Tag:',
@@ -542,7 +528,6 @@
         whatsappInfo: 'WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.',
         previewTitle: 'Vorschau Nachricht:',
         selectEmployeeOption: '-- Mitarbeiter wählen --',
-
         exportTitle: 'Monats-Export (CSV / Excel)',
         exportInfo: 'Export pro Mitarbeiter und Monat – ideal für den Steuerberater. Die Datei kann in Excel, Google Sheets oder LibreOffice geöffnet werden.',
         exportEmpLabel: 'Mitarbeiter auswählen:',
@@ -553,11 +538,9 @@
         exportCsvHeader: 'Name;Datum;Start;Ende;Stunden;Ueberstundenkonto_Monat',
         exportTotalLabel: 'Gesamtstunden',
         exportBankLabel: 'Ueberstundenkonto_Monat',
-
         monthlyReportTitle: 'Monatsbericht (Übersicht)',
         monthlyReportInfo: 'Übersicht aller Mitarbeiter für den aktuellen Monat – Gesamtstunden und Überstundenkonto.',
         printReportBtn: 'Drucken / als PDF speichern',
-
         legalTitle: 'Datenschutz & Nutzungshinweise',
         legalIntro: 'Kurze Zusammenfassung der wichtigsten Punkte. Details können Sie Ihrem Steuerberater / Rechtsberater zeigen.',
         legalCard1Title: '1. Datenschutz',
@@ -566,7 +549,6 @@
         legalCard2Text: 'Die Anwendung ist nur für den lizenzierten Betrieb bestimmt. Weitergabe, Kopieren oder Verkauf ohne schriftliche Zustimmung des Entwicklers ist untersagt.',
         legalCard3Title: '3. Haftung',
         legalCard3Text: 'Die App unterstützt bei der Erfassung von Arbeitszeiten. Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.',
-
         clockTitle: 'Stempeluhr (für Mitarbeiter)',
         clockEmpSelectLabel: 'Mitarbeiter auswählen:',
         clockReady: 'Bereit zum Stempeln.',
@@ -579,19 +561,15 @@
         clockNotIn: 'Dieser Mitarbeiter ist noch nicht eingestempelt.',
         clockSelectEmp: 'Bitte zuerst einen Mitarbeiter auswählen.',
         clockUndoNoEntries: 'Keine Einträge zum Löschen vorhanden.',
-
         msgMissingFields: 'Bitte Mitarbeiter, Tag und Zeiten ausfüllen.',
         msgMissingEmp: 'Bitte Mitarbeiter wählen.',
         msgNoPhone: 'Für diesen Mitarbeiter ist keine Telefonnummer hinterlegt.',
-
         footerText: 'Lokales Mitarbeiterportal zur Arbeitszeiterfassung.'
       },
-
       pt: {
         heroTitle: 'Portal de Funcionários – Horas & Turnos',
         heroSubtitle: 'Sistema optimizado para tablet para registar horas e organizar turnos.',
         heroBadge: 'Dados apenas locais · Sem cloud · Ideal para equipas pequenas',
-
         chefLoginTitle: 'Login do chefe',
         chefPinLabel: 'Introduzir PIN:',
         chefLoginBtn: 'Login',
@@ -600,7 +578,6 @@
         chefLoginOk: 'Login com sucesso. Áreas do chefe activadas.',
         chefLoginFail: 'PIN errado.',
         chefLogoutMsg: 'Sessão terminada.',
-
         manageEmployeesTitle: 'Gestão de funcionários',
         empNameLabel: 'Nome do funcionário:',
         empNamePlaceholder: 'Ex.: João, Maria, ...',
@@ -609,7 +586,6 @@
         addEmpBtn: 'Adicionar funcionário',
         manageEmployeesInfo: 'Lista de funcionários e horas são guardadas apenas localmente no tablet (localStorage). Nada é enviado para servidores externos.',
         deleteEmpConfirm: 'Eliminar este funcionário?',
-
         planTitle: 'Plano de serviço & WhatsApp',
         planEmpSelectLabel: 'Escolher funcionário:',
         planDateLabel: 'Dia:',
@@ -620,7 +596,6 @@
         whatsappInfo: 'O WhatsApp abre com mensagem preparada. Tu decides se envias.',
         previewTitle: 'Pré-visualização da mensagem:',
         selectEmployeeOption: '-- Escolher funcionário --',
-
         exportTitle: 'Exportação mensal (CSV / Excel)',
         exportInfo: 'Exportação por funcionário e mês – ideal para o contabilista. O ficheiro abre no Excel, Google Sheets ou LibreOffice.',
         exportEmpLabel: 'Escolher funcionário:',
@@ -631,11 +606,9 @@
         exportCsvHeader: 'Nome;Data;Entrada;Saida;Horas;Banco_de_horas_Mes',
         exportTotalLabel: 'Total_de_horas',
         exportBankLabel: 'Banco_de_horas_Mes',
-
         monthlyReportTitle: 'Relatório mensal (vista geral)',
         monthlyReportInfo: 'Vista geral de todos os funcionários no mês actual – horas totais e banco de horas.',
         printReportBtn: 'Imprimir / guardar em PDF',
-
         legalTitle: 'Protecção de dados & utilização',
         legalIntro: 'Resumo curto dos pontos principais. Mostra os detalhes ao teu contabilista / advogado se precisares.',
         legalCard1Title: '1. Dados',
@@ -644,7 +617,6 @@
         legalCard2Text: 'A aplicação é apenas para o negócio licenciado. É proibido copiar, revender ou partilhar sem autorização escrita do criador.',
         legalCard3Title: '3. Responsabilidade',
         legalCard3Text: 'A app ajuda a registar horas. O cálculo final de salários e o cumprimento da lei laboral continuam responsabilidade do empregador.',
-
         clockTitle: 'Relógio de ponto (empregados)',
         clockEmpSelectLabel: 'Escolher funcionário:',
         clockReady: 'Pronto para picar.',
@@ -657,19 +629,15 @@
         clockNotIn: 'Esse funcionário ainda não picou entrada.',
         clockSelectEmp: 'Escolhe primeiro um funcionário.',
         clockUndoNoEntries: 'Não há registos para apagar.',
-
         msgMissingFields: 'Escolhe funcionário, dia e horas.',
         msgMissingEmp: 'Escolhe um funcionário.',
         msgNoPhone: 'Não está guardado número de telefone para este funcionário.',
-
         footerText: 'Portal local de funcionários para registo de horas.'
       },
-
       it: {
         heroTitle: 'Portale Dipendenti – Ore & Turni',
         heroSubtitle: 'Sistema ottimizzato per tablet per registrare le ore e gestire i turni.',
         heroBadge: 'Dati solo locali · Nessun cloud · Ideale per piccoli team',
-
         chefLoginTitle: 'Login del capo',
         chefPinLabel: 'Inserire PIN:',
         chefLoginBtn: 'Login',
@@ -678,7 +646,6 @@
         chefLoginOk: 'Login riuscito. Aree del capo attivate.',
         chefLoginFail: 'PIN errato.',
         chefLogoutMsg: 'Logout eseguito.',
-
         manageEmployeesTitle: 'Gestione dipendenti',
         empNameLabel: 'Nome del dipendente:',
         empNamePlaceholder: 'Es.: Marco, Maria, ...',
@@ -687,7 +654,6 @@
         addEmpBtn: 'Aggiungi dipendente',
         manageEmployeesInfo: 'Elenco dipendenti e ore vengono salvati solo in locale sul tablet (localStorage). Nessun dato viene inviato a server esterni.',
         deleteEmpConfirm: 'Vuoi davvero cancellare questo dipendente?',
-
         planTitle: 'Pianificazione turni & WhatsApp',
         planEmpSelectLabel: 'Seleziona dipendente:',
         planDateLabel: 'Giorno:',
@@ -698,7 +664,6 @@
         whatsappInfo: 'WhatsApp si apre con un messaggio precompilato. Decidi tu se inviarlo.',
         previewTitle: 'Anteprima messaggio:',
         selectEmployeeOption: '-- Seleziona dipendente --',
-
         exportTitle: 'Export mensile (CSV / Excel)',
         exportInfo: 'Export per dipendente e mese – ideale per il commercialista. Il file si apre in Excel, Google Sheets o LibreOffice.',
         exportEmpLabel: 'Seleziona dipendente:',
@@ -709,11 +674,9 @@
         exportCsvHeader: 'Nome;Data;Entrata;Uscita;Ore;Banca_ore_mese',
         exportTotalLabel: 'Ore_totali',
         exportBankLabel: 'Banca_ore_mese',
-
         monthlyReportTitle: 'Report mensile (panoramica)',
         monthlyReportInfo: 'Panoramica di tutti i dipendenti nel mese corrente – ore totali e banca ore.',
         printReportBtn: 'Stampa / salva in PDF',
-
         legalTitle: 'Privacy & condizioni d’uso',
         legalIntro: 'Breve riassunto dei punti principali. Puoi mostrare i dettagli al tuo commercialista / consulente.',
         legalCard1Title: '1. Dati',
@@ -722,7 +685,6 @@
         legalCard2Text: 'L’applicazione è solo per l’esercizio autorizzato. È vietato copiare, rivendere o condividere senza autorizzazione scritta dello sviluppatore.',
         legalCard3Title: '3. Responsabilità',
         legalCard3Text: 'L’app aiuta a registrare le ore. Il calcolo delle paghe e il rispetto delle norme di lavoro restano responsabilità del datore di lavoro.',
-
         clockTitle: 'Timbro orario (dipendenti)',
         clockEmpSelectLabel: 'Seleziona dipendente:',
         clockReady: 'Pronto per timbrare.',
@@ -735,11 +697,9 @@
         clockNotIn: 'Questo dipendente non ha ancora timbrato l’entrata.',
         clockSelectEmp: 'Seleziona prima un dipendente.',
         clockUndoNoEntries: 'Nessuna registrazione da cancellare.',
-
         msgMissingFields: 'Seleziona dipendente, giorno e orari.',
         msgMissingEmp: 'Seleziona un dipendente.',
         msgNoPhone: 'Per questo dipendente non è salvato alcun numero di telefono.',
-
         footerText: 'Portale locale dipendenti per la registrazione delle ore.'
       }
     };
@@ -783,8 +743,9 @@
       applyTranslations();
     });
 
-    // ---------------- LOGIN CHEFE ----------------
-    const CHEF_PIN = "4729"; // MUDA AQUI PARA O PIN QUE QUISERES
+    /* --- resto do JS (igual ao que já tínhamos: PIN, horas, export, etc.) --- */
+
+    const CHEF_PIN = "4729";
 
     const chefPinInput = document.getElementById('chefPinInput');
     const btnChefLogin = document.getElementById('btnChefLogin');
@@ -813,7 +774,6 @@
       btnChefLogout.disabled = true;
     });
 
-    // ---------------- DADOS EMPREGADOS ----------------
     let employees = [];
 
     function loadEmployees() {
@@ -1353,5 +1313,6 @@
       applyTranslations();
     });
   </script>
+
 </body>
 </html>
