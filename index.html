@@ -140,16 +140,18 @@
       border-radius: 18px;
       background: #ffffff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      gap: 12px; /* espaço entre logo e bandeiras */
     }
+    /* caixa do logo ocupa todo o espaço disponível à esquerda */
     .logo-box {
-      width: 50%;
+      flex: 1;
       display: flex;
-      justify-content: flex-start;
       align-items: center;
     }
+    /* logo usa a largura quase total da caixa */
     .logo-img {
-      width: 50%;        /* ocupa metade da barra */
-      max-width: 380px;  /* limite para tablet/pc */
+      width: 100%;
+      max-width: 600px;
       height: auto;
       display: block;
     }
@@ -159,6 +161,7 @@
       align-items: center;
       justify-content: flex-end;
       gap: 8px;
+      flex-shrink: 0; /* não deixa as bandeiras encolherem */
     }
     .lang-flag {
       width: 32px;
@@ -227,19 +230,15 @@
     }
 
     @media (max-width: 600px) {
-      .logo-box {
-        width: 60%;
+      .top-header {
+        padding: 14px 12px;
       }
       .logo-img {
-        width: 100%;
-        max-width: 260px;
+        max-width: 320px;
       }
       .lang-flag {
         width: 28px;
         height: 20px;
-      }
-      .top-header {
-        padding: 14px 12px;
       }
     }
   </style>
@@ -529,7 +528,6 @@
         footer_impressum: "Impressum",
         footer_privacy: "Datenschutz",
 
-        // dinâmicos / alerts
         hours_info: "Stunden diesen Monat: {total} | Überstundenkonto: {bank}",
         hours_limit: " – Limit 40h überschritten!",
         status_no_employees: "Keine Mitarbeiter angelegt. Chef muss zuerst Mitarbeiter hinzufügen.",
@@ -761,7 +759,6 @@
         if (txt) el.placeholder = txt;
       });
 
-      // status padrão
       const statusEl = document.getElementById('status');
       if (statusEl && !statusEl.dataset.forced) {
         statusEl.textContent = tr('status_ready');
@@ -856,7 +853,6 @@
       return 'emp_' + Math.random().toString(36).substring(2, 9);
     }
 
-    // ================== ELEMENTOS DO DOM ==================
     const empNameInput = document.getElementById('empName');
     const empPhoneInput = document.getElementById('empPhone');
     const btnAddEmp = document.getElementById('btnAddEmp');
@@ -885,7 +881,6 @@
 
     const MAX_HOURS_PER_MONTH = 40;
 
-    // ================== HELPERS DE DATA/HORA ==================
     function getCurrentMonthKey() {
       const now = new Date();
       const y = now.getFullYear();
@@ -924,7 +919,6 @@
       exportMonthSelect.value = getCurrentMonthKey();
     }
 
-    // ================== HORAS & BANCO ==================
     function getHoursAndBank(emp) {
       const monthKey = getCurrentMonthKey();
       const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
@@ -980,13 +974,9 @@
       return phone.slice(0, 3) + '****' + phone.slice(-2);
     }
 
-    // ================== UI DE EMPREGADOS ==================
     function refreshEmployeeUI() {
-      // Select da Stempeluhr
       employeeSelect.innerHTML = `<option value="">${tr('option_choose_employee')}</option>`;
-      // Select do plano
       planEmployeeSelect.innerHTML = `<option value="">${tr('option_choose_employee')}</option>`;
-      // Select do export
       exportEmployeeSelect.innerHTML = `<option value="">${tr('option_choose_employee')}</option>`;
 
       employees.forEach(emp => {
@@ -1006,7 +996,6 @@
         exportEmployeeSelect.appendChild(opt3);
       });
 
-      // Lista para o chefe
       employeeListDiv.innerHTML = '';
       employees.forEach(emp => {
         const row = document.createElement('div');
@@ -1061,7 +1050,6 @@
       updatePlanHoursInfo();
     });
 
-    // ================== ADICIONAR EMPREGADOS ==================
     btnAddEmp.addEventListener('click', () => {
       const name = empNameInput.value.trim();
       const phone = empPhoneInput.value.trim();
@@ -1086,7 +1074,6 @@
       renderMonthlyReport();
     });
 
-    // ================== STEMPENUHR ==================
     btnIn.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
@@ -1159,7 +1146,6 @@
       renderMonthlyReport();
     });
 
-    // anular último registo
     btnUndo.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
@@ -1177,7 +1163,7 @@
       }
 
       const last = emp.sessions.pop();
-      const dateKey = last.start.substring(0, 7); // YYYY-MM
+      const dateKey = last.start.substring(0, 7);
       let sum = 0;
       emp.sessions.forEach(s => {
         if (s.start.substring(0, 7) === dateKey) {
@@ -1196,7 +1182,6 @@
       addLog(tr('log_deleted', { name: emp.name }));
     });
 
-    // ================== WHATSAPP – CHEF ==================
     function getHoursAndBankForCurrentMonth(emp) {
       const monthKey = getCurrentMonthKey();
       return getHoursAndBankForMonth(emp, monthKey);
@@ -1271,7 +1256,6 @@
       window.open(url, "_blank");
     });
 
-    // ================== MONATSBERICHT (CHEF) ==================
     function renderMonthlyReport() {
       const container = document.getElementById('monthlyReportContainer');
       if (!container) return;
@@ -1334,7 +1318,6 @@
       win.print();
     }
 
-    // ================= MONATS-EXPORT: HISTÓRICO + DRUCKER =================
     function buildMonthlyRowsForEmployee(emp, year, month) {
       const rows = [];
       const daysInMonth = new Date(year, month, 0).getDate();
@@ -1467,7 +1450,6 @@
       });
     }
 
-    // ================== FOOTER LINKS ==================
     document.getElementById('linkDatenschutz').addEventListener('click', function(e) {
       e.preventDefault();
       if (!isChefLoggedIn) {
@@ -1485,14 +1467,13 @@
       alert(tr('impressum_alert'));
     });
 
-    // ================== INICIALIZAÇÃO ==================
     loadEmployees();
     refreshEmployeeUI();
     updateHoursInfo();
     updatePlanHoursInfo();
     renderMonthlyReport();
     buildExportMonthOptions();
-    applyTranslations();  // aplicar novamente depois de criar selects
+    applyTranslations();
   </script>
 </body>
 </html>
