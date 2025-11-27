@@ -3,7 +3,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Mitarbeiterportal – Zeit & Dienstplan</title>
+  <title>WorkTime – Stempel System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f0f2f5">
 
@@ -128,15 +128,60 @@
       }
     }
 
-    /* HEADER COM LOGÓTIPO */
-    .logo-header {
-      text-align: center;
-      padding: 12px 0 20px;
+    /* TOPO: LOGO + IDIOMA */
+    .top-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
     }
-    .logo-header img {
-      max-width: 320px;   /* fica bem no tablet */
-      width: 80%;
+
+    .logo-banner {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 16px 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .logo-banner img {
+      max-width: 100%;
       height: auto;
+    }
+
+    .lang-switch {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e0e0e0;
+      border: none;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #1976d2;
+      color: #fff;
+    }
+
+    @media (min-width: 600px) {
+      .top-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo-banner {
+        max-width: 70%;
+      }
     }
 
     /* cartão login com cores da bandeira italiana */
@@ -189,28 +234,36 @@
 </head>
 <body>
 
-  <!-- LOGÓTIPO HORIZONTAL -->
-  <header class="logo-header">
-  <img src="IMG-20251127-WA0009.jpg" alt="WorkTime – Stempel System">
-</header>
+  <!-- TOPO: LOGÓTIPO + IDIOMA -->
+  <header class="top-header">
+    <div class="logo-banner">
+      <!-- certifica-te que o nome do ficheiro é este -->
+      <img src="IMG-20251127-WA0009.jpg" alt="WorkTime – Stempel System">
+    </div>
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="de">🇩🇪 DE</button>
+      <button class="lang-btn" data-lang="pt">🇵🇹 PT</button>
+      <button class="lang-btn" data-lang="it">🇮🇹 IT</button>
+    </div>
+  </header>
 
   <!-- LOGIN DO CHEFE -->
   <div class="section chef-login-card">
-    <h3>Chef Login</h3>
-    <label for="chefPinInput">PIN eingeben:</label>
+    <h3 data-i18n="chef_login_title">Chef Login</h3>
+    <label for="chefPinInput" data-i18n="chef_login_pin">PIN eingeben:</label>
     <input type="password" id="chefPinInput" placeholder="PIN">
 
     <div style="display:flex; gap:10px; margin-top:8px;">
-      <button id="btnChefLogin" class="btn-primary" style="flex:1;">
+      <button id="btnChefLogin" class="btn-primary" style="flex:1;" data-i18n="btn_login">
         Login
       </button>
-      <button id="btnChefLogout" class="btn-secondary" style="flex:1;">
+      <button id="btnChefLogout" class="btn-secondary" style="flex:1;" data-i18n="btn_logout">
         Logout
       </button>
     </div>
 
     <p id="chefLoginStatus"></p>
-    <small>
+    <small data-i18n="chef_login_help">
       Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten,
       Dienstplan / WhatsApp, Monatsbericht &amp; Export, Datenschutz) freigeschaltet.
     </small>
@@ -222,15 +275,15 @@
 
       <!-- Gestão de empregados -->
       <div class="section">
-        <h3>Mitarbeiter verwalten</h3>
+        <h3 data-i18n="emp_manage_title">Mitarbeiter verwalten</h3>
 
-        <label for="empName">Name des Mitarbeiters:</label>
+        <label for="empName" data-i18n="emp_name_label">Name des Mitarbeiters:</label>
         <input type="text" id="empName" placeholder="z.B. João, Maria, ...">
 
-        <label for="empPhone">WhatsApp / Telefonnummer (optional):</label>
+        <label for="empPhone" data-i18n="emp_phone_label">WhatsApp / Telefonnummer (optional):</label>
         <input type="text" id="empPhone" placeholder="z.B. 491701234567">
 
-        <button id="btnAddEmp" class="btn-primary" style="width:100%; margin-top:10px;">
+        <button id="btnAddEmp" class="btn-primary" style="width:100%; margin-top:10px;" data-i18n="btn_add_emp">
           Mitarbeiter hinzufügen
         </button>
 
@@ -238,16 +291,16 @@
           <!-- lista de empregados -->
         </div>
 
-        <small>
+        <small data-i18n="emp_storage_info">
           Mitarbeiterliste, Stunden, Überstunden und Historie werden im Browser (localStorage) gespeichert.
         </small>
       </div>
 
       <!-- Plano + WhatsApp -->
       <div class="section">
-        <h3>Dienstplan &amp; WhatsApp</h3>
+        <h3 data-i18n="plan_title">Dienstplan &amp; WhatsApp</h3>
 
-        <label for="planEmployeeSelect">Mitarbeiter auswählen:</label>
+        <label for="planEmployeeSelect" data-i18n="plan_emp_label">Mitarbeiter auswählen:</label>
         <select id="planEmployeeSelect">
           <option value="">-- Mitarbeiter wählen --</option>
         </select>
@@ -256,29 +309,29 @@
           Stunden diesen Monat: 0 | Überstundenkonto: 0
         </div>
 
-        <label for="date">Tag:</label>
+        <label for="date" data-i18n="plan_date_label">Tag:</label>
         <input type="date" id="date">
 
-        <label for="timeFrom">Von (Uhrzeit):</label>
+        <label for="timeFrom" data-i18n="plan_from_label">Von (Uhrzeit):</label>
         <input type="time" id="timeFrom">
 
-        <label for="timeTo">Bis (Uhrzeit):</label>
+        <label for="timeTo" data-i18n="plan_to_label">Bis (Uhrzeit):</label>
         <input type="time" id="timeTo">
 
         <div class="box">
-          <button id="btnPreview" class="btn-secondary" style="width:100%; margin-bottom:6px;">
+          <button id="btnPreview" class="btn-secondary" style="width:100%; margin-bottom:6px;" data-i18n="btn_preview">
             Nachricht anzeigen
           </button>
-          <button id="btnWhatsapp" class="btn-primary" style="width:100%;">
+          <button id="btnWhatsapp" class="btn-primary" style="width:100%;" data-i18n="btn_whatsapp">
             WhatsApp öffnen
           </button>
-          <p style="font-size:12px; margin-top:6px;">
+          <p style="font-size:12px; margin-top:6px;" data-i18n="plan_hint">
             WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.
           </p>
         </div>
 
         <div class="box">
-          <b>Vorschau Nachricht:</b>
+          <b data-i18n="preview_title">Vorschau Nachricht:</b>
           <p id="previewText" style="white-space: pre-wrap; margin-top: 8px;">
             (Noch keine Nachricht)
           </p>
@@ -287,8 +340,8 @@
 
       <!-- MONATSBERICHT (CHEF) -->
       <div class="section">
-        <h3>Monatsbericht (Chef)</h3>
-        <p style="font-size: 13px; margin-bottom:8px;">
+        <h3 data-i18n="report_title">Monatsbericht (Chef)</h3>
+        <p style="font-size: 13px; margin-bottom:8px;" data-i18n="report_text">
           Übersicht aller Mitarbeiter für den aktuellen Monat.
         </p>
 
@@ -296,35 +349,35 @@
           <!-- tabela gerada por JavaScript -->
         </div>
 
-        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()">
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="printMonthlyReport()" data-i18n="btn_print_report">
           Drucken / als PDF speichern
         </button>
       </div>
 
       <!-- MONATS-EXPORT COM HISTÓRICO DETALHADO -->
       <div class="section" id="exportSection">
-        <h3>Monats-Export (Word / Drucker)</h3>
-        <p style="font-size:13px; margin-bottom:10px;">
+        <h3 data-i18n="export_title">Monats-Export (Word / Drucker)</h3>
+        <p style="font-size:13px; margin-bottom:10px;" data-i18n="export_text">
           Export pro Mitarbeiter und Monat – ideal für den Steuerberater.
           Es wird ein Monatsblatt mit allen Tagen, Arbeitsbeginn und Arbeitsende erstellt,
           das du drucken oder als PDF speichern kannst.
         </p>
 
-        <label for="exportEmployeeSelect"><b>Mitarbeiter auswählen:</b></label>
+        <label for="exportEmployeeSelect"><b data-i18n="export_emp_label">Mitarbeiter auswählen:</b></label>
         <select id="exportEmployeeSelect">
           <option value="">-- Mitarbeiter wählen --</option>
         </select>
 
-        <label for="exportMonthSelect" style="margin-top:10px;"><b>Monat auswählen:</b></label>
+        <label for="exportMonthSelect" style="margin-top:10px;"><b data-i18n="export_month_label">Monat auswählen:</b></label>
         <select id="exportMonthSelect">
-          <!-- wird per JavaScript mit Monaten gefüllt -->
+          <!-- será preenchido em JS -->
         </select>
 
-        <button id="btnExportWord" class="btn-primary" style="width:100%; margin-top:14px;">
+        <button id="btnExportWord" class="btn-primary" style="width:100%; margin-top:14px;" data-i18n="btn_export_word">
           Word / Drucker – Monatsblatt erstellen
         </button>
 
-        <small id="exportInfo" style="display:block; margin-top:8px; font-size:12px; color:#555;">
+        <small id="exportInfo" style="display:block; margin-top:8px; font-size:12px; color:#555;" data-i18n="export_hint">
           Hinweis: Es wird ein neues Fenster mit einer Tabelle geöffnet.
           Von dort kannst du direkt drucken oder als PDF speichern.
         </small>
@@ -332,11 +385,11 @@
 
       <!-- DATENSCHUTZ & NUTZUNG – só para o chefe -->
       <div class="section" id="datenschutzBox">
-        <h3>Datenschutz &amp; Nutzungshinweise</h3>
+        <h3 data-i18n="ds_title">Datenschutz &amp; Nutzungshinweise</h3>
 
         <div class="ds-block">
-          <h4>1. Datenschutz</h4>
-          <p>
+          <h4 data-i18n="ds_1_title">1. Datenschutz</h4>
+          <p data-i18n="ds_1_text">
             Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs.
             Es werden keine Daten auf externen Servern gespeichert. Zugriff auf die
             gespeicherten Daten haben nur der Betrieb/Chef und die von ihm
@@ -346,8 +399,8 @@
         </div>
 
         <div class="ds-block">
-          <h4>2. Nutzung &amp; Urheberrecht</h4>
-          <p>
+          <h4 data-i18n="ds_2_title">2. Nutzung &amp; Urheberrecht</h4>
+          <p data-i18n="ds_2_text">
             Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine
             Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des
             Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche
@@ -356,8 +409,8 @@
         </div>
 
         <div class="ds-block">
-          <h4>3. Haftungsausschluss</h4>
-          <p>
+          <h4 data-i18n="ds_3_title">3. Haftungsausschluss</h4>
+          <p data-i18n="ds_3_text">
             Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die
             rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher
             Vorschriften bleiben in der Verantwortung des Arbeitgebers.
@@ -370,9 +423,9 @@
     <!-- SECÇÃO: Stempeluhr – para os empregados (sempre visível) -->
     <div>
       <div class="section">
-        <h3>Stempeluhr (für Mitarbeiter)</h3>
+        <h3 data-i18n="stamp_title">Stempeluhr (für Mitarbeiter)</h3>
 
-        <label for="employeeSelect">Mitarbeiter auswählen:</label>
+        <label for="employeeSelect" data-i18n="stamp_emp_label">Mitarbeiter auswählen:</label>
         <select id="employeeSelect">
           <option value="">-- Mitarbeiter wählen --</option>
         </select>
@@ -381,21 +434,21 @@
           Stunden diesen Monat: 0 | Überstundenkonto: 0
         </div>
 
-        <div id="status">Bereit zum Stempeln.</div>
+        <div id="status" data-i18n-placeholder="status_ready">Bereit zum Stempeln.</div>
 
-        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;">
+        <button id="btnIn" class="btn-primary" style="width:100%; margin-top:10px;" data-i18n="btn_clock_in">
           Einstempeln
         </button>
-        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;">
+        <button id="btnOut" class="btn-secondary" style="width:100%; margin-top:8px;" data-i18n="btn_clock_out">
           Ausstempeln
         </button>
-        <button id="btnUndo" class="btn-danger" style="width:100%; margin-top:8px;">
+        <button id="btnUndo" class="btn-danger" style="width:100%; margin-top:8px;" data-i18n="btn_undo">
           Letzten Eintrag löschen
         </button>
 
-        <div id="log"><b>Heutige Einträge:</b><br></div>
+        <div id="log"><b data-i18n="log_today">Heutige Einträge:</b><br></div>
 
-        <small>
+        <small data-i18n="stamp_rule">
           Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).
         </small>
       </div>
@@ -408,11 +461,185 @@
   </footer>
 
   <script>
+    // =============== TRADUÇÃO (DE / PT / IT) =================
+    const translations = {
+      de: {
+        chef_login_title: "Chef Login",
+        chef_login_pin: "PIN eingeben:",
+        btn_login: "Login",
+        btn_logout: "Logout",
+        chef_login_help: "Nach erfolgreichem Login werden die Chef-Bereiche (Mitarbeiter verwalten, Dienstplan / WhatsApp, Monatsbericht & Export, Datenschutz) freigeschaltet.",
+        emp_manage_title: "Mitarbeiter verwalten",
+        emp_name_label: "Name des Mitarbeiters:",
+        emp_phone_label: "WhatsApp / Telefonnummer (optional):",
+        btn_add_emp: "Mitarbeiter hinzufügen",
+        emp_storage_info: "Mitarbeiterliste, Stunden, Überstunden und Historie werden im Browser (localStorage) gespeichert.",
+        plan_title: "Dienstplan & WhatsApp",
+        plan_emp_label: "Mitarbeiter auswählen:",
+        plan_date_label: "Tag:",
+        plan_from_label: "Von (Uhrzeit):",
+        plan_to_label: "Bis (Uhrzeit):",
+        btn_preview: "Nachricht anzeigen",
+        btn_whatsapp: "WhatsApp öffnen",
+        plan_hint: "WhatsApp wird mit vorbereiteter Nachricht geöffnet. Du entscheidest, ob du sendest.",
+        preview_title: "Vorschau Nachricht:",
+        report_title: "Monatsbericht (Chef)",
+        report_text: "Übersicht aller Mitarbeiter für den aktuellen Monat.",
+        btn_print_report: "Drucken / als PDF speichern",
+        export_title: "Monats-Export (Word / Drucker)",
+        export_text: "Export pro Mitarbeiter und Monat – ideal für den Steuerberater. Es wird ein Monatsblatt mit allen Tagen, Arbeitsbeginn und Arbeitsende erstellt, das du drucken oder als PDF speichern kannst.",
+        export_emp_label: "Mitarbeiter auswählen:",
+        export_month_label: "Monat auswählen:",
+        btn_export_word: "Word / Drucker – Monatsblatt erstellen",
+        export_hint: "Hinweis: Es wird ein neues Fenster mit einer Tabelle geöffnet. Von dort kannst du direkt drucken oder als PDF speichern.",
+        ds_title: "Datenschutz & Nutzungshinweise",
+        ds_1_title: "1. Datenschutz",
+        ds_1_text: "Dieses System speichert Daten nur lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern gespeichert. Zugriff auf die gespeicherten Daten haben nur der Betrieb/Chef und die von ihm autorisierten Personen. Der Arbeitgeber ist dafür verantwortlich, seine Mitarbeiter über die Datenerfassung zu informieren.",
+        ds_2_title: "2. Nutzung & Urheberrecht",
+        ds_2_text: "Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche Zustimmung des Entwicklers ist untersagt.",
+        ds_3_title: "3. Haftungsausschluss",
+        ds_3_text: "Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.",
+        stamp_title: "Stempeluhr (für Mitarbeiter)",
+        stamp_emp_label: "Mitarbeiter auswählen:",
+        stamp_rule: "Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).",
+        btn_clock_in: "Einstempeln",
+        btn_clock_out: "Ausstempeln",
+        btn_undo: "Letzten Eintrag löschen",
+        log_today: "Heutige Einträge:",
+        status_ready: "Bereit zum Stempeln."
+      },
+      pt: {
+        chef_login_title: "Login do chefe",
+        chef_login_pin: "Introduzir PIN:",
+        btn_login: "Entrar",
+        btn_logout: "Sair",
+        chef_login_help: "Depois do login, serão ativadas as áreas do chefe (gestão de empregados, plano / WhatsApp, relatório mensal & exportação, proteção de dados).",
+        emp_manage_title: "Gerir empregados",
+        emp_name_label: "Nome do empregado:",
+        emp_phone_label: "WhatsApp / Número de telefone (opcional):",
+        btn_add_emp: "Adicionar empregado",
+        emp_storage_info: "Lista de empregados, horas, horas extra e histórico são guardados apenas no navegador (localStorage).",
+        plan_title: "Plano de serviço & WhatsApp",
+        plan_emp_label: "Escolher empregado:",
+        plan_date_label: "Dia:",
+        plan_from_label: "Das (hora):",
+        plan_to_label: "Até (hora):",
+        btn_preview: "Mostrar mensagem",
+        btn_whatsapp: "Abrir WhatsApp",
+        plan_hint: "O WhatsApp abre com a mensagem preparada. Tu decides se queres enviar.",
+        preview_title: "Pré-visualização da mensagem:",
+        report_title: "Relatório mensal (chefe)",
+        report_text: "Resumo de todos os empregados para o mês atual.",
+        btn_print_report: "Imprimir / guardar como PDF",
+        export_title: "Exportação mensal (Word / impressora)",
+        export_text: "Exportação por empregado e mês – ideal para o contabilista. É criada uma folha mensal com todos os dias, início e fim de trabalho, para imprimir ou guardar em PDF.",
+        export_emp_label: "Escolher empregado:",
+        export_month_label: "Escolher mês:",
+        btn_export_word: "Criar folha mensal (Word / impressora)",
+        export_hint: "Abre-se uma nova janela com a tabela. A partir daí podes imprimir ou guardar como PDF.",
+        ds_title: "Proteção de dados & condições de uso",
+        ds_1_title: "1. Proteção de dados",
+        ds_1_text: "Este sistema guarda dados apenas localmente no navegador/tablet do estabelecimento. Nenhum dado é guardado em servidores externos. Só o estabelecimento/chefe e as pessoas autorizadas têm acesso aos dados. O empregador é responsável por informar os empregados sobre a recolha de dados.",
+        ds_2_title: "2. Utilização & direitos de autor",
+        ds_2_text: "Esta aplicação é apenas para o estabelecimento licenciado. É proibida a transmissão, cópia, venda ou reprodução do código-fonte e do design a terceiros sem autorização escrita do desenvolvedor.",
+        ds_3_title: "3. Exclusão de responsabilidade",
+        ds_3_text: "A aplicação ajuda no registo das horas de trabalho. O cálculo correto dos salários e o cumprimento das leis laborais continuam a ser responsabilidade do empregador.",
+        stamp_title: "Relógio de ponto (para empregados)",
+        stamp_emp_label: "Escolher empregado:",
+        stamp_rule: "Regra: máximo 40 horas por mês. Tudo o que ultrapassar vai para o banco de horas.",
+        btn_clock_in: "Entrar",
+        btn_clock_out: "Sair",
+        btn_undo: "Apagar último registo",
+        log_today: "Registos de hoje:",
+        status_ready: "Pronto para registar o ponto."
+      },
+      it: {
+        chef_login_title: "Login del capo",
+        chef_login_pin: "Inserire PIN:",
+        btn_login: "Login",
+        btn_logout: "Logout",
+        chef_login_help: "Dopo il login vengono attivate le aree del capo (gestione dipendenti, turni / WhatsApp, rapporto mensile & export, protezione dati).",
+        emp_manage_title: "Gestione dipendenti",
+        emp_name_label: "Nome del dipendente:",
+        emp_phone_label: "WhatsApp / Numero di telefono (opzionale):",
+        btn_add_emp: "Aggiungi dipendente",
+        emp_storage_info: "Elenco dipendenti, ore, straordinari e storico vengono salvati solo nel browser (localStorage).",
+        plan_title: "Pianificazione turni & WhatsApp",
+        plan_emp_label: "Seleziona dipendente:",
+        plan_date_label: "Giorno:",
+        plan_from_label: "Da (ora):",
+        plan_to_label: "A (ora):",
+        btn_preview: "Mostra messaggio",
+        btn_whatsapp: "Apri WhatsApp",
+        plan_hint: "WhatsApp si apre con il messaggio preparato. Decidi tu se inviarlo.",
+        preview_title: "Anteprima messaggio:",
+        report_title: "Rapporto mensile (capo)",
+        report_text: "Panoramica di tutti i dipendenti per il mese corrente.",
+        btn_print_report: "Stampa / salva come PDF",
+        export_title: "Export mensile (Word / stampante)",
+        export_text: "Export per dipendente e mese – ideale per il commercialista. Viene creata una scheda mensile con tutti i giorni, inizio e fine lavoro, da stampare o salvare in PDF.",
+        export_emp_label: "Seleziona dipendente:",
+        export_month_label: "Seleziona mese:",
+        btn_export_word: "Crea scheda mensile (Word / stampante)",
+        export_hint: "Si apre una nuova finestra con la tabella. Da lì puoi stampare o salvare in PDF.",
+        ds_title: "Protezione dati & condizioni d'uso",
+        ds_1_title: "1. Protezione dati",
+        ds_1_text: "Questo sistema salva i dati solo localmente nel browser/tablet dell'azienda. Nessun dato viene salvato su server esterni. Solo l'azienda/il capo e le persone autorizzate hanno accesso ai dati. Il datore di lavoro è responsabile di informare i dipendenti sulla raccolta dei dati.",
+        ds_2_title: "2. Utilizzo & diritto d'autore",
+        ds_2_text: "Questa applicazione è destinata solo all'azienda licenziataria. È vietata la trasmissione, la copia, la vendita o la riproduzione del codice sorgente e del design a terzi senza il consenso scritto dello sviluppatore.",
+        ds_3_title: "3. Esclusione di responsabilità",
+        ds_3_text: "L'applicazione supporta la registrazione delle ore di lavoro. Il calcolo corretto delle paghe e il rispetto delle norme sul lavoro rimangono responsabilità del datore di lavoro.",
+        stamp_title: "Timbro orario (per dipendenti)",
+        stamp_emp_label: "Seleziona dipendente:",
+        stamp_rule: "Regola: massimo 40 ore al mese. Tutto ciò che è in più va nella banca ore.",
+        btn_clock_in: "Entrata",
+        btn_clock_out: "Uscita",
+        btn_undo: "Cancella ultimo record",
+        log_today: "Registrazioni di oggi:",
+        status_ready: "Pronto per timbrare."
+      }
+    };
+
+    function applyLanguage(lang) {
+      const dict = translations[lang] || translations.de;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.innerHTML = dict[key];
+        }
+      });
+
+      // status "pronto"
+      const status = document.getElementById('status');
+      if (status && dict.status_ready) {
+        if (!status.dataset.defaultText) {
+          status.dataset.defaultText = status.textContent;
+        }
+        status.textContent = dict.status_ready;
+      }
+
+      // marcar botão ativo
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      localStorage.setItem('worktimeLang', lang);
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyLanguage(btn.dataset.lang);
+      });
+    });
+
+    const savedLang = localStorage.getItem('worktimeLang') || 'de';
+    applyLanguage(savedLang);
+
     // ================== CONFIG LOGIN DO CHEFE ==================
     const CHEF_PIN = "1234"; // MUDA ESTE PIN SE QUISERES
 
     const chefPinInput   = document.getElementById('chefPinInput');
-    the chefs
     const btnChefLogin   = document.getElementById('btnChefLogin');
     const btnChefLogout  = document.getElementById('btnChefLogout');
     const chefLoginStatus = document.getElementById('chefLoginStatus');
@@ -624,7 +851,6 @@
         exportEmployeeSelect.appendChild(opt3);
       });
 
-      // Lista para o chefe
       employeeListDiv.innerHTML = '';
       employees.forEach(emp => {
         const row = document.createElement('div');
@@ -656,7 +882,8 @@
       if (disabled) {
         statusEl.textContent = 'Keine Mitarbeiter angelegt. Chef muss zuerst Mitarbeiter hinzufügen.';
       } else {
-        statusEl.textContent = 'Bereit zum Stempeln.';
+        const lang = localStorage.getItem('worktimeLang') || 'de';
+        statusEl.textContent = translations[lang].status_ready;
       }
 
       buildExportMonthOptions();
@@ -670,7 +897,8 @@
         statusEl.textContent = 'Mitarbeiter ist aktuell eingestempelt (seit ' +
           new Date(emp.activeSessionStart).toLocaleString() + ').';
       } else {
-        statusEl.textContent = 'Bereit zum Stempeln.';
+        const lang = localStorage.getItem('worktimeLang') || 'de';
+        statusEl.textContent = translations[lang].status_ready;
       }
     });
 
@@ -778,6 +1006,7 @@
       renderMonthlyReport();
     });
 
+    // anular último registo
     btnUndo.addEventListener('click', () => {
       const empId = employeeSelect.value;
       if (!empId) {
@@ -795,7 +1024,7 @@
       }
 
       const last = emp.sessions.pop();
-      const dateKey = last.start.substring(0, 7);
+      const dateKey = last.start.substring(0, 7); // YYYY-MM
       let sum = 0;
       emp.sessions.forEach(s => {
         if (s.start.substring(0, 7) === dateKey) {
@@ -937,11 +1166,11 @@
       if (!container) return;
 
       const win = window.open('', '_blank');
-      win.document.write('<html><head><title>Monatsbericht – Mitarbeiterportal</title>');
+      win.document.write('<html><head><title>Monatsbericht – WorkTime</title>');
       win.document.write('<meta charset="UTF-8">');
       win.document.write('<style>body{font-family:Arial,sans-serif;padding:16px;} table{width:100%;border-collapse:collapse;font-size:14px;} th,td{border:1px solid #ccc;padding:4px;} th{text-align:left;background:#f0f0f0;}</style>');
       win.document.write('</head><body>');
-      win.document.write('<h2>Monatsbericht – Mitarbeiterportal</h2>');
+      win.document.write('<h2>Monatsbericht – WorkTime</h2>');
       win.document.write('<p>Monat: ' + getCurrentMonthKey() + '</p>');
       win.document.write(container.innerHTML);
       win.document.write('</body></html>');
@@ -955,7 +1184,6 @@
       const rows = [];
       const daysInMonth = new Date(year, month, 0).getDate();
       let totalHours = 0;
-
       const sessions = emp.sessions || [];
 
       for (let day = 1; day <= daysInMonth; day++) {
