@@ -305,7 +305,29 @@
       </div>
 
       <div class="section">
-        <h3 id="t-plan-whatsapp">Dienstplan &amp; WhatsApp</h3>
+        <h3 id="t-records-title">Einträge verwalten</h3>
+
+        <label for="recordsEmployeeSelect" id="t-records-emp">Mitarbeiter auswählen:</label>
+        <select id="recordsEmployeeSelect">
+          <option value="">-- Mitarbeiter wählen --</option>
+        </select>
+
+        <label for="recordsMonthSelect" id="t-records-month">Monat auswählen:</label>
+        <select id="recordsMonthSelect"></select>
+
+        <div id="recordsInfo" style="font-size:13px; margin-top:8px; color:#555;">
+          Bitte Mitarbeiter auswählen.
+        </div>
+
+        <div id="recordsContainer" style="margin-top:10px; overflow-x:auto;"></div>
+
+        <small id="t-records-note">
+          Hier kannst du einzelne Einträge sehen, bearbeiten oder löschen.
+        </small>
+      </div>
+
+      <div class="section">
+        <h3 id="t-plan-whatsapp">Dienstplan &amp; WhatsApp</h3>Dienstplan &amp; WhatsApp</h3>
 
         <label for="planEmployeeSelect" id="t-plan-choose-emp">Mitarbeiter auswählen:</label>
         <select id="planEmployeeSelect">
@@ -448,7 +470,7 @@
         <div id="log"><b>Heutige Einträge:</b><br></div>
 
         <small id="t-rule">
-          Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).
+          Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden). Stempelzeiten werden automatisch auf 15 Minuten gerundet.
         </small>
       </div>
     </div>
@@ -552,6 +574,11 @@
     const exportMonthSelect = document.getElementById('exportMonthSelect');
     const btnExportWord = document.getElementById('btnExportWord');
 
+    const recordsEmployeeSelect = document.getElementById('recordsEmployeeSelect');
+    const recordsMonthSelect = document.getElementById('recordsMonthSelect');
+    const recordsContainer = document.getElementById('recordsContainer');
+    const recordsInfo = document.getElementById('recordsInfo');
+
     const manualEmployeeSelect = document.getElementById('manualEmployeeSelect');
     const manualDate = document.getElementById('manualDate');
     const manualStart = document.getElementById('manualStart');
@@ -559,6 +586,21 @@
     const btnManualAdd = document.getElementById('btnManualAdd');
 
     const MAX_HOURS_PER_MONTH = 40;
+
+    function roundToQuarterHour(date) {
+      const d = new Date(date);
+      const minutes = d.getMinutes();
+      const roundedMinutes = Math.round(minutes / 15) * 15;
+
+      if (roundedMinutes === 60) {
+        d.setHours(d.getHours() + 1);
+        d.setMinutes(0, 0, 0);
+      } else {
+        d.setMinutes(roundedMinutes, 0, 0);
+      }
+
+      return d;
+    }
 
     function getCurrentMonthKey() {
       const now = new Date();
@@ -596,6 +638,21 @@
         exportMonthSelect.appendChild(opt);
       }
       exportMonthSelect.value = getCurrentMonthKey();
+    }
+
+    function buildRecordsMonthOptions() {
+      if (!recordsMonthSelect) return;
+      recordsMonthSelect.innerHTML = '';
+      const now = new Date();
+      const year = now.getFullYear();
+      for (let m = 1; m <= 12; m++) {
+        const value = `${year}-${String(m).padStart(2,'0')}`;
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = getMonthLabel(year, m);
+        recordsMonthSelect.appendChild(opt);
+      }
+      recordsMonthSelect.value = getCurrentMonthKey();
     }
 
     function getHoursAndBank(emp) {
@@ -680,6 +737,7 @@
       planEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
       exportEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
       manualEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
+      recordsEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
 
       employees.forEach(emp => {
         const opt1 = document.createElement('option');
@@ -701,6 +759,11 @@
         opt4.value = emp.id;
         opt4.textContent = emp.name;
         manualEmployeeSelect.appendChild(opt4);
+
+        const opt5 = document.createElement('option');
+        opt5.value = emp.id;
+        opt5.textContent = emp.name;
+        recordsEmployeeSelect.appendChild(opt5);
       });
 
       employeeListDiv.innerHTML = '';
@@ -736,6 +799,8 @@
       }
 
       buildExportMonthOptions();
+      buildRecordsMonthOptions();
+      renderRecordsTable();
     }
 
     employeeSelect.addEventListener('change', () => {
@@ -751,6 +816,14 @@
 
     planEmployeeSelect.addEventListener('change', () => {
       updatePlanHoursInfo();
+    });
+
+    recordsEmployeeSelect.addEventListener('change', () => {
+      renderRecordsTable();
+    });
+
+    recordsMonthSelect.addEventListener('change', () => {
+      renderRecordsTable();
     });
 
     btnAddEmp.addEventListener('click', () => {
@@ -799,8 +872,10 @@
         return;
       }
 
-      const start = new Date(`${date}T${startTime}:00`);
-      const end = new Date(`${date}T${endTime}:00`);
+      const realStart = new Date(`${date}T${startTime}:00`);
+      const realEnd = new Date(`${date}T${endTime}:00`);
+      const start = roundToQuarterHour(realStart);
+      const end = roundToQuarterHour(realEnd);
 
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
         alert('Ungültiges Datum oder Uhrzeit.');
@@ -828,6 +903,8 @@
       emp.sessions.push({
         start: start.toISOString(),
         end: end.toISOString(),
+        realStart: realStart.toISOString(),
+        realEnd: realEnd.toISOString(),
         hours: hours,
         manual: true
       });
@@ -844,6 +921,7 @@
       updateHoursInfo();
       updatePlanHoursInfo();
       renderMonthlyReport();
+      renderRecordsTable();
       addLog(emp.name + ' – manueller Eintrag hinzugefügt (' + hours.toFixed(2) + ' Std.)');
 
       alert('Vergessener Eintrag wurde gespeichert.');
@@ -863,9 +941,12 @@
         return;
       }
 
-      emp.activeSessionStart = new Date().toISOString();
+      const realStart = new Date();
+      const roundedStart = roundToQuarterHour(realStart);
+      emp.activeSessionStart = roundedStart.toISOString();
+      emp.activeSessionRealStart = realStart.toISOString();
       saveEmployees();
-      statusEl.textContent = 'Eingestempelt um ' + new Date(emp.activeSessionStart).toLocaleString() + '.';
+      statusEl.textContent = 'Eingestempelt um ' + roundedStart.toLocaleString('de-DE') + '.';
       addLog(emp.name + ' eingestempelt');
     });
 
@@ -884,7 +965,7 @@
       }
 
       const start = new Date(emp.activeSessionStart);
-      const end = new Date();
+      const end = roundToQuarterHour(new Date());
       const diffMs = end - start;
       const hours = diffMs / 1000 / 60 / 60;
 
@@ -895,6 +976,8 @@
       emp.sessions.push({
         start: start.toISOString(),
         end: end.toISOString(),
+        realStart: emp.activeSessionRealStart || start.toISOString(),
+        realEnd: new Date().toISOString(),
         hours: hours,
         manual: false
       });
@@ -905,12 +988,14 @@
       const newTotal = emp.monthlyHours[monthKey] || 0;
 
       emp.activeSessionStart = null;
+      emp.activeSessionRealStart = null;
       saveEmployees();
 
       statusEl.textContent = 'Ausgestempelt. Gearbeitete Zeit: ' + hours.toFixed(2) + ' Std. Gesamt in diesem Monat: ' + newTotal.toFixed(2) + ' Std.';
       addLog(emp.name + ' ausgestempelt (' + hours.toFixed(2) + ' Std.)');
 
       updateHoursInfo();
+      renderRecordsTable();
       updatePlanHoursInfo();
       renderMonthlyReport();
     });
@@ -938,8 +1023,105 @@
       updateHoursInfo();
       updatePlanHoursInfo();
       renderMonthlyReport();
+      renderRecordsTable();
       addLog(emp.name + ' – letzter Eintrag gelöscht');
     });
+
+    function editSession(empId, sessionIndex) {
+      if (!isChefLoggedIn) {
+        alert('Nur nach Chef-Login möglich.');
+        return;
+      }
+
+      const emp = employees.find(e => e.id === empId);
+      if (!emp || !emp.sessions || !emp.sessions[sessionIndex]) {
+        alert('Eintrag nicht gefunden.');
+        return;
+      }
+
+      const session = emp.sessions[sessionIndex];
+      const currentStart = new Date(session.realStart || session.start);
+      const currentEnd = new Date(session.realEnd || session.end);
+
+      const dateDefault = session.start.substring(0, 10);
+      const startDefault = currentStart.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+      const endDefault = currentEnd.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+
+      const newDate = prompt('Datum ändern (YYYY-MM-DD):', dateDefault);
+      if (newDate === null) return;
+
+      const newStartTime = prompt('Arbeitsbeginn ändern (HH:MM):', startDefault);
+      if (newStartTime === null) return;
+
+      const newEndTime = prompt('Arbeitsende ändern (HH:MM):', endDefault);
+      if (newEndTime === null) return;
+
+      const realStart = new Date(`${newDate}T${newStartTime}:00`);
+      const realEnd = new Date(`${newDate}T${newEndTime}:00`);
+      const roundedStart = roundToQuarterHour(realStart);
+      const roundedEnd = roundToQuarterHour(realEnd);
+
+      if (isNaN(realStart.getTime()) || isNaN(realEnd.getTime())) {
+        alert('Ungültiges Datum oder Uhrzeit.');
+        return;
+      }
+
+      if (roundedEnd <= roundedStart) {
+        alert('Die Endzeit muss nach der Startzeit liegen.');
+        return;
+      }
+
+      session.realStart = realStart.toISOString();
+      session.realEnd = realEnd.toISOString();
+      session.start = roundedStart.toISOString();
+      session.end = roundedEnd.toISOString();
+      session.hours = (roundedEnd - roundedStart) / 1000 / 60 / 60;
+      session.manual = true;
+
+      emp.sessions.sort((a, b) => new Date(a.start) - new Date(b.start));
+      recalculateEmployeeTotals(emp);
+      saveEmployees();
+      updateHoursInfo();
+      updatePlanHoursInfo();
+      renderMonthlyReport();
+      renderRecordsTable();
+      addLog(emp.name + ' – Eintrag bearbeitet');
+    }
+
+    function deleteSession(empId, sessionIndex) {
+      if (!isChefLoggedIn) {
+        alert('Nur nach Chef-Login möglich.');
+        return;
+      }
+
+      const emp = employees.find(e => e.id === empId);
+      if (!emp || !emp.sessions || !emp.sessions[sessionIndex]) {
+        alert('Eintrag nicht gefunden.');
+        return;
+      }
+
+      const session = emp.sessions[sessionIndex];
+      const dateText = new Date(session.start).toLocaleDateString('de-DE');
+      const startText = new Date(session.start).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+      const endText = new Date(session.end).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+
+      if (!confirm(`Eintrag löschen?
+
+${dateText}
+${startText} - ${endText}
+${(session.hours || 0).toFixed(2)} Std.`)) {
+        return;
+      }
+
+      emp.sessions.splice(sessionIndex, 1);
+      recalculateEmployeeTotals(emp);
+      saveEmployees();
+      updateHoursInfo();
+      updatePlanHoursInfo();
+      renderMonthlyReport();
+      renderRecordsTable();
+      addLog(emp.name + ' – Eintrag gelöscht');
+    }
 
     function getHoursAndBankForCurrentMonth(emp) {
       const monthKey = getCurrentMonthKey();
@@ -1011,6 +1193,81 @@
 
       window.open(url, "_blank");
     });
+
+    function getRoundedDisplay(isoString) {
+      const d = new Date(isoString);
+      return d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function getRealDisplay(session, type) {
+      const key = type === 'start' ? 'realStart' : 'realEnd';
+      if (!session[key]) return '—';
+      return new Date(session[key]).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function renderRecordsTable() {
+      if (!recordsContainer || !recordsInfo) return;
+
+      const empId = recordsEmployeeSelect.value;
+      const monthKey = recordsMonthSelect.value || getCurrentMonthKey();
+
+      if (!empId) {
+        recordsInfo.textContent = 'Bitte Mitarbeiter auswählen.';
+        recordsContainer.innerHTML = '';
+        return;
+      }
+
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) {
+        recordsInfo.textContent = 'Mitarbeiter nicht gefunden.';
+        recordsContainer.innerHTML = '';
+        return;
+      }
+
+      const sessions = (emp.sessions || []).filter(s => (s.start || '').substring(0, 7) === monthKey);
+
+      recordsInfo.textContent = `${emp.name} – ${sessions.length} Eintrag/Einträge im Monat ${monthKey}`;
+
+      if (sessions.length === 0) {
+        recordsContainer.innerHTML = '<em>Keine Einträge in diesem Monat.</em>';
+        return;
+      }
+
+      let html = '<table style="width:100%; border-collapse:collapse; font-size:13px; min-width:980px;">';
+      html += '<thead><tr>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Datum</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Real In</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Gerundet In</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Real Out</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Gerundet Out</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Std.</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Art</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Aktion</th>' +
+        '</tr></thead><tbody>';
+
+      sessions.forEach((s, index) => {
+        const originalIndex = (emp.sessions || []).indexOf(s);
+        const dateText = new Date(s.start).toLocaleDateString('de-DE');
+        const typeText = s.manual ? 'Manuell' : 'Auto';
+
+        html += '<tr>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + dateText + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + getRealDisplay(s, 'start') + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + getRoundedDisplay(s.start) + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + getRealDisplay(s, 'end') + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + getRoundedDisplay(s.end) + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px; text-align:right;">' + (s.hours || 0).toFixed(2) + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + typeText + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px; white-space:nowrap;">' +
+            '<button class="btn-secondary" style="margin-right:6px; padding:6px 8px;" onclick="editSession(\'' + emp.id + '\',' + originalIndex + ')">Bearbeiten</button>' +
+            '<button class="btn-danger" style="padding:6px 8px;" onclick="deleteSession(\'' + emp.id + '\',' + originalIndex + ')">Löschen</button>' +
+          '</td>' +
+          '</tr>';
+      });
+
+      html += '</tbody></table>';
+      recordsContainer.innerHTML = html;
+    }
 
     function renderMonthlyReport() {
       const container = document.getElementById('monthlyReportContainer');
@@ -1238,6 +1495,10 @@
         't-manual-end': 'Arbeitsende:',
         't-manual-btn': 'Eintrag speichern',
         't-manual-note': 'Nur für vergessene Stempelungen. Die Stunden werden automatisch im richtigen Monat nachgetragen.',
+        't-records-title': 'Einträge verwalten',
+        't-records-emp': 'Mitarbeiter auswählen:',
+        't-records-month': 'Monat auswählen:',
+        't-records-note': 'Hier kannst du einzelne Einträge sehen, bearbeiten oder löschen.',
         't-plan-whatsapp': 'Dienstplan & WhatsApp',
         't-plan-choose-emp': 'Mitarbeiter auswählen:',
         't-date-label': 'Tag:',
@@ -1260,7 +1521,7 @@
         't-btn-in': 'Einstempeln',
         't-btn-out': 'Ausstempeln',
         't-btn-undo': 'Letzten Eintrag löschen',
-        't-rule': 'Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden).'
+        't-rule': 'Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden). Stempelzeiten werden automatisch auf 15 Minuten gerundet.'
       },
       pt: {
         't-chef-login': 'Login do Chefe',
@@ -1278,6 +1539,10 @@
         't-manual-end': 'Fim do trabalho:',
         't-manual-btn': 'Guardar entrada',
         't-manual-note': 'Só para picagens esquecidas. As horas são lançadas automaticamente no mês correto.',
+        't-records-title': 'Gerir registos',
+        't-records-emp': 'Escolher empregado:',
+        't-records-month': 'Escolher mês:',
+        't-records-note': 'Aqui podes ver, editar ou apagar registos individuais.',
         't-plan-whatsapp': 'Plano de turnos & WhatsApp',
         't-plan-choose-emp': 'Escolher empregado:',
         't-date-label': 'Dia:',
@@ -1300,7 +1565,7 @@
         't-btn-in': 'Entrar',
         't-btn-out': 'Sair',
         't-btn-undo': 'Apagar último registo',
-        't-rule': 'Regra: Máximo 40 horas por mês. Tudo acima disso vai para o banco de horas.'
+        't-rule': 'Regra: Máximo 40 horas por mês. Tudo acima disso vai para o banco de horas. As picagens são arredondadas automaticamente a 15 minutos.'
       },
       it: {
         't-chef-login': 'Accesso Capo',
@@ -1318,6 +1583,10 @@
         't-manual-end': 'Fine lavoro:',
         't-manual-btn': 'Salva registrazione',
         't-manual-note': 'Solo per timbrature dimenticate. Le ore vengono aggiunte automaticamente al mese corretto.',
+        't-records-title': 'Gestione registrazioni',
+        't-records-emp': 'Seleziona dipendente:',
+        't-records-month': 'Seleziona mese:',
+        't-records-note': 'Qui puoi vedere, modificare o cancellare singole registrazioni.',
         't-plan-whatsapp': 'Pianificazione turni & WhatsApp',
         't-plan-choose-emp': 'Seleziona dipendente:',
         't-date-label': 'Giorno:',
@@ -1340,7 +1609,7 @@
         't-btn-in': 'Entrata',
         't-btn-out': 'Uscita',
         't-btn-undo': 'Cancella ultimo registro',
-        't-rule': 'Regola: Massimo 40 ore al mese. Tutto sopra va nella banca ore.'
+        't-rule': 'Regola: Massimo 40 ore al mese. Tutto sopra va nella banca ore. Le timbrature vengono arrotondate automaticamente a 15 minuti.'
       }
     };
 
@@ -1358,6 +1627,8 @@
     updatePlanHoursInfo();
     renderMonthlyReport();
     buildExportMonthOptions();
+    buildRecordsMonthOptions();
+    renderRecordsTable();
     setLanguage('de');
   </script>
 </body>
