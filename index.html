@@ -1,839 +1,909 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>WorkTime – Stempel System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      padding: 16px;
-      max-width: 1200px;
-      margin: 0 auto;
-      background: #f0f2f5;
-    }
-    h2, h3 { margin-top: 0; }
-    label { display: block; margin-top: 8px; font-weight: bold; }
-    input, select, button {
-      padding: 10px;
-      margin-top: 4px;
-      font-size: 16px;
-      width: 100%;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    button { cursor: pointer; border: none; }
-    .btn-primary { background: #1976d2; color: #fff; }
-    .btn-secondary { background: #eee; color: #333; }
-    .btn-danger { background: #d32f2f; color: #fff; }
-    .btn-warning { background: #ff9800; color: #fff; }
-    .section {
-      border: 1px solid #ccc;
-      padding: 14px;
-      margin-top: 15px;
-      border-radius: 10px;
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .top-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-      border-radius: 18px;
-      padding: 16px 20px;
-      margin-bottom: 18px;
-    }
-    .logo-img {
-      max-width: 100%;
-      max-height: 170px;
-      width: auto;
-    }
-    .lang-switch { display: flex; gap: 10px; }
-    .lang-flag {
-      width: 42px;
-      height: 28px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: 2px solid transparent;
-    }
-    .lang-flag:hover { border-color: #1976d2; }
-    .employee-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 0;
-      border-bottom: 1px solid #eee;
-    }
-    .warning { color: #d32f2f; font-weight: bold; }
-    .box {
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 8px;
-      background: #fafafa;
-      margin-top: 10px;
-    }
-    #log {
-      max-height: 220px;
-      overflow-y: auto;
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 8px;
-      font-size: 13px;
-      border-radius: 6px;
-      margin-top: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 6px;
-      text-align: left;
-    }
-    th {
-      background: #f5f5f5;
-      font-weight: bold;
-    }
-    .vacation-row {
-      background-color: #fff3e0;
-    }
-    footer {
-      margin-top: 24px;
-      text-align: center;
-      font-size: 12px;
-      color: #666;
-    }
-    footer a {
-      color: #1976d2;
-      text-decoration: none;
-      margin: 0 4px;
-    }
-    .chef-login-card {
-      position: relative;
-      padding: 14px;
-      border-radius: 12px;
-      background: linear-gradient(white, white) padding-box,
-                  linear-gradient(90deg, #008C45, #F4F5F0, #CD212A) border-box;
-      border: 2px solid transparent;
-    }
-    #datenschutzBox { display: none; margin-top: 20px; }
-    .ds-block {
-      border: 1px solid #ddd;
-      padding: 10px 12px;
-      background: #fafafa;
-      margin-top: 10px;
-      border-radius: 8px;
-    }
-    @media (max-width: 800px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkTime – Stempel System</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #f0f2f5;
+        }
+        h2, h3 { margin-top: 0; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+        .btn-primary { background: #1976d2; color: white; }
+        .btn-secondary { background: #e0e0e0; color: #333; }
+        .btn-danger { background: #d32f2f; color: white; }
+        .btn-warning { background: #ff9800; color: white; }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .top-header {
+            background: white;
+            border-radius: 18px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-img {
+            max-height: 80px;
+            width: auto;
+        }
+        .lang-switch {
+            display: flex;
+            gap: 10px;
+        }
+        .lang-flag {
+            width: 42px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .lang-flag:hover { border-color: #1976d2; }
+        .employee-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .warning { color: #d32f2f; font-weight: bold; }
+        .box {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        #log {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+        .vacation-row {
+            background-color: #fff3e0;
+        }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        footer a {
+            color: #1976d2;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        .chef-login-card {
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(90deg, #008C45, #F4F5F0, #CD212A) border-box;
+            border-radius: 12px;
+        }
+        #datenschutzBox {
+            display: none;
+        }
+        @media (max-width: 800px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
 <header class="top-header">
-  <div class="logo-box">
-    <img src="IMG-20251128-WA0000.jpg" alt="WorkTime Logo" class="logo-img">
-  </div>
-  <div class="lang-switch">
-    <img class="lang-flag" src="https://flagcdn.com/w40/de.png" alt="DE" onclick="setLanguage('de')">
-    <img class="lang-flag" src="https://flagcdn.com/w40/pt.png" alt="PT" onclick="setLanguage('pt')">
-    <img class="lang-flag" src="https://flagcdn.com/w40/it.png" alt="IT" onclick="setLanguage('it')">
-  </div>
+    <div>
+        <img src="IMG-20251128-WA0000.jpg" alt="WorkTime" class="logo-img" onerror="this.style.display='none'">
+    </div>
+    <div class="lang-switch">
+        <img class="lang-flag" src="https://flagcdn.com/w40/de.png" alt="DE" onclick="setLanguage('de')">
+        <img class="lang-flag" src="https://flagcdn.com/w40/pt.png" alt="PT" onclick="setLanguage('pt')">
+        <img class="lang-flag" src="https://flagcdn.com/w40/it.png" alt="IT" onclick="setLanguage('it')">
+    </div>
 </header>
 
 <div class="section chef-login-card">
-  <h3 id="t-chef-login">Chef Login</h3>
-  <label for="chefPinInput" id="t-pin-label">PIN eingeben:</label>
-  <input type="password" id="chefPinInput" placeholder="PIN">
-  <div style="display:flex; gap:10px; margin-top:8px;">
-    <button id="btnChefLogin" class="btn-primary">Login</button>
-    <button id="btnChefLogout" class="btn-secondary">Logout</button>
-  </div>
-  <p id="chefLoginStatus"></p>
-  <small id="t-chef-info">Nach erfolgreichem Login werden die Chef-Bereiche freigeschaltet.</small>
+    <h3 id="t-chef-login">Chef Login</h3>
+    <label for="chefPin" id="t-pin-label">PIN eingeben:</label>
+    <input type="password" id="chefPin" placeholder="PIN">
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button id="btnChefLogin" class="btn-primary">Login</button>
+        <button id="btnChefLogout" class="btn-secondary">Logout</button>
+    </div>
+    <p id="chefStatus"></p>
+    <small id="t-chef-info">Nach Login werden Chef-Bereiche freigeschaltet.</small>
 </div>
 
 <div class="grid">
-  <div id="chefArea" style="display:none;">
-    <!-- Mitarbeiter verwalten -->
-    <div class="section">
-      <h3 id="t-manage-emps">Mitarbeiter verwalten</h3>
-      <label for="empName" id="t-emp-name-label">Name des Mitarbeiters:</label>
-      <input type="text" id="empName" placeholder="z.B. João, Maria">
-      <label for="empPhone" id="t-emp-phone-label">WhatsApp / Telefonnummer (optional):</label>
-      <input type="text" id="empPhone" placeholder="+49 170 1234567">
-      <button id="btnAddEmp" class="btn-primary" style="margin-top:10px;">Mitarbeiter hinzufügen</button>
-      <div id="employeeList" style="margin-top:12px;"></div>
-      <small>Daten werden nur lokal gespeichert.</small>
+    <div id="chefArea" style="display: none;">
+        <!-- Mitarbeiter verwalten -->
+        <div class="section">
+            <h3 id="t-manage-emps">Mitarbeiter verwalten</h3>
+            <label for="empName" id="t-emp-name">Name:</label>
+            <input type="text" id="empName" placeholder="z.B. Anna Müller">
+            <label for="empPhone" id="t-emp-phone">WhatsApp/Telefon (optional):</label>
+            <input type="text" id="empPhone" placeholder="+49 170 1234567">
+            <button id="btnAddEmp" class="btn-primary" style="margin-top: 10px;">Mitarbeiter hinzufügen</button>
+            <div id="employeeList" style="margin-top: 15px;"></div>
+            <small>Alle Daten werden nur im Browser gespeichert.</small>
+        </div>
+
+        <!-- Vergessenen Eintrag -->
+        <div class="section">
+            <h3 id="t-manual-entry">Vergessenen Eintrag hinzufügen</h3>
+            <label for="manualEmp">Mitarbeiter:</label>
+            <select id="manualEmp"><option value="">-- wählen --</option></select>
+            <label for="manualDate">Datum:</label>
+            <input type="date" id="manualDate">
+            <label for="manualStart">Arbeitsbeginn (exakt):</label>
+            <input type="time" id="manualStart" step="1">
+            <label for="manualEnd">Arbeitsende (exakt):</label>
+            <input type="time" id="manualEnd" step="1">
+            <button id="btnManualAdd" class="btn-primary" style="margin-top: 12px;">Eintrag speichern</button>
+            <small>Nur für vergessene Stempelungen.</small>
+        </div>
+
+        <!-- Urlaub -->
+        <div class="section">
+            <h3>Urlaub / Ferien registrieren</h3>
+            <label for="vacationEmp">Mitarbeiter:</label>
+            <select id="vacationEmp"><option value="">-- wählen --</option></select>
+            <label for="vacStart">Startdatum:</label>
+            <input type="date" id="vacStart">
+            <label for="vacEnd">Enddatum:</label>
+            <input type="date" id="vacEnd">
+            <button id="btnAddVacation" class="btn-warning" style="margin-top: 12px;">Urlaub registrieren</button>
+            <div id="vacationList" style="margin-top: 12px;"></div>
+        </div>
+
+        <!-- Einträge verwalten -->
+        <div class="section">
+            <h3 id="t-records-title">Einträge verwalten</h3>
+            <label for="recordsEmp">Mitarbeiter:</label>
+            <select id="recordsEmp"><option value="">-- wählen --</option></select>
+            <label for="recordsMonth">Monat:</label>
+            <select id="recordsMonth"></select>
+            <div id="recordsInfo" style="margin-top: 8px;"></div>
+            <div id="recordsContainer" style="margin-top: 12px;"></div>
+            <small>Einträge bearbeiten oder löschen.</small>
+        </div>
+
+        <!-- Dienstplan & WhatsApp -->
+        <div class="section">
+            <h3>Dienstplan & WhatsApp</h3>
+            <label for="planEmp">Mitarbeiter:</label>
+            <select id="planEmp"><option value="">-- wählen --</option></select>
+            <div id="planHoursInfo" style="margin: 8px 0;">Stunden: 0 | Überstunden: 0</div>
+            <label for="planDate">Tag:</label>
+            <input type="date" id="planDate">
+            <label for="planFrom">Von (Uhrzeit):</label>
+            <input type="time" id="planFrom">
+            <label for="planTo">Bis (Uhrzeit):</label>
+            <input type="time" id="planTo">
+            <div class="box">
+                <button id="btnPreviewMsg" class="btn-secondary" style="margin-bottom: 6px;">Nachricht anzeigen</button>
+                <button id="btnSendWhatsapp" class="btn-primary">WhatsApp öffnen</button>
+                <p style="font-size: 12px;">WhatsApp wird mit vorbereiteter Nachricht geöffnet.</p>
+            </div>
+            <div class="box">
+                <b>Vorschau Nachricht:</b>
+                <p id="previewMsg" style="white-space: pre-wrap; margin-top: 8px;">(keine)</p>
+            </div>
+        </div>
+
+        <!-- Monatsbericht Chef -->
+        <div class="section">
+            <h3>Monatsbericht (Chef)</h3>
+            <p>Übersicht aller Mitarbeiter für den aktuellen Monat.</p>
+            <div id="monthlyReport"></div>
+            <button id="btnPrintReport" class="btn-primary" style="margin-top: 12px;">Drucken / PDF</button>
+        </div>
+
+        <!-- Monats-Export -->
+        <div class="section">
+            <h3>Monats-Export (Word / Drucker)</h3>
+            <p>Export pro Mitarbeiter und Monat – ideal für Steuerberater.</p>
+            <label for="exportEmp">Mitarbeiter:</label>
+            <select id="exportEmp"><option value="">-- wählen --</option></select>
+            <label for="exportMonth">Monat:</label>
+            <select id="exportMonth"></select>
+            <button id="btnExport" class="btn-primary" style="margin-top: 14px;">Monatsblatt erstellen</button>
+            <small>Es öffnet sich ein neues Fenster zum Drucken/PDF.</small>
+        </div>
+
+        <!-- Datenschutzbox -->
+        <div id="datenschutzBox" class="section">
+            <h3>Datenschutz & Nutzungshinweise</h3>
+            <div class="ds-block">
+                <h4>1. Datenschutz</h4>
+                <p>Dieses System speichert alle Daten ausschließlich lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern übertragen oder gespeichert. Zugriff auf die gespeicherten Daten haben nur der Betrieb/Chef und von ihm autorisierte Personen. Der Arbeitgeber ist verpflichtet, seine Mitarbeiter über die Datenerfassung zu informieren.</p>
+            </div>
+            <div class="ds-block">
+                <h4>2. Nutzung & Urheberrecht</h4>
+                <p>Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche Zustimmung des Entwicklers ist untersagt.</p>
+            </div>
+            <div class="ds-block">
+                <h4>3. Haftungsausschluss</h4>
+                <p>Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.</p>
+            </div>
+            <div class="ds-block">
+                <h4>4. Technische Hinweise</h4>
+                <p>Für die Nutzung wird ein moderner Webbrowser empfohlen. Die gespeicherten Daten können über die Entwicklertools des Browsers eingesehen werden. Bei Wechsel des Geräts oder Löschen des Browser-Cache gehen alle Daten verloren.</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Vergessenen Eintrag -->
-    <div class="section">
-      <h3 id="t-manual-entry">Vergessenen Eintrag hinzufügen</h3>
-      <label for="manualEmployeeSelect">Mitarbeiter auswählen:</label>
-      <select id="manualEmployeeSelect"><option value="">-- wählen --</option></select>
-      <label for="manualDate">Datum:</label>
-      <input type="date" id="manualDate">
-      <label for="manualStart">Arbeitsbeginn (exakt):</label>
-      <input type="time" id="manualStart" step="1">
-      <label for="manualEnd">Arbeitsende (exakt):</label>
-      <input type="time" id="manualEnd" step="1">
-      <button id="btnManualAdd" class="btn-primary" style="margin-top:12px;">Eintrag speichern</button>
-      <small>Nur für vergessene Stempelungen. Stunden werden im korrekten Monat nachgetragen.</small>
+    <!-- Stempeluhr Mitarbeiter -->
+    <div>
+        <div class="section">
+            <h3>Stempeluhr (für Mitarbeiter)</h3>
+            <label for="stempelEmp">Mitarbeiter auswählen:</label>
+            <select id="stempelEmp"><option value="">-- wählen --</option></select>
+            <div id="stempelHoursInfo">Stunden diesen Monat: 0 | Überstundenkonto: 0</div>
+            <div id="stempelStatus">Bereit zum Stempeln.</div>
+            <button id="btnIn" class="btn-primary" style="margin-top: 10px;">Einstempeln</button>
+            <button id="btnOut" class="btn-secondary" style="margin-top: 8px;">Ausstempeln</button>
+            <button id="btnUndo" class="btn-danger" style="margin-top: 8px;">Letzten Eintrag löschen</button>
+            <div id="stempelLog"><b>Heutige Einträge:</b><br></div>
+            <small>Maximal 160 Stunden im Monat, alles darüber geht ins Überstundenkonto. Die exakten Stempelzeiten werden erfasst (mit Sekunden).</small>
+        </div>
     </div>
-
-    <!-- Urlaub / Ferien -->
-    <div class="section">
-      <h3>Urlaub / Ferien registrieren</h3>
-      <label for="vacationEmployeeSelect">Mitarbeiter auswählen:</label>
-      <select id="vacationEmployeeSelect"><option value="">-- wählen --</option></select>
-      <label for="vacationStart">Startdatum:</label>
-      <input type="date" id="vacationStart">
-      <label for="vacationEnd">Enddatum:</label>
-      <input type="date" id="vacationEnd">
-      <button id="btnAddVacation" class="btn-warning" style="margin-top:12px;">Urlaubstage registrieren</button>
-      <div id="vacationList" style="margin-top:12px;"></div>
-      <small>Urlaubstage werden im Monatsbericht gekennzeichnet.</small>
-    </div>
-
-    <!-- Einträge verwalten -->
-    <div class="section">
-      <h3 id="t-records-title">Einträge verwalten</h3>
-      <label for="recordsEmployeeSelect">Mitarbeiter:</label>
-      <select id="recordsEmployeeSelect"><option value="">-- wählen --</option></select>
-      <label for="recordsMonthSelect">Monat:</label>
-      <select id="recordsMonthSelect"></select>
-      <div id="recordsInfo" style="margin-top:8px;"></div>
-      <div id="recordsContainer" style="margin-top:10px; overflow-x:auto;"></div>
-      <small>Einträge bearbeiten oder löschen.</small>
-    </div>
-
-    <!-- Dienstplan & WhatsApp -->
-    <div class="section">
-      <h3>Dienstplan & WhatsApp</h3>
-      <label for="planEmployeeSelect">Mitarbeiter:</label>
-      <select id="planEmployeeSelect"><option value="">-- wählen --</option></select>
-      <div id="planHoursInfo" style="margin:8px 0;">Stunden: 0 | Überstunden: 0</div>
-      <label for="date">Tag:</label>
-      <input type="date" id="date">
-      <label for="timeFrom">Von (Uhrzeit):</label>
-      <input type="time" id="timeFrom">
-      <label for="timeTo">Bis (Uhrzeit):</label>
-      <input type="time" id="timeTo">
-      <div class="box">
-        <button id="btnPreview" class="btn-secondary" style="margin-bottom:6px;">Nachricht anzeigen</button>
-        <button id="btnWhatsapp" class="btn-primary">WhatsApp öffnen</button>
-        <p style="font-size:12px;">WhatsApp wird mit vorbereiteter Nachricht geöffnet.</p>
-      </div>
-      <div class="box">
-        <b>Vorschau Nachricht:</b>
-        <p id="previewText" style="white-space:pre-wrap; margin-top:8px;">(keine)</p>
-      </div>
-    </div>
-
-    <!-- Monatsbericht Chef -->
-    <div class="section">
-      <h3>Monatsbericht (Chef)</h3>
-      <p>Übersicht aller Mitarbeiter für den aktuellen Monat.</p>
-      <div id="monthlyReportContainer"></div>
-      <button id="btnPrintMonthly" class="btn-primary" style="margin-top:10px;">Drucken / als PDF speichern</button>
-    </div>
-
-    <!-- Monats-Export -->
-    <div class="section">
-      <h3>Monats-Export (Word / Drucker)</h3>
-      <p>Export pro Mitarbeiter und Monat – ideal für Steuerberater.</p>
-      <label for="exportEmployeeSelect">Mitarbeiter:</label>
-      <select id="exportEmployeeSelect"><option value="">-- wählen --</option></select>
-      <label for="exportMonthSelect">Monat:</label>
-      <select id="exportMonthSelect"></select>
-      <button id="btnExportWord" class="btn-primary" style="margin-top:14px;">Monatsblatt erstellen</button>
-      <small>Es öffnet sich ein neues Fenster zum Drucken/PDF.</small>
-    </div>
-
-    <!-- Datenschutzbox -->
-    <div id="datenschutzBox" class="section">
-      <h3>Datenschutz & Nutzungshinweise</h3>
-      <div class="ds-block"><h4>1. Datenschutz</h4><p>Daten werden nur lokal im Browser gespeichert. Keine externen Server.</p></div>
-      <div class="ds-block"><h4>2. Urheberrecht</h4><p>Anwendung nur für lizenzierten Betrieb. Weitergabe untersagt.</p></div>
-      <div class="ds-block"><h4>3. Haftung</h4><p>Arbeitszeiterfassung unterstützt, rechtliche Verantwortung liegt beim Arbeitgeber.</p></div>
-    </div>
-  </div>
-
-  <!-- Mitarbeiter-Stempeluhr -->
-  <div>
-    <div class="section">
-      <h3>Stempeluhr (für Mitarbeiter)</h3>
-      <label for="employeeSelect">Mitarbeiter auswählen:</label>
-      <select id="employeeSelect"><option value="">-- wählen --</option></select>
-      <div id="hoursInfo">Stunden diesen Monat: 0 | Überstundenkonto: 0</div>
-      <div id="status">Bereit zum Stempeln.</div>
-      <button id="btnIn" class="btn-primary" style="margin-top:10px;">Einstempeln</button>
-      <button id="btnOut" class="btn-secondary" style="margin-top:8px;">Ausstempeln</button>
-      <button id="btnUndo" class="btn-danger" style="margin-top:8px;">Letzten Eintrag löschen</button>
-      <div id="log"><b>Heutige Einträge:</b><br></div>
-      <small>Maximal 160 Stunden im Monat, alles darüber geht ins Überstundenkonto. Die exakten Stempelzeiten werden erfasst (mit Sekunden).</small>
-    </div>
-  </div>
 </div>
 
 <footer>
-  <a href="#" id="linkImpressum">Impressum</a> |
-  <a href="#" id="linkDatenschutz">Datenschutz</a>
+    <a href="#" id="linkImpressum">Impressum</a> |
+    <a href="#" id="linkDatenschutz">Datenschutz</a>
 </footer>
 
 <script>
-  // ======================== GLOBALS ========================
-  const CHEF_PIN = "1234";
-  const MAX_HOURS_PER_MONTH = 160;
-  let employees = [];
-  let isChefLoggedIn = false;
+    // ======================== KONFIGURATION ========================
+    const CHEF_PIN = "1234";
+    const MAX_HOURS = 160;  // Stunden pro Monat
 
-  // DOM elements
-  const chefPinInput = document.getElementById('chefPinInput');
-  const btnChefLogin = document.getElementById('btnChefLogin');
-  const btnChefLogout = document.getElementById('btnChefLogout');
-  const chefLoginStatus = document.getElementById('chefLoginStatus');
-  const chefArea = document.getElementById('chefArea');
-  const datenschutzBox = document.getElementById('datenschutzBox');
+    let employees = [];
+    let isChef = false;
 
-  // ======================== HELPER FUNCTIONS ========================
-  function getCurrentMonthKey() {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  }
+    // DOM-Elemente
+    const chefPin = document.getElementById('chefPin');
+    const btnChefLogin = document.getElementById('btnChefLogin');
+    const btnChefLogout = document.getElementById('btnChefLogout');
+    const chefStatus = document.getElementById('chefStatus');
+    const chefArea = document.getElementById('chefArea');
+    const datenschutzBox = document.getElementById('datenschutzBox');
 
-  function getMonthLabel(year, month) {
-    return new Date(year, month-1, 1).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
-  }
+    // ======================== HILFSFUNKTIONEN ========================
+    function getCurrentMonthKey() {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    }
 
-  function formatDateTime(isoString) {
-    if (!isoString) return '';
-    const d = new Date(isoString);
-    return d.toLocaleString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit', day:'2-digit', month:'2-digit', year:'numeric' });
-  }
+    function formatTime(iso) {
+        if (!iso) return '';
+        return new Date(iso).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    }
 
-  function formatTime(isoString) {
-    if (!isoString) return '';
-    const d = new Date(isoString);
-    return d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  }
+    function formatDate(iso) {
+        if (!iso) return '';
+        return new Date(iso).toLocaleDateString('de-DE');
+    }
 
-  function getHoursAndBankForMonth(emp, monthKey) {
-    const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
-    const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
-    return { total, bank };
-  }
+    function getMonthLabel(year, month) {
+        return new Date(year, month-1, 1).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+    }
 
-  // Neuberechnung der monatlichen Stunden und Überstunden
-  function recalculateEmployeeTotals(emp) {
-    if (!emp.sessions) emp.sessions = [];
-    if (!emp.monthlyHours) emp.monthlyHours = {};
-    if (!emp.timeBank) emp.timeBank = {};
-    emp.monthlyHours = {};
-    emp.timeBank = {};
+    function getHoursAndBank(emp, monthKey) {
+        const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
+        const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
+        return { total, bank };
+    }
 
-    emp.sessions.forEach(s => {
-      const monthKey = s.start.substring(0,7);
-      emp.monthlyHours[monthKey] = (emp.monthlyHours[monthKey] || 0) + s.hours;
-    });
+    function recalcTotals(emp) {
+        if (!emp.sessions) emp.sessions = [];
+        if (!emp.monthlyHours) emp.monthlyHours = {};
+        if (!emp.timeBank) emp.timeBank = {};
 
-    Object.keys(emp.monthlyHours).forEach(monthKey => {
-      const total = emp.monthlyHours[monthKey];
-      emp.timeBank[monthKey] = total > MAX_HOURS_PER_MONTH ? total - MAX_HOURS_PER_MONTH : 0;
-    });
-  }
+        emp.monthlyHours = {};
+        emp.timeBank = {};
 
-  function saveEmployees() {
-    localStorage.setItem('sanremoEmployees', JSON.stringify(employees));
-  }
-
-  function loadEmployees() {
-    const data = localStorage.getItem('sanremoEmployees');
-    employees = data ? JSON.parse(data) : [];
-    employees.forEach(e => {
-      if (!e.sessions) e.sessions = [];
-      if (!e.monthlyHours) e.monthlyHours = {};
-      if (!e.timeBank) e.timeBank = {};
-      if (!e.vacations) e.vacations = [];
-    });
-  }
-
-  function generateId() { return 'emp_' + Date.now() + '_' + Math.random().toString(36).substr(2,6); }
-
-  function updateHoursInfo() {
-    const empId = employeeSelect.value;
-    const emp = employees.find(e => e.id === empId);
-    if (!emp) { hoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0'; return; }
-    const { total, bank } = getHoursAndBankForMonth(emp, getCurrentMonthKey());
-    hoursInfoEl.innerHTML = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}` + (total > MAX_HOURS_PER_MONTH ? ' <span class="warning">Limit 160h überschritten!</span>' : '');
-  }
-
-  function updatePlanHoursInfo() {
-    const empId = planEmployeeSelect.value;
-    const emp = employees.find(e => e.id === empId);
-    if (!emp) { planHoursInfoEl.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0'; return; }
-    const { total, bank } = getHoursAndBankForMonth(emp, getCurrentMonthKey());
-    planHoursInfoEl.innerHTML = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}` + (total > MAX_HOURS_PER_MONTH ? ' <span class="warning">Limit 160h überschritten!</span>' : '');
-  }
-
-  function addLog(text) {
-    logEl.innerHTML = `<b>Heutige Einträge:</b><br>${text} – <i>${new Date().toLocaleString()}</i><br>${logEl.innerHTML.split('<br>').slice(0,9).join('<br>')}`;
-  }
-
-  // ======================== UI REFRESH ========================
-  function refreshAllSelects() {
-    const selects = [employeeSelect, planEmployeeSelect, exportEmployeeSelect, manualEmployeeSelect, recordsEmployeeSelect, vacationEmployeeSelect];
-    selects.forEach(sel => { if(sel) { const old = sel.value; sel.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>'; employees.forEach(e => { const opt = document.createElement('option'); opt.value = e.id; opt.textContent = e.name; sel.appendChild(opt); }); if(old && employees.some(e=>e.id===old)) sel.value = old; else sel.value = ''; } });
-  }
-
-  function refreshEmployeeList() {
-    employeeListDiv.innerHTML = '';
-    employees.forEach(emp => {
-      const row = document.createElement('div');
-      row.className = 'employee-row';
-      row.innerHTML = `<span>${emp.name} ${emp.phone ? '(' + emp.phone.slice(0,3)+'***'+emp.phone.slice(-2) + ')' : ''}</span>`;
-      const delBtn = document.createElement('button');
-      delBtn.textContent = 'Löschen';
-      delBtn.className = 'btn-danger';
-      delBtn.onclick = () => { if(confirm('Mitarbeiter löschen?')) { employees = employees.filter(e => e.id !== emp.id); saveEmployees(); refreshAll(); } };
-      row.appendChild(delBtn);
-      employeeListDiv.appendChild(row);
-    });
-    const anyEmp = employees.length > 0;
-    btnIn.disabled = !anyEmp; btnOut.disabled = !anyEmp; btnUndo.disabled = !anyEmp;
-    if(!anyEmp) statusEl.textContent = 'Keine Mitarbeiter. Chef muss zuerst Mitarbeiter anlegen.';
-    else statusEl.textContent = 'Bereit zum Stempeln.';
-  }
-
-  function refreshVacationList() {
-    const empId = vacationEmployeeSelect.value;
-    if(!empId) { vacationList.innerHTML = '<em>Bitte Mitarbeiter auswählen</em>'; return; }
-    const emp = employees.find(e => e.id === empId);
-    if(!emp || !emp.vacations?.length) { vacationList.innerHTML = '<em>Keine Urlaubstage registriert.</em>'; return; }
-    let html = '<div><strong>Registrierte Urlaubstage:</strong></div>';
-    emp.vacations.forEach((vac, idx) => {
-      html += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:6px 0;">
-        📅 ${vac.start} bis ${vac.end}
-        <button class="btn-danger" style="padding:4px 8px;" onclick="deleteVacation('${emp.id}',${idx})">Löschen</button>
-      </div>`;
-    });
-    vacationList.innerHTML = html;
-  }
-
-  function renderMonthlyReport() {
-    const container = document.getElementById('monthlyReportContainer');
-    if(!container) return;
-    if(!employees.length) { container.innerHTML = '<em>Keine Mitarbeiter angelegt.</em>'; return; }
-    const monthKey = getCurrentMonthKey();
-    let html = '</table><thead> <th>Mitarbeiter</th><th>Stunden im Monat</th><th>Überstundenkonto</th><th>Urlaubstage</th> </thead><tbody>';
-    let totalAll = 0, bankAll = 0;
-    employees.forEach(emp => {
-      const { total, bank } = getHoursAndBankForMonth(emp, monthKey);
-      totalAll += total; bankAll += bank;
-      const vacDays = emp.vacations?.length || 0;
-      html += `<tr><td>${emp.name}</td><td style="text-align:right">${total.toFixed(2)}</td><td style="text-align:right">${bank.toFixed(2)}</td><td style="text-align:center">${vacDays}</td></tr>`;
-    });
-    html += `<tr style="font-weight:bold"><td>Summe</td><td style="text-align:right">${totalAll.toFixed(2)}</td><td style="text-align:right">${bankAll.toFixed(2)}</td><td></td></tr>`;
-    html += '</tbody></table>';
-    container.innerHTML = html;
-  }
-
-  function renderRecordsTable() {
-    const empId = recordsEmployeeSelect.value;
-    const monthKey = recordsMonthSelect.value || getCurrentMonthKey();
-    if(!empId) { recordsInfo.textContent = 'Bitte Mitarbeiter auswählen.'; recordsContainer.innerHTML = ''; return; }
-    const emp = employees.find(e => e.id === empId);
-    if(!emp) { recordsInfo.textContent = 'Mitarbeiter nicht gefunden.'; return; }
-    const sessions = (emp.sessions || []).filter(s => s.start.substring(0,7) === monthKey);
-    recordsInfo.textContent = `${emp.name} – ${sessions.length} Einträge im Monat ${monthKey}`;
-    if(!sessions.length) { recordsContainer.innerHTML = '<em>Keine Einträge in diesem Monat.</em>'; return; }
-    let html = '<table><thead><tr><th>Datum</th><th>Start (exakt)</th><th>Ende (exakt)</th><th>Std.</th><th>Art</th><th>Aktion</th></tr></thead><tbody>';
-    sessions.forEach((s, idx) => {
-      const originalIdx = emp.sessions.indexOf(s);
-      const dateStr = new Date(s.start).toLocaleDateString('de-DE');
-      html += `<tr>
-        <td>${dateStr}</td>
-        <td>${formatTime(s.start)}</td>
-        <td>${formatTime(s.end)}</td>
-        <td style="text-align:right">${(s.hours||0).toFixed(2)}</td>
-        <td>${s.manual ? 'Manuell' : 'Auto'}</td>
-        <td><button class="btn-secondary" onclick="editSession('${emp.id}',${originalIdx})">Bearbeiten</button>
-            <button class="btn-danger" onclick="deleteSession('${emp.id}',${originalIdx})">Löschen</button></td>
-       </tr>`;
-    });
-    html += '</tbody></table>';
-    recordsContainer.innerHTML = html;
-  }
-
-  function buildMonthlyRowsForEmployee(emp, year, month) {
-    const rows = [];
-    const daysInMonth = new Date(year, month, 0).getDate();
-    let totalHours = 0;
-    const sessions = emp.sessions || [];
-    const vacations = emp.vacations || [];
-
-    for(let d=1; d<=daysInMonth; d++) {
-      const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const isVac = vacations.some(v => new Date(dateStr) >= new Date(v.start) && new Date(dateStr) <= new Date(v.end));
-      const daySessions = sessions.filter(s => s.start.substring(0,10) === dateStr);
-      if(daySessions.length === 0 && !isVac) {
-        rows.push({ date: `${d}.${String(month).padStart(2,'0')}.${year}`, start: '', end: '', hours: '', payType: '', isVacation: false });
-      } else if(isVac) {
-        rows.push({ date: `${d}.${String(month).padStart(2,'0')}.${year}`, start: 'URLAUB', end: '', hours: '0', payType: 'Urlaub', isVacation: true });
-      } else {
-        daySessions.forEach((s, idx) => {
-          const startTime = formatTime(s.start);
-          const endTime = formatTime(s.end);
-          const h = s.hours;
-          totalHours += h;
-          rows.push({
-            date: idx===0 ? `${d}.${String(month).padStart(2,'0')}.${year}` : '',
-            start: startTime,
-            end: endTime,
-            hours: h.toFixed(2).replace('.',','),
-            payType: s.manual ? 'Manuell' : '',
-            isVacation: false
-          });
+        emp.sessions.forEach(s => {
+            const mk = s.start.substring(0,7);
+            emp.monthlyHours[mk] = (emp.monthlyHours[mk] || 0) + s.hours;
         });
-      }
+
+        Object.keys(emp.monthlyHours).forEach(mk => {
+            const total = emp.monthlyHours[mk];
+            emp.timeBank[mk] = total > MAX_HOURS ? total - MAX_HOURS : 0;
+        });
     }
-    return { rows, totalHours };
-  }
 
-  function openMonthlyPrintWindow(emp, year, month) {
-    const { rows, totalHours } = buildMonthlyRowsForEmployee(emp, year, month);
-    const monthLabel = getMonthLabel(year, month);
-    const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Stundennachweis – ${emp.name} – ${monthLabel}</title>
-    <style>
-      body { font-family: Arial, sans-serif; padding: 16px; }
-      table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-      th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
-      th { background: #f0f0f0; text-align: center; }
-      .vacation-row { background-color: #fff3e0; }
-      tfoot td { font-weight: bold; }
-    </style></head><body>
-    <h2>Stundennachweis</h2>
-    <h3>Mitarbeiter: ${emp.name}</h3>
-    <p>Monat: ${monthLabel}</p>
-    <table><thead><tr><th>Tag</th><th>Arbeitsbeginn</th><th>Arbeitsende</th><th>Arbeitszeit (Std.)</th><th>Entlohnungsart</th></tr></thead><tbody>`);
-    rows.forEach(r => {
-      const rowClass = r.isVacation ? 'class="vacation-row"' : '';
-      win.document.write(`<tr ${rowClass}><td>${r.date}</td><td>${r.start}</td><td>${r.end}</td><td style="text-align:right">${r.hours}</td><td>${r.payType}</td></tr>`);
-    });
-    win.document.write(`</tbody><tfoot><tr><td colspan="3" style="text-align:right">Summe Arbeitsstunden:</td><td style="text-align:right">${totalHours.toFixed(2).replace('.',',')}</td><td></td></tr></tfoot></table></body></html>`);
-    win.document.close();
-    win.focus();
-  }
-
-  function printMonthlyReport() {
-    const container = document.getElementById('monthlyReportContainer');
-    if(!container) return;
-    const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Monatsbericht – Mitarbeiterportal</title>
-    <style>body{font-family:Arial;padding:16px;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #ccc;padding:6px;}</style></head><body>
-    <h2>Monatsbericht – Mitarbeiterportal</h2><p>Monat: ${getCurrentMonthKey()}</p>${container.innerHTML}</body></html>`);
-    win.document.close();
-    win.focus();
-    win.print();
-  }
-
-  // ======================== EVENT HANDLERS ========================
-  function setChefLoggedIn(state) {
-    isChefLoggedIn = state;
-    if(state) {
-      chefArea.style.display = 'block';
-      datenschutzBox.style.display = 'block';
-      chefLoginStatus.style.color = 'green';
-      chefLoginStatus.textContent = 'Login erfolgreich. Chef-Bereiche freigeschaltet.';
-      chefPinInput.value = '';
-    } else {
-      chefArea.style.display = 'none';
-      datenschutzBox.style.display = 'none';
-      chefLoginStatus.style.color = '#555';
-      chefLoginStatus.textContent = 'Abgemeldet.';
+    function saveData() {
+        localStorage.setItem('worktime_data', JSON.stringify(employees));
     }
-  }
 
-  btnChefLogin.onclick = () => { if(chefPinInput.value.trim() === CHEF_PIN) setChefLoggedIn(true); else chefLoginStatus.innerText = 'Falscher PIN.'; };
-  btnChefLogout.onclick = () => setChefLoggedIn(false);
+    function loadData() {
+        const data = localStorage.getItem('worktime_data');
+        employees = data ? JSON.parse(data) : [];
+        employees.forEach(e => {
+            if (!e.sessions) e.sessions = [];
+            if (!e.monthlyHours) e.monthlyHours = {};
+            if (!e.timeBank) e.timeBank = {};
+            if (!e.vacations) e.vacations = [];
+        });
+    }
 
-  // Mitarbeiter hinzufügen
-  document.getElementById('btnAddEmp').onclick = () => {
-    const name = document.getElementById('empName').value.trim();
-    const phone = document.getElementById('empPhone').value.trim();
-    if(!name) { alert('Bitte Namen eingeben.'); return; }
-    employees.push({ id: generateId(), name, phone, monthlyHours: {}, timeBank: {}, sessions: [], vacations: [] });
-    saveEmployees();
-    document.getElementById('empName').value = '';
-    document.getElementById('empPhone').value = '';
+    function generateId() { return Date.now() + '_' + Math.random().toString(36).substr(2,6); }
+
+    function addLog(text) {
+        const logDiv = document.getElementById('stempelLog');
+        logDiv.innerHTML = `<b>Heutige Einträge:</b><br>${text} – <i>${new Date().toLocaleString()}</i><br>${logDiv.innerHTML.split('<br>').slice(0,9).join('<br>')}`;
+    }
+
+    // ======================== UI AKTUALISIERUNGEN ========================
+    function refreshAllSelects() {
+        const selects = ['stempelEmp', 'planEmp', 'exportEmp', 'manualEmp', 'recordsEmp', 'vacationEmp'];
+        selects.forEach(id => {
+            const sel = document.getElementById(id);
+            if (!sel) return;
+            const old = sel.value;
+            sel.innerHTML = '<option value="">-- wählen --</option>';
+            employees.forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp.id;
+                opt.textContent = emp.name;
+                sel.appendChild(opt);
+            });
+            if (old && employees.some(e => e.id === old)) sel.value = old;
+            else sel.value = '';
+        });
+    }
+
+    function refreshEmployeeList() {
+        const div = document.getElementById('employeeList');
+        div.innerHTML = '';
+        employees.forEach(emp => {
+            const row = document.createElement('div');
+            row.className = 'employee-row';
+            row.innerHTML = `<span>${emp.name} ${emp.phone ? '('+emp.phone.slice(0,3)+'***'+emp.phone.slice(-2)+')' : ''}</span>`;
+            const delBtn = document.createElement('button');
+            delBtn.textContent = 'Löschen';
+            delBtn.className = 'btn-danger';
+            delBtn.onclick = () => {
+                if (confirm(`Mitarbeiter "${emp.name}" wirklich löschen?`)) {
+                    employees = employees.filter(e => e.id !== emp.id);
+                    saveData();
+                    refreshAll();
+                }
+            };
+            row.appendChild(delBtn);
+            div.appendChild(row);
+        });
+        const any = employees.length > 0;
+        document.getElementById('btnIn').disabled = !any;
+        document.getElementById('btnOut').disabled = !any;
+        document.getElementById('btnUndo').disabled = !any;
+        if (!any) document.getElementById('stempelStatus').innerText = 'Keine Mitarbeiter. Chef muss zuerst Mitarbeiter anlegen.';
+        else document.getElementById('stempelStatus').innerText = 'Bereit zum Stempeln.';
+    }
+
+    function refreshVacationList() {
+        const empId = document.getElementById('vacationEmp').value;
+        const div = document.getElementById('vacationList');
+        if (!empId) { div.innerHTML = '<em>Bitte Mitarbeiter auswählen</em>'; return; }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp || !emp.vacations?.length) { div.innerHTML = '<em>Keine Urlaubstage registriert.</em>'; return; }
+        let html = '<div><strong>Registrierte Urlaubstage:</strong></div>';
+        emp.vacations.forEach((vac, idx) => {
+            html += `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #eee;">
+                        📅 ${vac.start} bis ${vac.end}
+                        <button class="btn-danger" style="padding:4px 8px;" onclick="deleteVacation('${emp.id}',${idx})">Löschen</button>
+                     </div>`;
+        });
+        div.innerHTML = html;
+    }
+
+    function updateHoursInfo() {
+        const empId = document.getElementById('stempelEmp').value;
+        const emp = employees.find(e => e.id === empId);
+        const infoDiv = document.getElementById('stempelHoursInfo');
+        if (!emp) { infoDiv.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0'; return; }
+        const { total, bank } = getHoursAndBank(emp, getCurrentMonthKey());
+        let txt = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
+        if (total > MAX_HOURS) txt += ' <span class="warning">Limit 160h überschritten!</span>';
+        infoDiv.innerHTML = txt;
+    }
+
+    function updatePlanHoursInfo() {
+        const empId = document.getElementById('planEmp').value;
+        const emp = employees.find(e => e.id === empId);
+        const infoDiv = document.getElementById('planHoursInfo');
+        if (!emp) { infoDiv.innerHTML = 'Stunden diesen Monat: 0 | Überstundenkonto: 0'; return; }
+        const { total, bank } = getHoursAndBank(emp, getCurrentMonthKey());
+        let txt = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
+        if (total > MAX_HOURS) txt += ' <span class="warning">Limit 160h überschritten!</span>';
+        infoDiv.innerHTML = txt;
+    }
+
+    function renderMonthlyReport() {
+        const container = document.getElementById('monthlyReport');
+        if (!container) return;
+        if (!employees.length) { container.innerHTML = '<em>Keine Mitarbeiter angelegt.</em>'; return; }
+        const monthKey = getCurrentMonthKey();
+        let html = '<table><thead><tr><th>Mitarbeiter</th><th style="text-align:right">Stunden im Monat</th><th style="text-align:right">Überstundenkonto</th><th style="text-align:center">Urlaubstage</th></tr></thead><tbody>';
+        let totalAll = 0, bankAll = 0;
+        employees.forEach(emp => {
+            const { total, bank } = getHoursAndBank(emp, monthKey);
+            totalAll += total;
+            bankAll += bank;
+            const vacDays = emp.vacations?.length || 0;
+            html += `<tr>
+                        <td>${emp.name}</td>
+                        <td style="text-align:right">${total.toFixed(2)}</td>
+                        <td style="text-align:right">${bank.toFixed(2)}</td>
+                        <td style="text-align:center">${vacDays}</td>
+                     </tr>`;
+        });
+        html += `<tr style="font-weight:bold">
+                    <td>Summe</td>
+                    <td style="text-align:right">${totalAll.toFixed(2)}</td>
+                    <td style="text-align:right">${bankAll.toFixed(2)}</td>
+                    <td></td>
+                 </tr>`;
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    function renderRecordsTable() {
+        const empId = document.getElementById('recordsEmp').value;
+        const monthKey = document.getElementById('recordsMonth').value || getCurrentMonthKey();
+        const infoDiv = document.getElementById('recordsInfo');
+        const container = document.getElementById('recordsContainer');
+        if (!empId) { infoDiv.textContent = 'Bitte Mitarbeiter auswählen.'; container.innerHTML = ''; return; }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp) { infoDiv.textContent = 'Mitarbeiter nicht gefunden.'; return; }
+        const sessions = (emp.sessions || []).filter(s => s.start.substring(0,7) === monthKey);
+        infoDiv.textContent = `${emp.name} – ${sessions.length} Einträge im Monat ${monthKey}`;
+        if (!sessions.length) { container.innerHTML = '<em>Keine Einträge in diesem Monat.</em>'; return; }
+        let html = '<table><thead><tr><th>Datum</th><th>Start (exakt)</th><th>Ende (exakt)</th><th style="text-align:right">Std.</th><th>Art</th><th>Aktion</th></tr></thead><tbody>';
+        sessions.forEach(s => {
+            const originalIdx = emp.sessions.indexOf(s);
+            const dateStr = formatDate(s.start);
+            html += `<tr>
+                        <td>${dateStr}</td>
+                        <td>${formatTime(s.start)}</td>
+                        <td>${formatTime(s.end)}</td>
+                        <td style="text-align:right">${(s.hours||0).toFixed(2)}</td>
+                        <td>${s.manual ? 'Manuell' : 'Auto'}</td>
+                        <td><button class="btn-secondary" onclick="editSession('${emp.id}',${originalIdx})">Bearbeiten</button>
+                            <button class="btn-danger" onclick="deleteSession('${emp.id}',${originalIdx})">Löschen</button></td>
+                     </tr>`;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    function buildMonthlyRows(emp, year, month) {
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const sessions = emp.sessions || [];
+        const vacations = emp.vacations || [];
+        const rows = [];
+        let totalHours = 0;
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const isVac = vacations.some(v => new Date(dateStr) >= new Date(v.start) && new Date(dateStr) <= new Date(v.end));
+            const daySessions = sessions.filter(s => s.start.substring(0,10) === dateStr);
+
+            if (daySessions.length === 0 && !isVac) {
+                rows.push({ date: `${d}.${String(month).padStart(2,'0')}.${year}`, start: '', end: '', hours: '', payType: '', isVac: false });
+            } else if (isVac) {
+                rows.push({ date: `${d}.${String(month).padStart(2,'0')}.${year}`, start: 'URLAUB', end: '', hours: '0', payType: 'Urlaub', isVac: true });
+            } else {
+                daySessions.forEach((s, idx) => {
+                    const startTime = formatTime(s.start);
+                    const endTime = formatTime(s.end);
+                    totalHours += s.hours;
+                    rows.push({
+                        date: idx === 0 ? `${d}.${String(month).padStart(2,'0')}.${year}` : '',
+                        start: startTime,
+                        end: endTime,
+                        hours: s.hours.toFixed(2).replace('.',','),
+                        payType: s.manual ? 'Manuell' : '',
+                        isVac: false
+                    });
+                });
+            }
+        }
+        return { rows, totalHours };
+    }
+
+    function openMonthlyPrintWindow(emp, year, month) {
+        const { rows, totalHours } = buildMonthlyRows(emp, year, month);
+        const monthLabel = getMonthLabel(year, month);
+        const win = window.open('', '_blank');
+        win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Stundennachweis – ${emp.name} – ${monthLabel}</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 16px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+            th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+            th { background: #f0f0f0; text-align: center; }
+            .vacation-row { background-color: #fff3e0; }
+            tfoot td { font-weight: bold; }
+        </style></head><body>
+        <h2>Stundennachweis</h2>
+        <h3>Mitarbeiter: ${emp.name}</h3>
+        <p>Monat: ${monthLabel}</p>
+        <table><thead><tr><th>Tag</th><th>Arbeitsbeginn</th><th>Arbeitsende</th><th>Arbeitszeit (Std.)</th><th>Entlohnungsart</th></tr></thead><tbody>`);
+        rows.forEach(r => {
+            const rowClass = r.isVac ? 'class="vacation-row"' : '';
+            win.document.write(`<tr ${rowClass}><td>${r.date}</td><td>${r.start}</td><td>${r.end}</td><td style="text-align:right">${r.hours}</td><td>${r.payType}</td></tr>`);
+        });
+        win.document.write(`</tbody><tfoot><tr><td colspan="3" style="text-align:right">Summe Arbeitsstunden:</td><td style="text-align:right">${totalHours.toFixed(2).replace('.',',')}</td><td></td></tr></tfoot></table></body></html>`);
+        win.document.close();
+        win.focus();
+    }
+
+    function printMonthlyReport() {
+        const container = document.getElementById('monthlyReport');
+        if (!container) return;
+        const win = window.open('', '_blank');
+        win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Monatsbericht</title>
+        <style>body{font-family:Arial;padding:16px;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #ccc;padding:6px;}</style></head><body>
+        <h2>Monatsbericht – Mitarbeiterportal</h2><p>Monat: ${getCurrentMonthKey()}</p>${container.innerHTML}</body></html>`);
+        win.document.close();
+        win.focus();
+        win.print();
+    }
+
+    function buildMonthSelectors() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const selects = ['recordsMonth', 'exportMonth'];
+        selects.forEach(id => {
+            const sel = document.getElementById(id);
+            if (!sel) return;
+            sel.innerHTML = '';
+            for (let m = 1; m <= 12; m++) {
+                const val = `${year}-${String(m).padStart(2,'0')}`;
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = getMonthLabel(year, m);
+                sel.appendChild(opt);
+            }
+            sel.value = getCurrentMonthKey();
+        });
+    }
+
+    // ======================== EVENT-HANDLER ========================
+    function setChefLogin(state) {
+        isChef = state;
+        if (state) {
+            chefArea.style.display = 'block';
+            datenschutzBox.style.display = 'block';
+            chefStatus.style.color = 'green';
+            chefStatus.innerText = 'Login erfolgreich. Chef-Bereiche freigeschaltet.';
+            chefPin.value = '';
+        } else {
+            chefArea.style.display = 'none';
+            datenschutzBox.style.display = 'none';
+            chefStatus.style.color = '#555';
+            chefStatus.innerText = 'Abgemeldet.';
+        }
+    }
+
+    btnChefLogin.onclick = () => {
+        if (chefPin.value.trim() === CHEF_PIN) setChefLogin(true);
+        else chefStatus.innerText = 'Falscher PIN.';
+    };
+    btnChefLogout.onclick = () => setChefLogin(false);
+
+    document.getElementById('btnAddEmp').onclick = () => {
+        const name = document.getElementById('empName').value.trim();
+        const phone = document.getElementById('empPhone').value.trim();
+        if (!name) { alert('Bitte Namen eingeben.'); return; }
+        employees.push({
+            id: generateId(),
+            name,
+            phone,
+            sessions: [],
+            monthlyHours: {},
+            timeBank: {},
+            vacations: []
+        });
+        saveData();
+        document.getElementById('empName').value = '';
+        document.getElementById('empPhone').value = '';
+        refreshAll();
+    };
+
+    document.getElementById('btnManualAdd').onclick = () => {
+        if (!isChef) { alert('Nur nach Chef-Login möglich.'); return; }
+        const empId = document.getElementById('manualEmp').value;
+        const date = document.getElementById('manualDate').value;
+        const startTime = document.getElementById('manualStart').value;
+        const endTime = document.getElementById('manualEnd').value;
+        if (!empId || !date || !startTime || !endTime) { alert('Bitte alle Felder ausfüllen.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp) return;
+        const start = new Date(`${date}T${startTime}`);
+        const end = new Date(`${date}T${endTime}`);
+        if (isNaN(start) || isNaN(end) || end <= start) { alert('Ungültige Zeitangabe.'); return; }
+        const hours = (end - start) / 3600000;
+        emp.sessions.push({
+            start: start.toISOString(),
+            end: end.toISOString(),
+            realStart: start.toISOString(),
+            realEnd: end.toISOString(),
+            hours,
+            manual: true
+        });
+        emp.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start));
+        recalcTotals(emp);
+        saveData();
+        document.getElementById('manualDate').value = '';
+        document.getElementById('manualStart').value = '';
+        document.getElementById('manualEnd').value = '';
+        refreshAll();
+        addLog(`${emp.name} – manueller Eintrag (${hours.toFixed(2)} Std.)`);
+        alert('Eintrag gespeichert.');
+    };
+
+    document.getElementById('btnAddVacation').onclick = () => {
+        if (!isChef) { alert('Nur Chef.'); return; }
+        const empId = document.getElementById('vacationEmp').value;
+        const start = document.getElementById('vacStart').value;
+        const end = document.getElementById('vacEnd').value;
+        if (!empId || !start || !end) { alert('Bitte Mitarbeiter, Start- und Enddatum.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (emp) {
+            if (!emp.vacations) emp.vacations = [];
+            emp.vacations.push({ start, end, registeredAt: new Date().toISOString() });
+            saveData();
+            refreshVacationList();
+            renderMonthlyReport();
+            addLog(`${emp.name} – Urlaub von ${start} bis ${end}`);
+            alert('Urlaub registriert.');
+        }
+    };
+
+    // Stempeln
+    document.getElementById('btnIn').onclick = () => {
+        const empId = document.getElementById('stempelEmp').value;
+        if (!empId) { alert('Mitarbeiter wählen.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (emp.activeSessionStart) { alert('Bereits eingestempelt.'); return; }
+        const now = new Date();
+        emp.activeSessionStart = now.toISOString();
+        emp.activeSessionRealStart = now.toISOString();
+        saveData();
+        document.getElementById('stempelStatus').innerText = `Eingestempelt um ${now.toLocaleTimeString('de-DE')}.`;
+        addLog(`${emp.name} eingestempelt um ${now.toLocaleTimeString('de-DE')}`);
+    };
+    document.getElementById('btnOut').onclick = () => {
+        const empId = document.getElementById('stempelEmp').value;
+        if (!empId) { alert('Mitarbeiter wählen.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp.activeSessionStart) { alert('Nicht eingestempelt.'); return; }
+        const start = new Date(emp.activeSessionStart);
+        const end = new Date();
+        const hours = (end - start) / 3600000;
+        emp.sessions.push({
+            start: start.toISOString(),
+            end: end.toISOString(),
+            realStart: emp.activeSessionRealStart,
+            realEnd: end.toISOString(),
+            hours,
+            manual: false
+        });
+        recalcTotals(emp);
+        emp.activeSessionStart = null;
+        emp.activeSessionRealStart = null;
+        saveData();
+        document.getElementById('stempelStatus').innerText = `Ausgestempelt. Dauer: ${hours.toFixed(2)} Std.`;
+        addLog(`${emp.name} ausgestempelt um ${end.toLocaleTimeString('de-DE')} (${hours.toFixed(2)} Std.)`);
+        updateHoursInfo();
+        renderMonthlyReport();
+        renderRecordsTable();
+        updatePlanHoursInfo();
+    };
+    document.getElementById('btnUndo').onclick = () => {
+        const empId = document.getElementById('stempelEmp').value;
+        if (!empId) { alert('Mitarbeiter wählen.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp.sessions.length) { alert('Keine Einträge.'); return; }
+        if (confirm('Letzten Eintrag löschen?')) {
+            emp.sessions.pop();
+            recalcTotals(emp);
+            saveData();
+            refreshAll();
+            addLog(`${emp.name} – letzter Eintrag gelöscht`);
+        }
+    };
+
+    // Dienstplan WhatsApp
+    const planEmp = document.getElementById('planEmp');
+    const planDate = document.getElementById('planDate');
+    const planFrom = document.getElementById('planFrom');
+    const planTo = document.getElementById('planTo');
+    const previewMsg = document.getElementById('previewMsg');
+    function buildWhatsAppMsg() {
+        const emp = employees.find(e => e.id === planEmp.value);
+        if (!emp || !planDate.value || !planFrom.value || !planTo.value) return '';
+        const { total, bank } = getHoursAndBank(emp, getCurrentMonthKey());
+        return `Eiscafé Sanremo – Dienstplan\n\nHallo ${emp.name},\n\ndein Dienst:\n📅 Datum: ${new Date(planDate.value).toLocaleDateString('de-DE')}\n⏰ Zeit: ${planFrom.value} – ${planTo.value} Uhr\n📍 Ort: Eiscafé Sanremo\n\nAktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)\n\nBitte bestätige mit OK.`;
+    }
+    document.getElementById('btnPreviewMsg').onclick = () => {
+        const msg = buildWhatsAppMsg();
+        if (msg) previewMsg.innerText = msg;
+        else alert('Bitte Mitarbeiter, Tag und Zeiten ausfüllen.');
+    };
+    document.getElementById('btnSendWhatsapp').onclick = () => {
+        const emp = employees.find(e => e.id === planEmp.value);
+        const msg = buildWhatsAppMsg();
+        if (!emp || !msg) { alert('Bitte Mitarbeiter und Zeiten ausfüllen.'); return; }
+        if (!emp.phone) { alert('Keine Telefonnummer hinterlegt.'); return; }
+        window.open(`https://wa.me/${emp.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    // Export
+    document.getElementById('btnExport').onclick = () => {
+        const empId = document.getElementById('exportEmp').value;
+        const monthVal = document.getElementById('exportMonth').value;
+        if (!empId || !monthVal) { alert('Bitte Mitarbeiter und Monat auswählen.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp) return;
+        const [year, month] = monthVal.split('-').map(Number);
+        openMonthlyPrintWindow(emp, year, month);
+    };
+
+    // Drucken Monatsbericht
+    document.getElementById('btnPrintReport').onclick = () => printMonthlyReport();
+
+    // Impressum/Datenschutz
+    document.getElementById('linkImpressum').onclick = e => { e.preventDefault(); alert('Impressum: Hier können Sie Ihre Firmenadresse eintragen.'); };
+    document.getElementById('linkDatenschutz').onclick = e => { e.preventDefault(); if (isChef) datenschutzBox.scrollIntoView({behavior:'smooth'}); else alert('Nur nach Chef-Login sichtbar.'); };
+
+    // Globale Funktionen für edit/delete
+    window.editSession = (empId, idx) => {
+        if (!isChef) { alert('Nur Chef.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (!emp || !emp.sessions[idx]) return;
+        const s = emp.sessions[idx];
+        const oldStart = new Date(s.realStart || s.start);
+        const oldEnd = new Date(s.realEnd || s.end);
+        const newDate = prompt('Datum (YYYY-MM-DD):', oldStart.toISOString().slice(0,10));
+        if (!newDate) return;
+        const newStart = prompt('Startzeit (HH:MM:SS):', oldStart.toLocaleTimeString('de-DE'));
+        if (!newStart) return;
+        const newEnd = prompt('Endzeit (HH:MM:SS):', oldEnd.toLocaleTimeString('de-DE'));
+        if (!newEnd) return;
+        const start = new Date(`${newDate}T${newStart}`);
+        const end = new Date(`${newDate}T${newEnd}`);
+        if (isNaN(start) || isNaN(end) || end <= start) { alert('Ungültige Zeit.'); return; }
+        s.start = start.toISOString();
+        s.end = end.toISOString();
+        s.realStart = start.toISOString();
+        s.realEnd = end.toISOString();
+        s.hours = (end - start) / 3600000;
+        s.manual = true;
+        emp.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start));
+        recalcTotals(emp);
+        saveData();
+        refreshAll();
+        addLog(`${emp.name} – Eintrag bearbeitet`);
+    };
+    window.deleteSession = (empId, idx) => {
+        if (!isChef) { alert('Nur Chef.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (emp && emp.sessions[idx] && confirm('Eintrag löschen?')) {
+            emp.sessions.splice(idx,1);
+            recalcTotals(emp);
+            saveData();
+            refreshAll();
+            addLog(`${emp.name} – Eintrag gelöscht`);
+        }
+    };
+    window.deleteVacation = (empId, idx) => {
+        if (!isChef) { alert('Nur Chef.'); return; }
+        const emp = employees.find(e => e.id === empId);
+        if (emp && emp.vacations && emp.vacations[idx] && confirm('Urlaubseintrag löschen?')) {
+            emp.vacations.splice(idx,1);
+            saveData();
+            refreshVacationList();
+            renderMonthlyReport();
+            addLog(`${emp.name} – Urlaubseintrag gelöscht`);
+        }
+    };
+
+    function refreshAll() {
+        refreshAllSelects();
+        refreshEmployeeList();
+        refreshVacationList();
+        updateHoursInfo();
+        updatePlanHoursInfo();
+        renderMonthlyReport();
+        renderRecordsTable();
+        buildMonthSelectors();
+    }
+
+    // Sprachwechsel (einfach, nur für die wichtigsten Texte)
+    const translations = {
+        de: {
+            't-chef-login':'Chef Login','t-pin-label':'PIN eingeben:','t-chef-info':'Nach Login werden Chef-Bereiche freigeschaltet.',
+            't-manage-emps':'Mitarbeiter verwalten','t-emp-name':'Name:','t-emp-phone':'WhatsApp/Telefon (optional):',
+            't-manual-entry':'Vergessenen Eintrag hinzufügen','t-records-title':'Einträge verwalten'
+        },
+        pt: {
+            't-chef-login':'Login do Chefe','t-pin-label':'Inserir PIN:','t-chef-info':'Após login, áreas do chefe são liberadas.',
+            't-manage-emps':'Gerir empregados','t-emp-name':'Nome:','t-emp-phone':'WhatsApp/Telefone (opcional):',
+            't-manual-entry':'Adicionar entrada esquecida','t-records-title':'Gerir registos'
+        },
+        it: {
+            't-chef-login':'Accesso Capo','t-pin-label':'Inserire PIN:','t-chef-info':'Dopo il login si attivano le aree del capo.',
+            't-manage-emps':'Gestione dipendenti','t-emp-name':'Nome:','t-emp-phone':'WhatsApp/Telefono (opzionale):',
+            't-manual-entry':'Aggiungi registrazione dimenticata','t-records-title':'Gestione registrazioni'
+        }
+    };
+    window.setLanguage = (lang) => {
+        const t = translations[lang] || translations.de;
+        Object.keys(t).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = t[id];
+        });
+    };
+
+    // Initialisierung
+    loadData();
     refreshAll();
-  };
-
-  // Manueller Eintrag
-  document.getElementById('btnManualAdd').onclick = () => {
-    if(!isChefLoggedIn) { alert('Nur nach Chef-Login möglich.'); return; }
-    const empId = manualEmployeeSelect.value;
-    const date = manualDate.value;
-    const startTime = manualStart.value;
-    const endTime = manualEnd.value;
-    if(!empId || !date || !startTime || !endTime) { alert('Bitte alle Felder ausfüllen.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(!emp) return;
-    const start = new Date(`${date}T${startTime}`);
-    const end = new Date(`${date}T${endTime}`);
-    if(isNaN(start) || isNaN(end) || end <= start) { alert('Ungültige Zeitangabe.'); return; }
-    const hours = (end - start) / 3600000;
-    emp.sessions.push({ start: start.toISOString(), end: end.toISOString(), realStart: start.toISOString(), realEnd: end.toISOString(), hours, manual: true });
-    emp.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start));
-    recalculateEmployeeTotals(emp);
-    saveEmployees();
-    manualDate.value = ''; manualStart.value = ''; manualEnd.value = '';
-    refreshAll();
-    addLog(`${emp.name} – manueller Eintrag (${hours.toFixed(2)} Std.)`);
-    alert('Eintrag gespeichert.');
-  };
-
-  // Urlaub hinzufügen
-  document.getElementById('btnAddVacation').onclick = () => {
-    if(!isChefLoggedIn) { alert('Nur nach Chef-Login.'); return; }
-    const empId = vacationEmployeeSelect.value;
-    const start = vacationStart.value;
-    const end = vacationEnd.value;
-    if(!empId || !start || !end) { alert('Bitte Mitarbeiter, Start- und Enddatum.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(emp) {
-      if(!emp.vacations) emp.vacations = [];
-      emp.vacations.push({ start, end, registeredAt: new Date().toISOString() });
-      saveEmployees();
-      refreshVacationList();
-      renderMonthlyReport();
-      addLog(`${emp.name} – Urlaub von ${start} bis ${end}`);
-      alert('Urlaub registriert.');
-    }
-  };
-
-  // Stempeln
-  const employeeSelect = document.getElementById('employeeSelect');
-  const hoursInfoEl = document.getElementById('hoursInfo');
-  const statusEl = document.getElementById('status');
-  const logEl = document.getElementById('log');
-  const btnIn = document.getElementById('btnIn');
-  const btnOut = document.getElementById('btnOut');
-  const btnUndo = document.getElementById('btnUndo');
-
-  btnIn.onclick = () => {
-    const empId = employeeSelect.value;
-    if(!empId) { alert('Mitarbeiter wählen.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(emp.activeSessionStart) { alert('Bereits eingestempelt.'); return; }
-    const now = new Date();
-    emp.activeSessionStart = now.toISOString();
-    emp.activeSessionRealStart = now.toISOString();
-    saveEmployees();
-    statusEl.innerText = `Eingestempelt um ${now.toLocaleTimeString('de-DE')}.`;
-    addLog(`${emp.name} eingestempelt um ${now.toLocaleTimeString('de-DE')}`);
-  };
-
-  btnOut.onclick = () => {
-    const empId = employeeSelect.value;
-    if(!empId) { alert('Mitarbeiter wählen.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(!emp.activeSessionStart) { alert('Nicht eingestempelt.'); return; }
-    const start = new Date(emp.activeSessionStart);
-    const end = new Date();
-    const hours = (end - start) / 3600000;
-    emp.sessions.push({ start: start.toISOString(), end: end.toISOString(), realStart: emp.activeSessionRealStart, realEnd: end.toISOString(), hours, manual: false });
-    recalculateEmployeeTotals(emp);
-    emp.activeSessionStart = null;
-    emp.activeSessionRealStart = null;
-    saveEmployees();
-    statusEl.innerText = `Ausgestempelt. Dauer: ${hours.toFixed(2)} Std.`;
-    addLog(`${emp.name} ausgestempelt um ${end.toLocaleTimeString('de-DE')} (${hours.toFixed(2)} Std.)`);
-    updateHoursInfo();
-    renderMonthlyReport();
-    renderRecordsTable();
-    updatePlanHoursInfo();
-  };
-
-  btnUndo.onclick = () => {
-    const empId = employeeSelect.value;
-    if(!empId) { alert('Mitarbeiter wählen.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(!emp.sessions.length) { alert('Keine Einträge.'); return; }
-    if(confirm('Letzten Eintrag löschen?')) {
-      emp.sessions.pop();
-      recalculateEmployeeTotals(emp);
-      saveEmployees();
-      refreshAll();
-      addLog(`${emp.name} – letzter Eintrag gelöscht`);
-    }
-  };
-
-  // Dienstplan WhatsApp
-  const planEmployeeSelect = document.getElementById('planEmployeeSelect');
-  const planHoursInfoEl = document.getElementById('planHoursInfo');
-  const dateInput = document.getElementById('date');
-  const timeFromInput = document.getElementById('timeFrom');
-  const timeToInput = document.getElementById('timeTo');
-  const btnPreview = document.getElementById('btnPreview');
-  const btnWhatsapp = document.getElementById('btnWhatsapp');
-  const previewText = document.getElementById('previewText');
-
-  function buildMessage() {
-    const emp = employees.find(e => e.id === planEmployeeSelect.value);
-    if(!emp || !dateInput.value || !timeFromInput.value || !timeToInput.value) return '';
-    const { total, bank } = getHoursAndBankForMonth(emp, getCurrentMonthKey());
-    return `Eiscafé Sanremo – Dienstplan\n\nHallo ${emp.name},\n\ndein Dienst:\n📅 Datum: ${new Date(dateInput.value).toLocaleDateString('de-DE')}\n⏰ Zeit: ${timeFromInput.value} – ${timeToInput.value} Uhr\n📍 Ort: Eiscafé Sanremo\n\nAktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)\n\nBitte bestätige mit OK.`;
-  }
-  btnPreview.onclick = () => { const msg = buildMessage(); if(msg) previewText.innerText = msg; else alert('Bitte Mitarbeiter, Tag und Zeiten ausfüllen.'); };
-  btnWhatsapp.onclick = () => {
-    const emp = employees.find(e => e.id === planEmployeeSelect.value);
-    const msg = buildMessage();
-    if(!emp || !msg) { alert('Bitte Mitarbeiter und Zeiten ausfüllen.'); return; }
-    if(!emp.phone) { alert('Keine Telefonnummer hinterlegt.'); return; }
-    window.open(`https://wa.me/${emp.phone}?text=${encodeURIComponent(msg)}`, '_blank');
-  };
-
-  // Export Word
-  const exportEmployeeSelect = document.getElementById('exportEmployeeSelect');
-  const exportMonthSelect = document.getElementById('exportMonthSelect');
-  document.getElementById('btnExportWord').onclick = () => {
-    const empId = exportEmployeeSelect.value;
-    const monthValue = exportMonthSelect.value;
-    if(!empId || !monthValue) { alert('Bitte Mitarbeiter und Monat auswählen.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(!emp) return;
-    const [year, month] = monthValue.split('-').map(Number);
-    openMonthlyPrintWindow(emp, year, month);
-  };
-
-  // Monatsbericht drucken
-  document.getElementById('btnPrintMonthly').onclick = () => printMonthlyReport();
-
-  // Impressum / Datenschutz
-  document.getElementById('linkImpressum').onclick = e => { e.preventDefault(); alert('Impressum: Hier können Sie Ihre Firmenadresse eintragen.'); };
-  document.getElementById('linkDatenschutz').onclick = e => { e.preventDefault(); if(isChefLoggedIn) { datenschutzBox.scrollIntoView({behavior:'smooth'}); } else alert('Nur nach Chef-Login sichtbar.'); };
-
-  // Globale Funktionen für onclick-Aufrufe
-  window.editSession = (empId, sessionIdx) => {
-    if(!isChefLoggedIn) { alert('Nur Chef.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(!emp || !emp.sessions[sessionIdx]) return;
-    const s = emp.sessions[sessionIdx];
-    const oldStart = new Date(s.realStart || s.start);
-    const oldEnd = new Date(s.realEnd || s.end);
-    const newDate = prompt('Datum (YYYY-MM-DD):', oldStart.toISOString().slice(0,10));
-    if(!newDate) return;
-    const newStart = prompt('Startzeit (HH:MM:SS):', oldStart.toLocaleTimeString('de-DE'));
-    if(!newStart) return;
-    const newEnd = prompt('Endzeit (HH:MM:SS):', oldEnd.toLocaleTimeString('de-DE'));
-    if(!newEnd) return;
-    const start = new Date(`${newDate}T${newStart}`);
-    const end = new Date(`${newDate}T${newEnd}`);
-    if(isNaN(start) || isNaN(end) || end <= start) { alert('Ungültige Zeit.'); return; }
-    s.start = start.toISOString();
-    s.end = end.toISOString();
-    s.realStart = start.toISOString();
-    s.realEnd = end.toISOString();
-    s.hours = (end - start) / 3600000;
-    s.manual = true;
-    emp.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start));
-    recalculateEmployeeTotals(emp);
-    saveEmployees();
-    refreshAll();
-    addLog(`${emp.name} – Eintrag bearbeitet`);
-  };
-  window.deleteSession = (empId, sessionIdx) => {
-    if(!isChefLoggedIn) { alert('Nur Chef.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(emp && emp.sessions[sessionIdx] && confirm('Eintrag löschen?')) {
-      emp.sessions.splice(sessionIdx,1);
-      recalculateEmployeeTotals(emp);
-      saveEmployees();
-      refreshAll();
-      addLog(`${emp.name} – Eintrag gelöscht`);
-    }
-  };
-  window.deleteVacation = (empId, idx) => {
-    if(!isChefLoggedIn) { alert('Nur Chef.'); return; }
-    const emp = employees.find(e => e.id === empId);
-    if(emp && emp.vacations && emp.vacations[idx] && confirm('Urlaubseintrag löschen?')) {
-      emp.vacations.splice(idx,1);
-      saveEmployees();
-      refreshVacationList();
-      renderMonthlyReport();
-      addLog(`${emp.name} – Urlaubseintrag gelöscht`);
-    }
-  };
-
-  function refreshAll() {
-    refreshAllSelects();
-    refreshEmployeeList();
-    refreshVacationList();
-    updateHoursInfo();
-    updatePlanHoursInfo();
-    renderMonthlyReport();
-    renderRecordsTable();
-    buildExportMonthOptions();
-    buildRecordsMonthOptions();
-  }
-
-  function buildExportMonthOptions() {
-    const sel = exportMonthSelect;
-    sel.innerHTML = '';
-    const now = new Date();
-    const year = now.getFullYear();
-    for(let m=1; m<=12; m++) {
-      const val = `${year}-${String(m).padStart(2,'0')}`;
-      const opt = document.createElement('option');
-      opt.value = val;
-      opt.textContent = getMonthLabel(year, m);
-      sel.appendChild(opt);
-    }
-    sel.value = getCurrentMonthKey();
-  }
-  function buildRecordsMonthOptions() {
-    const sel = recordsMonthSelect;
-    sel.innerHTML = '';
-    const now = new Date();
-    const year = now.getFullYear();
-    for(let m=1; m<=12; m++) {
-      const val = `${year}-${String(m).padStart(2,'0')}`;
-      const opt = document.createElement('option');
-      opt.value = val;
-      opt.textContent = getMonthLabel(year, m);
-      sel.appendChild(opt);
-    }
-    sel.value = getCurrentMonthKey();
-  }
-
-  // Sprachwechsel
-  const translations = {
-    de: { 't-chef-login':'Chef Login','t-pin-label':'PIN eingeben:','t-chef-info':'Nach erfolgreichem Login werden die Chef-Bereiche freigeschaltet.','t-manage-emps':'Mitarbeiter verwalten','t-emp-name-label':'Name des Mitarbeiters:','t-emp-phone-label':'WhatsApp / Telefonnummer (optional):','t-manual-entry':'Vergessenen Eintrag hinzufügen','t-records-title':'Einträge verwalten' },
-    pt: { 't-chef-login':'Login do Chefe','t-pin-label':'Inserir PIN:','t-chef-info':'Após login, áreas do chefe são liberadas.','t-manage-emps':'Gerir empregados','t-emp-name-label':'Nome do empregado:','t-emp-phone-label':'WhatsApp / Telefone (opcional):','t-manual-entry':'Adicionar entrada esquecida','t-records-title':'Gerir registos' },
-    it: { 't-chef-login':'Accesso Capo','t-pin-label':'Inserire PIN:','t-chef-info':'Dopo il login si attivano le aree del capo.','t-manage-emps':'Gestione dipendenti','t-emp-name-label':'Nome del dipendente:','t-emp-phone-label':'WhatsApp / Telefono (opzionale):','t-manual-entry':'Aggiungi registrazione dimenticata','t-records-title':'Gestione registrazioni' }
-  };
-  window.setLanguage = (lang) => {
-    const t = translations[lang] || translations.de;
-    Object.keys(t).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t[id]; });
-  };
-
-  // Start
-  loadEmployees();
-  refreshAll();
-  setLanguage('de');
+    setLanguage('de');
 </script>
 </body>
 </html>
