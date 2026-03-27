@@ -58,6 +58,14 @@
       background: #d32f2f;
       color: #fff;
     }
+    .btn-success {
+      background: #4caf50;
+      color: #fff;
+    }
+    .btn-warning {
+      background: #ff9800;
+      color: #fff;
+    }
 
     .section {
       border: 1px solid #ccc;
@@ -101,6 +109,10 @@
 
     .warning {
       color: #d32f2f;
+      font-weight: bold;
+    }
+    .success {
+      color: #4caf50;
       font-weight: bold;
     }
     .box {
@@ -217,6 +229,20 @@
     .ds-block h4 {
       margin: 0 0 6px 0;
     }
+
+    .vacation-entry {
+      background-color: #fff3e0;
+      border-left: 4px solid #ff9800;
+    }
+
+    .vacation-badge {
+      background-color: #ff9800;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -289,11 +315,11 @@
         <label for="manualDate" id="t-manual-date">Datum:</label>
         <input type="date" id="manualDate">
 
-        <label for="manualStart" id="t-manual-start">Arbeitsbeginn:</label>
-        <input type="time" id="manualStart">
+        <label for="manualStart" id="t-manual-start">Arbeitsbeginn (exakte Uhrzeit):</label>
+        <input type="time" id="manualStart" step="1">
 
-        <label for="manualEnd" id="t-manual-end">Arbeitsende:</label>
-        <input type="time" id="manualEnd">
+        <label for="manualEnd" id="t-manual-end">Arbeitsende (exakte Uhrzeit):</label>
+        <input type="time" id="manualEnd" step="1">
 
         <button id="btnManualAdd" class="btn-primary" style="width:100%; margin-top:12px;">
           <span id="t-manual-btn">Eintrag speichern</span>
@@ -301,6 +327,31 @@
 
         <small id="t-manual-note">
           Nur für vergessene Stempelungen. Die Stunden werden automatisch im richtigen Monat nachgetragen.
+        </small>
+      </div>
+
+      <div class="section">
+        <h3 id="t-vacation-title">Urlaub / Ferien registrieren</h3>
+
+        <label for="vacationEmployeeSelect" id="t-vacation-emp">Mitarbeiter auswählen:</label>
+        <select id="vacationEmployeeSelect">
+          <option value="">-- Mitarbeiter wählen --</option>
+        </select>
+
+        <label for="vacationStart" id="t-vacation-start">Startdatum:</label>
+        <input type="date" id="vacationStart">
+
+        <label for="vacationEnd" id="t-vacation-end">Enddatum:</label>
+        <input type="date" id="vacationEnd">
+
+        <button id="btnAddVacation" class="btn-warning" style="width:100%; margin-top:12px;">
+          <span id="t-add-vacation">Urlaubstage registrieren</span>
+        </button>
+
+        <div id="vacationList" style="margin-top:12px;"></div>
+
+        <small id="t-vacation-note">
+          Urlaubstage werden im Monatsbericht als solche gekennzeichnet.
         </small>
       </div>
 
@@ -327,7 +378,7 @@
       </div>
 
       <div class="section">
-        <h3 id="t-plan-whatsapp">Dienstplan &amp; WhatsApp</h3>Dienstplan &amp; WhatsApp</h3>
+        <h3 id="t-plan-whatsapp">Dienstplan &amp; WhatsApp</h3>
 
         <label for="planEmployeeSelect" id="t-plan-choose-emp">Mitarbeiter auswählen:</label>
         <select id="planEmployeeSelect">
@@ -470,7 +521,7 @@
         <div id="log"><b>Heutige Einträge:</b><br></div>
 
         <small id="t-rule">
-          Regel: Maximal 160 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden). Stempelzeiten werden automatisch auf 15 Minuten gerundet.
+          Regel: Maximal 160 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden). Die exakten Stempelzeiten werden erfasst.
         </small>
       </div>
     </div>
@@ -483,6 +534,7 @@
 
   <script>
     const CHEF_PIN = "1234";
+    const MAX_HOURS_PER_MONTH = 160; // Geändert von 40 auf 160 Stunden
 
     const chefPinInput   = document.getElementById('chefPinInput');
     const btnChefLogin   = document.getElementById('btnChefLogin');
@@ -531,6 +583,7 @@
         if (!e.monthlyHours) e.monthlyHours = {};
         if (!e.timeBank) e.timeBank = {};
         if (!e.sessions) e.sessions = [];
+        if (!e.vacations) e.vacations = [];
       });
     }
 
@@ -585,22 +638,11 @@
     const manualEnd = document.getElementById('manualEnd');
     const btnManualAdd = document.getElementById('btnManualAdd');
 
-    const MAX_HOURS_PER_MONTH = 40;
-
-    function roundToQuarterHour(date) {
-      const d = new Date(date);
-      const minutes = d.getMinutes();
-      const roundedMinutes = Math.round(minutes / 15) * 15;
-
-      if (roundedMinutes === 60) {
-        d.setHours(d.getHours() + 1);
-        d.setMinutes(0, 0, 0);
-      } else {
-        d.setMinutes(roundedMinutes, 0, 0);
-      }
-
-      return d;
-    }
+    const vacationEmployeeSelect = document.getElementById('vacationEmployeeSelect');
+    const vacationStart = document.getElementById('vacationStart');
+    const vacationEnd = document.getElementById('vacationEnd');
+    const btnAddVacation = document.getElementById('btnAddVacation');
+    const vacationList = document.getElementById('vacationList');
 
     function getCurrentMonthKey() {
       const now = new Date();
@@ -700,7 +742,7 @@
       const { total, bank } = getHoursAndBank(emp);
       let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
       if (total > MAX_HOURS_PER_MONTH) {
-        text += ' – <span class="warning">Limit 40h überschritten!</span>';
+        text += ' – <span class="warning">Limit 160h überschritten!</span>';
       }
       hoursInfoEl.innerHTML = text;
     }
@@ -715,7 +757,7 @@
       const { total, bank } = getHoursAndBank(emp);
       let text = `Stunden diesen Monat: ${total.toFixed(2)} | Überstundenkonto: ${bank.toFixed(2)}`;
       if (total > MAX_HOURS_PER_MONTH) {
-        text += ' – <span class="warning">Limit 40h überschritten!</span>';
+        text += ' – <span class="warning">Limit 160h überschritten!</span>';
       }
       planHoursInfoEl.innerHTML = text;
     }
@@ -738,6 +780,7 @@
       exportEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
       manualEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
       recordsEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
+      vacationEmployeeSelect.innerHTML = '<option value="">-- Mitarbeiter wählen --</option>';
 
       employees.forEach(emp => {
         const opt1 = document.createElement('option');
@@ -764,6 +807,11 @@
         opt5.value = emp.id;
         opt5.textContent = emp.name;
         recordsEmployeeSelect.appendChild(opt5);
+
+        const opt6 = document.createElement('option');
+        opt6.value = emp.id;
+        opt6.textContent = emp.name;
+        vacationEmployeeSelect.appendChild(opt6);
       });
 
       employeeListDiv.innerHTML = '';
@@ -782,6 +830,7 @@
             updateHoursInfo();
             updatePlanHoursInfo();
             renderMonthlyReport();
+            renderVacationList();
           }
         };
         row.appendChild(btnDel);
@@ -801,7 +850,83 @@
       buildExportMonthOptions();
       buildRecordsMonthOptions();
       renderRecordsTable();
+      renderVacationList();
     }
+
+    function renderVacationList() {
+      const empId = vacationEmployeeSelect.value;
+      if (!empId) {
+        vacationList.innerHTML = '<em>Bitte Mitarbeiter auswählen</em>';
+        return;
+      }
+
+      const emp = employees.find(e => e.id === empId);
+      if (!emp || !emp.vacations || emp.vacations.length === 0) {
+        vacationList.innerHTML = '<em>Keine Urlaubstage registriert.</em>';
+        return;
+      }
+
+      let html = '<div style="margin-top:8px;"><b>Registrierte Urlaubstage:</b></div>';
+      emp.vacations.forEach((vac, idx) => {
+        html += `<div style="border-bottom:1px solid #eee; padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
+          <span>📅 ${vac.start} bis ${vac.end}</span>
+          <button class="btn-danger" style="padding:4px 8px;" onclick="deleteVacation('${emp.id}', ${idx})">Löschen</button>
+        </div>`;
+      });
+      vacationList.innerHTML = html;
+    }
+
+    function deleteVacation(empId, index) {
+      if (!isChefLoggedIn) {
+        alert('Nur nach Chef-Login möglich.');
+        return;
+      }
+      const emp = employees.find(e => e.id === empId);
+      if (emp && emp.vacations && emp.vacations[index]) {
+        emp.vacations.splice(index, 1);
+        saveEmployees();
+        renderVacationList();
+        renderMonthlyReport();
+      }
+    }
+
+    btnAddVacation.addEventListener('click', () => {
+      if (!isChefLoggedIn) {
+        alert('Nur nach Chef-Login möglich.');
+        return;
+      }
+
+      const empId = vacationEmployeeSelect.value;
+      const start = vacationStart.value;
+      const end = vacationEnd.value;
+
+      if (!empId || !start || !end) {
+        alert('Bitte Mitarbeiter, Start- und Enddatum ausfüllen.');
+        return;
+      }
+
+      const emp = employees.find(e => e.id === empId);
+      if (!emp) {
+        alert('Mitarbeiter nicht gefunden.');
+        return;
+      }
+
+      if (!emp.vacations) emp.vacations = [];
+
+      emp.vacations.push({
+        start: start,
+        end: end,
+        registeredAt: new Date().toISOString()
+      });
+
+      saveEmployees();
+      vacationStart.value = '';
+      vacationEnd.value = '';
+      renderVacationList();
+      renderMonthlyReport();
+      addLog(`${emp.name} – Urlaub von ${start} bis ${end} registriert`);
+      alert('Urlaubstage wurden registriert.');
+    });
 
     employeeSelect.addEventListener('change', () => {
       updateHoursInfo();
@@ -826,6 +951,10 @@
       renderRecordsTable();
     });
 
+    vacationEmployeeSelect.addEventListener('change', () => {
+      renderVacationList();
+    });
+
     btnAddEmp.addEventListener('click', () => {
       const name = empNameInput.value.trim();
       const phone = empPhoneInput.value.trim();
@@ -840,7 +969,8 @@
         monthlyHours: {},
         timeBank: {},
         activeSessionStart: null,
-        sessions: []
+        sessions: [],
+        vacations: []
       };
       employees.push(emp);
       saveEmployees();
@@ -874,8 +1004,8 @@
 
       const realStart = new Date(`${date}T${startTime}:00`);
       const realEnd = new Date(`${date}T${endTime}:00`);
-      const start = roundToQuarterHour(realStart);
-      const end = roundToQuarterHour(realEnd);
+      const start = realStart;
+      const end = realEnd;
 
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
         alert('Ungültiges Datum oder Uhrzeit.');
@@ -942,12 +1072,12 @@
       }
 
       const realStart = new Date();
-      const roundedStart = roundToQuarterHour(realStart);
-      emp.activeSessionStart = roundedStart.toISOString();
-      emp.activeSessionRealStart = realStart.toISOString();
+      const exactStart = realStart;
+      emp.activeSessionStart = exactStart.toISOString();
+      emp.activeSessionRealStart = exactStart.toISOString();
       saveEmployees();
-      statusEl.textContent = 'Eingestempelt um ' + roundedStart.toLocaleString('de-DE') + '.';
-      addLog(emp.name + ' eingestempelt');
+      statusEl.textContent = 'Eingestempelt um ' + exactStart.toLocaleString('de-DE') + '.';
+      addLog(emp.name + ' eingestempelt um ' + exactStart.toLocaleTimeString('de-DE'));
     });
 
     btnOut.addEventListener('click', () => {
@@ -965,7 +1095,7 @@
       }
 
       const start = new Date(emp.activeSessionStart);
-      const end = roundToQuarterHour(new Date());
+      const end = new Date();
       const diffMs = end - start;
       const hours = diffMs / 1000 / 60 / 60;
 
@@ -977,7 +1107,7 @@
         start: start.toISOString(),
         end: end.toISOString(),
         realStart: emp.activeSessionRealStart || start.toISOString(),
-        realEnd: new Date().toISOString(),
+        realEnd: end.toISOString(),
         hours: hours,
         manual: false
       });
@@ -992,7 +1122,7 @@
       saveEmployees();
 
       statusEl.textContent = 'Ausgestempelt. Gearbeitete Zeit: ' + hours.toFixed(2) + ' Std. Gesamt in diesem Monat: ' + newTotal.toFixed(2) + ' Std.';
-      addLog(emp.name + ' ausgestempelt (' + hours.toFixed(2) + ' Std.)');
+      addLog(emp.name + ' ausgestempelt um ' + end.toLocaleTimeString('de-DE') + ' (' + hours.toFixed(2) + ' Std.)');
 
       updateHoursInfo();
       renderRecordsTable();
@@ -1044,38 +1174,36 @@
       const currentEnd = new Date(session.realEnd || session.end);
 
       const dateDefault = session.start.substring(0, 10);
-      const startDefault = currentStart.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
-      const endDefault = currentEnd.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+      const startDefault = currentStart.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      const endDefault = currentEnd.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 
       const newDate = prompt('Datum ändern (YYYY-MM-DD):', dateDefault);
       if (newDate === null) return;
 
-      const newStartTime = prompt('Arbeitsbeginn ändern (HH:MM):', startDefault);
+      const newStartTime = prompt('Arbeitsbeginn ändern (HH:MM:SS):', startDefault);
       if (newStartTime === null) return;
 
-      const newEndTime = prompt('Arbeitsende ändern (HH:MM):', endDefault);
+      const newEndTime = prompt('Arbeitsende ändern (HH:MM:SS):', endDefault);
       if (newEndTime === null) return;
 
-      const realStart = new Date(`${newDate}T${newStartTime}:00`);
-      const realEnd = new Date(`${newDate}T${newEndTime}:00`);
-      const roundedStart = roundToQuarterHour(realStart);
-      const roundedEnd = roundToQuarterHour(realEnd);
+      const realStart = new Date(`${newDate}T${newStartTime}`);
+      const realEnd = new Date(`${newDate}T${newEndTime}`);
 
       if (isNaN(realStart.getTime()) || isNaN(realEnd.getTime())) {
         alert('Ungültiges Datum oder Uhrzeit.');
         return;
       }
 
-      if (roundedEnd <= roundedStart) {
+      if (realEnd <= realStart) {
         alert('Die Endzeit muss nach der Startzeit liegen.');
         return;
       }
 
       session.realStart = realStart.toISOString();
       session.realEnd = realEnd.toISOString();
-      session.start = roundedStart.toISOString();
-      session.end = roundedEnd.toISOString();
-      session.hours = (roundedEnd - roundedStart) / 1000 / 60 / 60;
+      session.start = realStart.toISOString();
+      session.end = realEnd.toISOString();
+      session.hours = (realEnd - realStart) / 1000 / 60 / 60;
       session.manual = true;
 
       emp.sessions.sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -1102,8 +1230,8 @@
 
       const session = emp.sessions[sessionIndex];
       const dateText = new Date(session.start).toLocaleDateString('de-DE');
-      const startText = new Date(session.start).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
-      const endText = new Date(session.end).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+      const startText = new Date(session.start).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      const endText = new Date(session.end).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 
       if (!confirm(`Eintrag löschen?
 
@@ -1144,7 +1272,7 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
 
       let hoursLine = `Aktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)`;
       if (total > MAX_HOURS_PER_MONTH) {
-        hoursLine += " – LIMIT 40h überschritten!";
+        hoursLine += " – LIMIT 160h überschritten!";
       }
 
       const msg =
@@ -1194,15 +1322,9 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
       window.open(url, "_blank");
     });
 
-    function getRoundedDisplay(isoString) {
+    function getExactDisplay(isoString) {
       const d = new Date(isoString);
-      return d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
-    }
-
-    function getRealDisplay(session, type) {
-      const key = type === 'start' ? 'realStart' : 'realEnd';
-      if (!session[key]) return '—';
-      return new Date(session[key]).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+      return d.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     }
 
     function renderRecordsTable() {
@@ -1236,14 +1358,12 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
       let html = '<table style="width:100%; border-collapse:collapse; font-size:13px; min-width:980px;">';
       html += '<thead><tr>' +
         '<th style="border:1px solid #ccc; padding:6px;">Datum</th>' +
-        '<th style="border:1px solid #ccc; padding:6px;">Real In</th>' +
-        '<th style="border:1px solid #ccc; padding:6px;">Gerundet In</th>' +
-        '<th style="border:1px solid #ccc; padding:6px;">Real Out</th>' +
-        '<th style="border:1px solid #ccc; padding:6px;">Gerundet Out</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Start (exakt)</th>' +
+        '<th style="border:1px solid #ccc; padding:6px;">Ende (exakt)</th>' +
         '<th style="border:1px solid #ccc; padding:6px;">Std.</th>' +
         '<th style="border:1px solid #ccc; padding:6px;">Art</th>' +
         '<th style="border:1px solid #ccc; padding:6px;">Aktion</th>' +
-        '</tr></thead><tbody>';
+        '?</thead><tbody>';
 
       sessions.forEach((s, index) => {
         const originalIndex = (emp.sessions || []).indexOf(s);
@@ -1251,22 +1371,30 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         const typeText = s.manual ? 'Manuell' : 'Auto';
 
         html += '<tr>' +
-          '<td style="border:1px solid #ddd; padding:6px;">' + dateText + '</td>' +
-          '<td style="border:1px solid #ddd; padding:6px;">' + getRealDisplay(s, 'start') + '</td>' +
-          '<td style="border:1px solid #ddd; padding:6px;">' + getRoundedDisplay(s.start) + '</td>' +
-          '<td style="border:1px solid #ddd; padding:6px;">' + getRealDisplay(s, 'end') + '</td>' +
-          '<td style="border:1px solid #ddd; padding:6px;">' + getRoundedDisplay(s.end) + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + dateText + '</table>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + getExactDisplay(s.start) + '</td>' +
+          '<td style="border:1px solid #ddd; padding:6px;">' + getExactDisplay(s.end) + '</td>' +
           '<td style="border:1px solid #ddd; padding:6px; text-align:right;">' + (s.hours || 0).toFixed(2) + '</td>' +
           '<td style="border:1px solid #ddd; padding:6px;">' + typeText + '</td>' +
           '<td style="border:1px solid #ddd; padding:6px; white-space:nowrap;">' +
             '<button class="btn-secondary" style="margin-right:6px; padding:6px 8px;" onclick="editSession(\'' + emp.id + '\',' + originalIndex + ')">Bearbeiten</button>' +
             '<button class="btn-danger" style="padding:6px 8px;" onclick="deleteSession(\'' + emp.id + '\',' + originalIndex + ')">Löschen</button>' +
           '</td>' +
-          '</tr>';
+          'tr';
       });
 
       html += '</tbody></table>';
       recordsContainer.innerHTML = html;
+    }
+
+    function isVacationDay(emp, date) {
+      if (!emp.vacations) return false;
+      return emp.vacations.some(vac => {
+        const vacStart = new Date(vac.start);
+        const vacEnd = new Date(vac.end);
+        const checkDate = new Date(date);
+        return checkDate >= vacStart && checkDate <= vacEnd;
+      });
     }
 
     function renderMonthlyReport() {
@@ -1281,11 +1409,11 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
       const monthKey = getCurrentMonthKey();
 
       let html = '<table style="width:100%; border-collapse: collapse; font-size:14px;">';
-      html += '<thead><tr>' +
-              '<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Mitarbeiter</th>' +
+      html += '<thead>骨<th style="border-bottom:1px solid #ccc; text-align:left; padding:4px;">Mitarbeiter</th>' +
               '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Stunden im Monat</th>' +
               '<th style="border-bottom:1px solid #ccc; text-align:right; padding:4px;">Überstundenkonto</th>' +
-              '</tr></thead><tbody>';
+              '<th style="border-bottom:1px solid #ccc; text-align:center; padding:4px;">Urlaubstage</th>' +
+              '?</thead><tbody>';
 
       let totalHoursAll = 0;
       let totalBankAll = 0;
@@ -1294,21 +1422,25 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         const { total, bank } = getHoursAndBankForMonth(emp, monthKey);
         totalHoursAll += total;
         totalBankAll += bank;
+        
+        const vacationDays = emp.vacations ? emp.vacations.length : 0;
 
-        html += '<tr>' +
+        html += '?' +
           '<td style="border-bottom:1px solid #eee; padding:4px;">' + emp.name + '</td>' +
           '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + total.toFixed(2) + '</td>' +
           '<td style="border-bottom:1px solid #eee; padding:4px; text-align:right;">' + bank.toFixed(2) + '</td>' +
-          '</tr>';
+          '<td style="border-bottom:1px solid #eee; padding:4px; text-align:center;">' + vacationDays + ' Tag(e)</td>' +
+          'tr';
       });
 
-      html += '<tr>' +
+      html += '?' +
         '<td style="padding:4px; font-weight:bold; text-align:right;">Summe:</td>' +
         '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalHoursAll.toFixed(2) + '</td>' +
         '<td style="padding:4px; font-weight:bold; text-align:right;">' + totalBankAll.toFixed(2) + '</td>' +
-        '</tr>';
+        '<td style="padding:4px;"></td>' +
+        'tr';
 
-      html += '</tbody></table>';
+      html += '</tbody>窟';
       container.innerHTML = html;
     }
 
@@ -1340,21 +1472,31 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
       for (let day = 1; day <= daysInMonth; day++) {
         const dayStr = String(day).padStart(2, '0');
         const dateIsoPrefix = `${year}-${String(month).padStart(2,'0')}-${dayStr}`;
-
+        const fullDate = `${year}-${String(month).padStart(2,'0')}-${dayStr}`;
+        
+        const isVacation = isVacationDay(emp, fullDate);
         const daySessions = sessions.filter(s => {
           const sDate = s.start ? s.start.substring(0,10) : '';
           return sDate === dateIsoPrefix;
         });
 
-        if (daySessions.length === 0) {
+        if (daySessions.length === 0 && !isVacation) {
           rows.push({
             date: `${dayStr}.${String(month).padStart(2,'0')}.${year}`,
             start: '',
             end: '',
-            breakFrom: '',
-            breakTo: '',
             hours: '',
-            payType: ''
+            payType: '',
+            isVacation: false
+          });
+        } else if (isVacation) {
+          rows.push({
+            date: `${dayStr}.${String(month).padStart(2,'0')}.${year}`,
+            start: 'URLAUB',
+            end: '',
+            hours: '0',
+            payType: 'Urlaub',
+            isVacation: true
           });
         } else {
           daySessions.forEach((s, idx) => {
@@ -1365,12 +1507,11 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
 
             rows.push({
               date: idx === 0 ? `${dayStr}.${String(month).padStart(2,'0')}.${year}` : '',
-              start: start.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' }),
-              end: end.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' }),
-              breakFrom: '',
-              breakTo: '',
+              start: start.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' }),
+              end: end.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' }),
               hours: h.toFixed(2).replace('.', ','),
-              payType: s.manual ? 'Manuell' : ''
+              payType: s.manual ? 'Manuell' : '',
+              isVacation: false
             });
           });
         }
@@ -1392,6 +1533,7 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
       win.document.write('table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}');
       win.document.write('th,td{border:1px solid #ccc;padding:4px;text-align:left;}');
       win.document.write('th{text-align:center;background:#f0f0f0;}');
+      win.document.write('.vacation-row{background-color:#fff3e0;}');
       win.document.write('tfoot td{font-weight:bold;}');
       win.document.write('</style></head><body>');
 
@@ -1399,34 +1541,31 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
       win.document.write('<h3>Mitarbeiter: ' + emp.name + '</h3>');
       win.document.write('<p>Monat: ' + monthLabel + '</p>');
 
-      win.document.write('<table>');
-      win.document.write('<thead><tr>');
+      win.document.write('能');
+      win.document.write('<thead>骨');
       win.document.write('<th>Tag</th>');
       win.document.write('<th>Arbeitsbeginn</th>');
       win.document.write('<th>Arbeitsende</th>');
-      win.document.write('<th>Pausenzeiten<br>von</th>');
-      win.document.write('<th>Pausenzeiten<br>bis</th>');
       win.document.write('<th>Arbeitszeit (Std.)</th>');
       win.document.write('<th>Entlohnungsart</th>');
       win.document.write('</tr></thead><tbody>');
 
       rows.forEach(r => {
-        win.document.write('<tr>');
+        const rowClass = r.isVacation ? 'class="vacation-row"' : '';
+        win.document.write(`<tr ${rowClass}>`);
         win.document.write('<td>' + r.date + '</td>');
         win.document.write('<td>' + r.start + '</td>');
         win.document.write('<td>' + r.end + '</td>');
-        win.document.write('<td>' + r.breakFrom + '</td>');
-        win.document.write('<td>' + r.breakTo + '</td>');
         win.document.write('<td style="text-align:right;">' + r.hours + '</td>');
-        win.document.write('<td>' + r.payType + '</td>');
+        win.document.write('<td>' + (r.isVacation ? 'Urlaub' : r.payType) + '</td>');
         win.document.write('</tr>');
       });
 
-      win.document.write('</tbody><tfoot><tr>');
-      win.document.write('<td colspan="5" style="text-align:right;">Summe Arbeitsstunden:</td>');
+      win.document.write('</tbody><tfoot>争');
+      win.document.write('<td colspan="3" style="text-align:right;">Summe Arbeitsstunden:</td>');
       win.document.write('<td style="text-align:right;">' + totalHours.toFixed(2).replace('.', ',') + '</td>');
       win.document.write('<td></td>');
-      win.document.write('</tr></tfoot></table>');
+      win.document.write('</tr></tfoot>订');
 
       win.document.write('</body></html>');
       win.document.close();
@@ -1491,10 +1630,16 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         't-manual-entry': 'Vergessenen Eintrag hinzufügen',
         't-manual-emp': 'Mitarbeiter auswählen:',
         't-manual-date': 'Datum:',
-        't-manual-start': 'Arbeitsbeginn:',
-        't-manual-end': 'Arbeitsende:',
+        't-manual-start': 'Arbeitsbeginn (exakte Uhrzeit):',
+        't-manual-end': 'Arbeitsende (exakte Uhrzeit):',
         't-manual-btn': 'Eintrag speichern',
         't-manual-note': 'Nur für vergessene Stempelungen. Die Stunden werden automatisch im richtigen Monat nachgetragen.',
+        't-vacation-title': 'Urlaub / Ferien registrieren',
+        't-vacation-emp': 'Mitarbeiter auswählen:',
+        't-vacation-start': 'Startdatum:',
+        't-vacation-end': 'Enddatum:',
+        't-add-vacation': 'Urlaubstage registrieren',
+        't-vacation-note': 'Urlaubstage werden im Monatsbericht als solche gekennzeichnet.',
         't-records-title': 'Einträge verwalten',
         't-records-emp': 'Mitarbeiter auswählen:',
         't-records-month': 'Monat auswählen:',
@@ -1521,7 +1666,7 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         't-btn-in': 'Einstempeln',
         't-btn-out': 'Ausstempeln',
         't-btn-undo': 'Letzten Eintrag löschen',
-        't-rule': 'Regel: Maximal 40 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden). Stempelzeiten werden automatisch auf 15 Minuten gerundet.'
+        't-rule': 'Regel: Maximal 160 Stunden im Monat. Alles darüber geht ins Überstundenkonto (Bank von Stunden). Die exakten Stempelzeiten werden erfasst.'
       },
       pt: {
         't-chef-login': 'Login do Chefe',
@@ -1535,10 +1680,16 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         't-manual-entry': 'Adicionar entrada esquecida',
         't-manual-emp': 'Escolher empregado:',
         't-manual-date': 'Data:',
-        't-manual-start': 'Início do trabalho:',
-        't-manual-end': 'Fim do trabalho:',
+        't-manual-start': 'Início do trabalho (hora exata):',
+        't-manual-end': 'Fim do trabalho (hora exata):',
         't-manual-btn': 'Guardar entrada',
         't-manual-note': 'Só para picagens esquecidas. As horas são lançadas automaticamente no mês correto.',
+        't-vacation-title': 'Registrar férias',
+        't-vacation-emp': 'Escolher empregado:',
+        't-vacation-start': 'Data de início:',
+        't-vacation-end': 'Data de fim:',
+        't-add-vacation': 'Registrar dias de férias',
+        't-vacation-note': 'Os dias de férias são marcados no relatório mensal.',
         't-records-title': 'Gerir registos',
         't-records-emp': 'Escolher empregado:',
         't-records-month': 'Escolher mês:',
@@ -1565,7 +1716,7 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         't-btn-in': 'Entrar',
         't-btn-out': 'Sair',
         't-btn-undo': 'Apagar último registo',
-        't-rule': 'Regra: Máximo 40 horas por mês. Tudo acima disso vai para o banco de horas. As picagens são arredondadas automaticamente a 15 minutos.'
+        't-rule': 'Regra: Máximo 160 horas por mês. Tudo acima disso vai para o banco de horas. As horas exatas são registradas.'
       },
       it: {
         't-chef-login': 'Accesso Capo',
@@ -1579,10 +1730,16 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         't-manual-entry': 'Aggiungi registrazione dimenticata',
         't-manual-emp': 'Seleziona dipendente:',
         't-manual-date': 'Data:',
-        't-manual-start': 'Inizio lavoro:',
-        't-manual-end': 'Fine lavoro:',
+        't-manual-start': 'Inizio lavoro (ora esatta):',
+        't-manual-end': 'Fine lavoro (ora esatta):',
         't-manual-btn': 'Salva registrazione',
         't-manual-note': 'Solo per timbrature dimenticate. Le ore vengono aggiunte automaticamente al mese corretto.',
+        't-vacation-title': 'Registrare ferie',
+        't-vacation-emp': 'Seleziona dipendente:',
+        't-vacation-start': 'Data inizio:',
+        't-vacation-end': 'Data fine:',
+        't-add-vacation': 'Registrare giorni di ferie',
+        't-vacation-note': 'I giorni di ferie vengono contrassegnati nel report mensile.',
         't-records-title': 'Gestione registrazioni',
         't-records-emp': 'Seleziona dipendente:',
         't-records-month': 'Seleziona mese:',
@@ -1609,7 +1766,7 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         't-btn-in': 'Entrata',
         't-btn-out': 'Uscita',
         't-btn-undo': 'Cancella ultimo registro',
-        't-rule': 'Regola: Massimo 40 ore al mese. Tutto sopra va nella banca ore. Le timbrature vengono arrotondate automaticamente a 15 minuti.'
+        't-rule': 'Regola: Massimo 160 ore al mese. Tutto sopra va nella banca ore. Vengono registrate le ore esatte.'
       }
     };
 
@@ -1620,6 +1777,12 @@ ${(session.hours || 0).toFixed(2)} Std.`)) {
         if (el) el.textContent = pack[id];
       });
     }
+
+    // Globale Funktionen für onclick
+    window.editSession = editSession;
+    window.deleteSession = deleteSession;
+    window.deleteVacation = deleteVacation;
+    window.printMonthlyReport = printMonthlyReport;
 
     loadEmployees();
     refreshEmployeeUI();
