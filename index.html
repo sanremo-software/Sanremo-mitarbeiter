@@ -1,1414 +1,217 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WorkTime – Stempel System</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            padding: 16px;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        /* Header */
-        .top-header {
-            background: white;
-            border-radius: 20px;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .logo-box {
-            flex: 1;
-        }
-        .logo-img {
-            max-height: 70px;
-            width: auto;
-        }
-        .lang-switch {
-            display: flex;
-            gap: 12px;
-            background: #f8f9fa;
-            padding: 5px 10px;
-            border-radius: 40px;
-        }
-        .lang-flag {
-            width: 40px;
-            height: 28px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: 0.2s;
-        }
-        .lang-flag:hover {
-            border-color: #1976d2;
-            transform: scale(1.05);
-        }
-        /* Cards */
-        .section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: 0.2s;
-        }
-        .chef-login-card {
-            border: 2px solid transparent;
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(90deg, #008C45, #F4F5F0, #CD212A) border-box;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        /* Form elements */
-        label {
-            display: block;
-            margin-top: 12px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 10px 12px;
-            margin-top: 5px;
-            font-size: 1rem;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            background: white;
-            transition: 0.2s;
-        }
-        button {
-            cursor: pointer;
-            font-weight: bold;
-            border: none;
-        }
-        .btn-primary {
-            background: #1976d2;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #0b5cab;
-        }
-        .btn-secondary {
-            background: #e9ecef;
-            color: #333;
-        }
-        .btn-secondary:hover {
-            background: #dee2e6;
-        }
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #c82333;
-        }
-        .btn-warning {
-            background: #ffc107;
-            color: #333;
-        }
-        .btn-warning:hover {
-            background: #e0a800;
-        }
-        .employee-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .warning {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        .box {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 12px;
-        }
-        #stempelLog, #log {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-size: 0.85rem;
-            margin-top: 12px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            margin-top: 12px;
-            overflow-x: auto;
-            display: block;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background: #f2f2f2;
-        }
-        .vacation-row {
-            background-color: #fff3e0;
-        }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #666;
-        }
-        footer a {
-            color: #1976d2;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-        #datenschutzBox {
-            display: none;
-        }
-        .ds-block {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 12px;
-        }
-        @media (max-width: 800px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            .top-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .lang-switch {
-                justify-content: center;
-            }
-            .employee-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .employee-row button {
-                width: auto;
-                margin-top: 5px;
-            }
-            th, td {
-                padding: 6px;
-                font-size: 0.75rem;
-            }
-        }
-        @media (max-width: 480px) {
-            body {
-                padding: 8px;
-            }
-            .section {
-                padding: 12px;
-            }
-            button, input, select {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>WorkTime – Tablet Stempeluhr</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#eef1f5;color:#111;min-height:100vh;padding:14px}
+.container{max-width:1180px;margin:0 auto}
+.top-header{background:#fff;border-radius:22px;padding:14px 20px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;box-shadow:0 3px 12px rgba(0,0,0,.08)}
+.logo-box{display:flex;align-items:center;gap:14px}.logo-img{max-height:58px;width:auto}.app-title{font-size:1.35rem;font-weight:800}.app-subtitle{font-size:.9rem;color:#666;margin-top:2px}
+.clock-box{text-align:right;font-weight:800;font-size:1.25rem}.clock-date{font-size:.85rem;color:#666;font-weight:600;margin-top:2px}
+.section{background:#fff;border-radius:20px;padding:20px;margin-bottom:18px;box-shadow:0 3px 12px rgba(0,0,0,.08)}
+.employee-panel{display:grid;grid-template-columns:1fr;gap:16px}.big-label{font-size:1.05rem;font-weight:800;margin-bottom:8px;display:block}
+select,input,button,textarea{width:100%;padding:13px 14px;border:1px solid #cfd4dc;border-radius:14px;font-size:1rem;background:#fff;transition:.15s}
+select:focus,input:focus,textarea:focus{outline:3px solid rgba(25,118,210,.18);border-color:#1976d2}
+button{border:none;cursor:pointer;font-weight:800}.btn-primary{background:#1976d2;color:#fff}.btn-primary:hover{background:#0e5da8}.btn-secondary{background:#e9ecef;color:#222}.btn-secondary:hover{background:#d8dde3}.btn-danger{background:#dc3545;color:#fff}.btn-warning{background:#ffc107;color:#222}.btn-green{background:#16833a;color:#fff}.btn-dark{background:#111;color:#fff}.btn-small{width:auto;padding:8px 11px;border-radius:10px;font-size:.85rem;margin:2px}.stamp-buttons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.stamp-buttons button{font-size:1.35rem;padding:26px 14px;border-radius:20px}.status-card{background:#f8fafc;border:1px solid #e3e8ef;border-radius:18px;padding:15px;margin-top:14px;font-size:1rem}.status-line{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:7px 0;border-bottom:1px solid #eef2f6}.status-line:last-child{border-bottom:0}.ok{color:#16833a;font-weight:800}.warn{color:#c47b00;font-weight:800}.bad{color:#dc3545;font-weight:800}.muted{color:#666;font-size:.9rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.chef-area{display:none}.chef-login-card{border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(90deg,#008C45,#F4F5F0,#CD212A) border-box}.row{display:flex;gap:10px;align-items:end;flex-wrap:wrap}.row>*{flex:1}.employee-row{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #eee;padding:10px 0;flex-wrap:wrap}.box{background:#f8f9fa;border-radius:14px;padding:12px;margin-top:12px}.log{background:#f8f9fa;border-radius:14px;padding:12px;margin-top:12px;max-height:250px;overflow:auto;font-size:.9rem}.log-item{padding:8px;border-bottom:1px solid #e5e7eb}.log-item:last-child{border-bottom:0}table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:12px}th,td{border:1px solid #d7dce3;padding:8px;text-align:left;vertical-align:top}th{background:#f3f5f7}.table-wrap{overflow-x:auto}.vacation-row{background:#fff3e0}.top-actions{display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;flex-wrap:wrap}.hidden{display:none!important}footer{text-align:center;margin-top:28px;font-size:.8rem;color:#666}.footer-btn{display:inline-block;color:#1976d2;text-decoration:none;margin:0 5px;cursor:pointer}.notice{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:14px;padding:12px;margin-top:12px}.success-note{background:#ecfdf5;border:1px solid #bbf7d0;color:#14532d;border-radius:14px;padding:12px;margin-top:12px}.danger-note{background:#fef2f2;border:1px solid #fecaca;color:#7f1d1d;border-radius:14px;padding:12px;margin-top:12px}.manual-note{font-size:.84rem;color:#555;margin-top:6px}.active-badge{display:inline-block;background:#dcfce7;color:#166534;border:1px solid #86efac;border-radius:999px;padding:4px 10px;font-weight:800}.inactive-badge{display:inline-block;background:#f3f4f6;color:#4b5563;border:1px solid #d1d5db;border-radius:999px;padding:4px 10px;font-weight:800}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.top-header{flex-direction:column;text-align:center}.clock-box{text-align:center}.stamp-buttons{grid-template-columns:1fr}.stamp-buttons button{font-size:1.2rem;padding:22px 12px}.row{display:block}.row>*{margin-top:8px}.section{padding:15px}}
+@media print{body{background:#fff;padding:0}.top-header,.chef-login-card,.top-actions,footer,button{display:none!important}.section{box-shadow:none;border-radius:0;margin:0;padding:10px}.container{max-width:none}.chef-area{display:block!important}}
+</style>
 </head>
 <body>
 <div class="container">
-    <header class="top-header">
-        <div class="logo-box">
-            <img src="IMG-20251128-WA0000.jpg" alt="WorkTime" class="logo-img" onerror="this.style.display='none'">
-        </div>
-        <div class="lang-switch">
-            <img class="lang-flag" src="https://flagcdn.com/w40/de.png" alt="DE" onclick="setLanguage('de')">
-            <img class="lang-flag" src="https://flagcdn.com/w40/pt.png" alt="PT" onclick="setLanguage('pt')">
-            <img class="lang-flag" src="https://flagcdn.com/w40/it.png" alt="IT" onclick="setLanguage('it')">
-        </div>
-    </header>
+<header class="top-header">
+  <div class="logo-box">
+    <img src="IMG-20251128-WA0000.jpg" alt="WorkTime" class="logo-img" onerror="this.style.display='none'">
+    <div><div class="app-title">WorkTime – Tablet Stempeluhr</div><div class="app-subtitle">Eiscafé Sanremo · Stempeln nur am Tablet im Betrieb</div></div>
+  </div>
+  <div class="clock-box"><div id="liveClock">--:--:--</div><div id="liveDate" class="clock-date">--</div></div>
+</header>
 
-    <!-- Chef Login Bereich -->
-    <div class="section chef-login-card">
-        <h3 id="chefLoginTitle">Chef Login</h3>
-        <label for="chefPin" id="chefPinLabel">PIN eingeben:</label>
-        <input type="password" id="chefPin" placeholder="PIN">
-        <div style="display: flex; gap: 12px; margin-top: 12px;">
-            <button id="btnChefLogin" class="btn-primary" style="flex:1;" data-key="chefLoginBtn">Login</button>
-            <button id="btnChefLogout" class="btn-secondary" style="flex:1;" data-key="chefLogoutBtn">Logout</button>
-        </div>
-        <p id="chefStatus"></p>
-        <small id="chefInfoText">Nach erfolgreichem Login werden die Chef-Bereiche freigeschaltet.</small>
+<section class="section employee-panel">
+  <h2>Stempeluhr für Mitarbeiter</h2>
+  <p class="muted">Mitarbeiter wählen und direkt ein- oder ausstempeln. Es wird exakt nach Uhrzeit gerechnet, nicht auf volle Stunden gerundet.</p>
+  <div>
+    <label class="big-label" for="stempelEmp">Mitarbeiter auswählen:</label>
+    <select id="stempelEmp"><option value="">-- Mitarbeiter wählen --</option></select>
+  </div>
+  <div id="employeeStatus" class="status-card">
+    <div class="status-line"><strong>Status:</strong><span>Bitte Mitarbeiter auswählen.</span></div>
+  </div>
+  <div class="stamp-buttons">
+    <button id="btnIn" class="btn-green">Einstempeln</button>
+    <button id="btnOut" class="btn-danger">Ausstempeln</button>
+  </div>
+  <div id="stempelLog" class="log"><b>Letzte Stempelungen:</b></div>
+  <div class="notice"><strong>Regel:</strong> Arbeitszeit wird nach der tatsächlich geleisteten Zeit berechnet. Ein früheres Arbeitsende wird automatisch als weniger Arbeitszeit berechnet.</div>
+</section>
+
+<section class="section chef-login-card">
+  <h3>Chef Login</h3>
+  <div class="row">
+    <div><label for="chefPin">PIN eingeben:</label><input type="password" id="chefPin" placeholder="PIN"></div>
+    <button id="btnChefLogin" class="btn-primary">Login</button>
+    <button id="btnChefLogout" class="btn-secondary">Logout</button>
+  </div>
+  <p id="chefStatus" class="manual-note">Chef-Bereich ist gesperrt.</p>
+</section>
+
+<div id="chefArea" class="chef-area">
+  <div class="top-actions">
+    <button id="btnBackupJson" class="btn-secondary btn-small">Backup JSON herunterladen</button>
+    <label class="btn-secondary btn-small" style="cursor:pointer">Backup JSON importieren<input id="importJson" type="file" accept="application/json" style="display:none"></label>
+    <button id="btnPrintAll" class="btn-primary btn-small">Monatsbericht drucken/PDF</button>
+  </div>
+
+  <div class="grid">
+    <section class="section">
+      <h3>Mitarbeiter verwalten</h3>
+      <label for="empName">Name des Mitarbeiters:</label>
+      <input type="text" id="empName" placeholder="z.B. Anna Müller">
+      <label for="empPhone">Telefon/WhatsApp optional:</label>
+      <input type="text" id="empPhone" placeholder="+49 ...">
+      <label for="empTargetHours">Sollstunden pro Monat optional:</label>
+      <input type="number" id="empTargetHours" min="0" step="0.25" placeholder="z.B. 80 oder 160">
+      <button id="btnAddEmp" class="btn-primary" style="margin-top:12px">Mitarbeiter hinzufügen</button>
+      <div id="employeeList" style="margin-top:15px"></div>
+      <p class="manual-note">Daten werden lokal auf diesem Tablet gespeichert. Regelmäßig JSON-Backup herunterladen.</p>
+    </section>
+
+    <section class="section">
+      <h3>Vergessenen Eintrag hinzufügen</h3>
+      <label for="manualEmp">Mitarbeiter:</label><select id="manualEmp"><option value="">-- wählen --</option></select>
+      <label for="manualDate">Datum:</label><input type="date" id="manualDate">
+      <div class="row"><div><label for="manualStart">Arbeitsbeginn:</label><input type="time" id="manualStart" step="60"></div><div><label for="manualEnd">Arbeitsende:</label><input type="time" id="manualEnd" step="60"></div></div>
+      <label for="manualReason">Grund/Korrekturvermerk:</label><input type="text" id="manualReason" placeholder="z.B. Stempeln vergessen">
+      <button id="btnManualAdd" class="btn-primary" style="margin-top:12px">Eintrag speichern</button>
+      <p class="manual-note">Chef-Korrekturen werden als manuell markiert.</p>
+    </section>
+
+    <section class="section">
+      <h3>Dienstplan / Sollzeit</h3>
+      <label for="planEmp">Mitarbeiter:</label><select id="planEmp"><option value="">-- wählen --</option></select>
+      <label for="planDate">Tag:</label><input type="date" id="planDate">
+      <div class="row"><div><label for="planFrom">Von:</label><input type="time" id="planFrom"></div><div><label for="planTo">Bis:</label><input type="time" id="planTo"></div></div>
+      <button id="btnAddPlan" class="btn-primary" style="margin-top:12px">Sollzeit speichern</button>
+      <div id="planList" class="box"></div>
+      <p class="manual-note">Im Bericht wird geplant gegen tatsächlich gestempelt verglichen.</p>
+    </section>
+
+    <section class="section">
+      <h3>Urlaub / Frei registrieren</h3>
+      <label for="vacationEmp">Mitarbeiter:</label><select id="vacationEmp"><option value="">-- wählen --</option></select>
+      <label for="vacStart">Startdatum:</label><input type="date" id="vacStart">
+      <label for="vacEnd">Enddatum:</label><input type="date" id="vacEnd">
+      <button id="btnAddVacation" class="btn-warning" style="margin-top:12px">Urlaub registrieren</button>
+      <div id="vacationList" class="box"></div>
+    </section>
+  </div>
+
+  <section class="section">
+    <h3>Einträge verwalten</h3>
+    <div class="row">
+      <div><label for="recordsEmp">Mitarbeiter:</label><select id="recordsEmp"><option value="">-- wählen --</option></select></div>
+      <div><label for="recordsMonth">Monat:</label><select id="recordsMonth"></select></div>
     </div>
+    <div id="recordsInfo" class="manual-note"></div>
+    <div id="recordsContainer" class="table-wrap"></div>
+  </section>
 
-    <div class="grid">
-        <!-- Linke Spalte: Chef-Bereiche (nur sichtbar nach Login) -->
-        <div id="chefArea" style="display: none;">
-            <!-- Mitarbeiter verwalten -->
-            <div class="section">
-                <h3 id="manageEmpsTitle">Mitarbeiter verwalten</h3>
-                <label for="empName" id="empNameLabel">Name des Mitarbeiters:</label>
-                <input type="text" id="empName" placeholder="z.B. Anna Müller">
-                <label for="empPhone" id="empPhoneLabel">WhatsApp / Telefonnummer (optional):</label>
-                <input type="text" id="empPhone" placeholder="+49 170 1234567">
-                <button id="btnAddEmp" class="btn-primary" style="margin-top: 12px;" data-key="addEmpBtn">Mitarbeiter hinzufügen</button>
-                <div id="employeeList" style="margin-top: 15px;"></div>
-                <small id="storageNote">Daten werden nur lokal gespeichert.</small>
-            </div>
-
-            <!-- Vergessenen Eintrag -->
-            <div class="section">
-                <h3 id="manualEntryTitle">Vergessenen Eintrag hinzufügen</h3>
-                <label for="manualEmp" id="manualEmpLabel">Mitarbeiter auswählen:</label>
-                <select id="manualEmp"><option value="">-- wählen --</option></select>
-                <label for="manualDate" id="manualDateLabel">Datum:</label>
-                <input type="date" id="manualDate">
-                <label for="manualStart" id="manualStartLabel">Arbeitsbeginn (exakt):</label>
-                <input type="time" id="manualStart" step="1">
-                <label for="manualEnd" id="manualEndLabel">Arbeitsende (exakt):</label>
-                <input type="time" id="manualEnd" step="1">
-                <button id="btnManualAdd" class="btn-primary" style="margin-top: 12px;" data-key="manualAddBtn">Eintrag speichern</button>
-                <small id="manualNote">Nur für vergessene Stempelungen.</small>
-            </div>
-
-            <!-- Urlaub -->
-            <div class="section">
-                <h3 id="vacationTitle">Urlaub / Ferien registrieren</h3>
-                <label for="vacationEmp" id="vacationEmpLabel">Mitarbeiter auswählen:</label>
-                <select id="vacationEmp"><option value="">-- wählen --</option></select>
-                <label for="vacStart" id="vacStartLabel">Startdatum:</label>
-                <input type="date" id="vacStart">
-                <label for="vacEnd" id="vacEndLabel">Enddatum:</label>
-                <input type="date" id="vacEnd">
-                <button id="btnAddVacation" class="btn-warning" style="margin-top: 12px;" data-key="addVacationBtn">Urlaub registrieren</button>
-                <div id="vacationList" style="margin-top: 12px;"></div>
-                <small id="vacationNote">Urlaubstage werden im Monatsbericht gekennzeichnet.</small>
-            </div>
-
-            <!-- Einträge verwalten -->
-            <div class="section">
-                <h3 id="recordsTitle">Einträge verwalten</h3>
-                <label for="recordsEmp" id="recordsEmpLabel">Mitarbeiter:</label>
-                <select id="recordsEmp"><option value="">-- wählen --</option></select>
-                <label for="recordsMonth" id="recordsMonthLabel">Monat:</label>
-                <select id="recordsMonth"></select>
-                <div id="recordsInfo" style="margin-top: 8px;"></div>
-                <div id="recordsContainer" style="margin-top: 12px; overflow-x: auto;"></div>
-                <small id="recordsNote">Einträge bearbeiten oder löschen.</small>
-            </div>
-
-            <!-- Dienstplan & WhatsApp -->
-            <div class="section">
-                <h3 id="shiftTitle">Dienstplan & WhatsApp</h3>
-                <label for="planEmp" id="planEmpLabel">Mitarbeiter:</label>
-                <select id="planEmp"><option value="">-- wählen --</option></select>
-                <div id="planHoursInfo" style="margin: 8px 0;">Stunden: 0 | Überstunden: 0</div>
-                <label for="planDate" id="planDateLabel">Tag:</label>
-                <input type="date" id="planDate">
-                <label for="planFrom" id="planFromLabel">Von (Uhrzeit):</label>
-                <input type="time" id="planFrom">
-                <label for="planTo" id="planToLabel">Bis (Uhrzeit):</label>
-                <input type="time" id="planTo">
-                <div class="box">
-                    <button id="btnPreviewMsg" class="btn-secondary" style="margin-bottom: 6px;" data-key="previewBtn">Nachricht anzeigen</button>
-                    <button id="btnSendWhatsapp" class="btn-primary" data-key="whatsappBtn">WhatsApp öffnen</button>
-                    <p style="font-size: 12px; margin-top: 8px;" id="waHint">WhatsApp wird mit vorbereiteter Nachricht geöffnet.</p>
-                </div>
-                <div class="box">
-                    <b id="previewTitle">Vorschau Nachricht:</b>
-                    <p id="previewMsg" style="white-space: pre-wrap; margin-top: 8px;">(keine)</p>
-                </div>
-            </div>
-
-            <!-- Monatsbericht Chef -->
-            <div class="section">
-                <h3 id="monthlyReportTitle">Monatsbericht (Chef)</h3>
-                <p id="monthlyReportDesc">Übersicht aller Mitarbeiter für den aktuellen Monat.</p>
-                <div id="monthlyReport"></div>
-                <button id="btnPrintReport" class="btn-primary" style="margin-top: 12px;" data-key="printReportBtn">Drucken / als PDF speichern</button>
-            </div>
-
-            <!-- Monats-Export -->
-            <div class="section">
-                <h3 id="exportTitle">Monats-Export (Word / Drucker)</h3>
-                <p id="exportDesc">Export pro Mitarbeiter und Monat – ideal für Steuerberater.</p>
-                <label for="exportEmp" id="exportEmpLabel">Mitarbeiter:</label>
-                <select id="exportEmp"><option value="">-- wählen --</option></select>
-                <label for="exportMonth" id="exportMonthLabel">Monat:</label>
-                <select id="exportMonth"></select>
-                <button id="btnExport" class="btn-primary" style="margin-top: 14px;" data-key="exportBtn">Monatsblatt erstellen</button>
-                <small id="exportHint">Es öffnet sich ein neues Fenster zum Drucken/PDF.</small>
-            </div>
-
-            <!-- Datenschutzbox -->
-            <div id="datenschutzBox" class="section">
-                <h3 id="privacyTitle">Datenschutz & Nutzungshinweise</h3>
-                <div class="ds-block">
-                    <h4 id="privacy1Title">1. Datenschutz</h4>
-                    <p id="privacy1Text">Dieses System speichert alle Daten ausschließlich lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern übertragen oder gespeichert. Zugriff auf die gespeicherten Daten haben nur der Betrieb/Chef und von ihm autorisierte Personen. Der Arbeitgeber ist verpflichtet, seine Mitarbeiter über die Datenerfassung zu informieren.</p>
-                </div>
-                <div class="ds-block">
-                    <h4 id="privacy2Title">2. Nutzung & Urheberrecht</h4>
-                    <p id="privacy2Text">Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche Zustimmung des Entwicklers ist untersagt.</p>
-                </div>
-                <div class="ds-block">
-                    <h4 id="privacy3Title">3. Haftungsausschluss</h4>
-                    <p id="privacy3Text">Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.</p>
-                </div>
-                <div class="ds-block">
-                    <h4 id="privacy4Title">4. Technische Hinweise</h4>
-                    <p id="privacy4Text">Für die Nutzung wird ein moderner Webbrowser empfohlen. Die gespeicherten Daten können über die Entwicklertools des Browsers eingesehen werden. Bei Wechsel des Geräts oder Löschen des Browser-Cache gehen alle Daten verloren.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Rechte Spalte: Stempeluhr für Mitarbeiter -->
-        <div>
-            <div class="section">
-                <h3 id="stampTitle">Stempeluhr (für Mitarbeiter)</h3>
-                <label for="stempelEmp" id="stempelEmpLabel">Mitarbeiter auswählen:</label>
-                <select id="stempelEmp"><option value="">-- wählen --</option></select>
-                <div id="stempelHoursInfo">Stunden diesen Monat: 0 | Überstundenkonto: 0</div>
-                <div id="stempelStatus">Bereit zum Stempeln.</div>
-                <button id="btnIn" class="btn-primary" style="margin-top: 10px;" data-key="inBtn">Einstempeln</button>
-                <button id="btnOut" class="btn-secondary" style="margin-top: 8px;" data-key="outBtn">Ausstempeln</button>
-                <button id="btnUndo" class="btn-danger" style="margin-top: 8px;" data-key="undoBtn">Letzten Eintrag löschen</button>
-                <div id="stempelLog"><b>Heutige Einträge:</b><br></div>
-                <small id="stampRule">Maximal 160 Stunden im Monat, alles darüber geht ins Überstundenkonto. Die exakten Stempelzeiten werden erfasst (mit Sekunden).</small>
-            </div>
-        </div>
+  <section class="section">
+    <h3>Monatsbericht Chef</h3>
+    <div class="row">
+      <div><label for="reportMonth">Monat:</label><select id="reportMonth"></select></div>
+      <button id="btnRefreshReport" class="btn-secondary">Bericht aktualisieren</button>
     </div>
+    <div id="monthlyReport" class="table-wrap"></div>
+  </section>
 
-    <footer>
-        <a href="#" id="linkImpressum" data-key="impressumLink">Impressum</a> |
-        <a href="#" id="linkDatenschutz" data-key="privacyLink">Datenschutz</a>
-    </footer>
+  <section class="section">
+    <h3>Monatsblatt pro Mitarbeiter</h3>
+    <div class="row">
+      <div><label for="exportEmp">Mitarbeiter:</label><select id="exportEmp"><option value="">-- wählen --</option></select></div>
+      <div><label for="exportMonth">Monat:</label><select id="exportMonth"></select></div>
+      <button id="btnExport" class="btn-primary">Monatsblatt erstellen</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3>Datenschutz & Nutzungshinweise</h3>
+    <div class="box"><b>1. Zweck</b><p>Dieses Tablet dient ausschließlich zur Erfassung der Arbeitszeiten im Betrieb.</p></div>
+    <div class="box"><b>2. Keine Foto- oder GPS-Erfassung</b><p>Es werden keine Fotos und keine Standortdaten gespeichert.</p></div>
+    <div class="box"><b>3. Lokale Speicherung</b><p>Die Daten werden auf diesem Tablet im Browser gespeichert. Bei Verlust, Defekt oder Löschen des Browser-Speichers können Daten verloren gehen. Deshalb regelmäßig Backup erstellen.</p></div>
+    <div class="box"><b>4. Verantwortung</b><p>Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in Verantwortung des Arbeitgebers.</p></div>
+  </section>
+</div>
+
+<footer><span class="footer-btn" id="linkImpressum">Impressum</span> | <span class="footer-btn" id="linkInfo">Info</span></footer>
 </div>
 
 <script>
-    // ======================== GLOBALE DATEN ========================
-    const CHEF_PIN = "1234";
-    const MAX_HOURS = 160;
-    let employees = [];
-    let isChef = false;
-
-    // DOM-Elemente
-    const chefPin = document.getElementById('chefPin');
-    const btnChefLogin = document.getElementById('btnChefLogin');
-    const btnChefLogout = document.getElementById('btnChefLogout');
-    const chefStatus = document.getElementById('chefStatus');
-    const chefArea = document.getElementById('chefArea');
-    const datenschutzBox = document.getElementById('datenschutzBox');
-
-    // ======================== HELFER-FUNKTIONEN ========================
-    function getCurrentMonthKey() {
-        const now = new Date();
-        return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    }
-
-    function formatTime(iso) {
-        if (!iso) return '';
-        return new Date(iso).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-    }
-
-    function formatDate(iso) {
-        if (!iso) return '';
-        return new Date(iso).toLocaleDateString('de-DE');
-    }
-
-    function getMonthLabel(year, month) {
-        return new Date(year, month-1, 1).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
-    }
-
-    function getHoursAndBank(emp, monthKey) {
-        const total = (emp.monthlyHours && emp.monthlyHours[monthKey]) || 0;
-        const bank = (emp.timeBank && emp.timeBank[monthKey]) || 0;
-        return { total, bank };
-    }
-
-    function recalcTotals(emp) {
-        if (!emp.sessions) emp.sessions = [];
-        if (!emp.monthlyHours) emp.monthlyHours = {};
-        if (!emp.timeBank) emp.timeBank = {};
-        emp.monthlyHours = {};
-        emp.timeBank = {};
-
-        emp.sessions.forEach(s => {
-            const mk = s.start.substring(0,7);
-            emp.monthlyHours[mk] = (emp.monthlyHours[mk] || 0) + s.hours;
-        });
-
-        Object.keys(emp.monthlyHours).forEach(mk => {
-            const total = emp.monthlyHours[mk];
-            emp.timeBank[mk] = total > MAX_HOURS ? total - MAX_HOURS : 0;
-        });
-    }
-
-    function saveData() {
-        localStorage.setItem('worktime_data', JSON.stringify(employees));
-    }
-
-    function loadData() {
-        const data = localStorage.getItem('worktime_data');
-        employees = data ? JSON.parse(data) : [];
-        employees.forEach(e => {
-            if (!e.sessions) e.sessions = [];
-            if (!e.monthlyHours) e.monthlyHours = {};
-            if (!e.timeBank) e.timeBank = {};
-            if (!e.vacations) e.vacations = [];
-        });
-    }
-
-    function generateId() { return Date.now() + '_' + Math.random().toString(36).substr(2,6); }
-
-    function addLog(text) {
-        const logDiv = document.getElementById('stempelLog');
-        logDiv.innerHTML = `<b>${getTranslation('todayEntries')}:</b><br>${text} – <i>${new Date().toLocaleString()}</i><br>${logDiv.innerHTML.split('<br>').slice(0,9).join('<br>')}`;
-    }
-
-    // ======================== UI AKTUALISIERUNGEN ========================
-    function refreshAllSelects() {
-        const selects = ['stempelEmp', 'planEmp', 'exportEmp', 'manualEmp', 'recordsEmp', 'vacationEmp'];
-        selects.forEach(id => {
-            const sel = document.getElementById(id);
-            if (!sel) return;
-            const old = sel.value;
-            sel.innerHTML = '<option value="">-- ' + getTranslation('selectEmployee') + ' --</option>';
-            employees.forEach(emp => {
-                const opt = document.createElement('option');
-                opt.value = emp.id;
-                opt.textContent = emp.name;
-                sel.appendChild(opt);
-            });
-            if (old && employees.some(e => e.id === old)) sel.value = old;
-            else sel.value = '';
-        });
-    }
-
-    function refreshEmployeeList() {
-        const div = document.getElementById('employeeList');
-        div.innerHTML = '';
-        employees.forEach(emp => {
-            const row = document.createElement('div');
-            row.className = 'employee-row';
-            row.innerHTML = `<span>${emp.name} ${emp.phone ? '('+emp.phone.slice(0,3)+'***'+emp.phone.slice(-2)+')' : ''}</span>`;
-            const delBtn = document.createElement('button');
-            delBtn.textContent = getTranslation('delete');
-            delBtn.className = 'btn-danger';
-            delBtn.onclick = () => {
-                if (confirm(getTranslation('confirmDeleteEmp'))) {
-                    employees = employees.filter(e => e.id !== emp.id);
-                    saveData();
-                    refreshAll();
-                }
-            };
-            row.appendChild(delBtn);
-            div.appendChild(row);
-        });
-        const any = employees.length > 0;
-        document.getElementById('btnIn').disabled = !any;
-        document.getElementById('btnOut').disabled = !any;
-        document.getElementById('btnUndo').disabled = !any;
-        if (!any) document.getElementById('stempelStatus').innerText = getTranslation('noEmployees');
-        else document.getElementById('stempelStatus').innerText = getTranslation('readyToStamp');
-    }
-
-    function refreshVacationList() {
-        const empId = document.getElementById('vacationEmp').value;
-        const div = document.getElementById('vacationList');
-        if (!empId) { div.innerHTML = `<em>${getTranslation('selectEmployeeFirst')}</em>`; return; }
-        const emp = employees.find(e => e.id === empId);
-        if (!emp || !emp.vacations?.length) { div.innerHTML = `<em>${getTranslation('noVacations')}</em>`; return; }
-        let html = `<div><strong>${getTranslation('registeredVacations')}:</strong></div>`;
-        emp.vacations.forEach((vac, idx) => {
-            html += `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #eee;">
-                        📅 ${vac.start} bis ${vac.end}
-                        <button class="btn-danger" style="padding:4px 8px;" onclick="deleteVacation('${emp.id}',${idx})">${getTranslation('delete')}</button>
-                     </div>`;
-        });
-        div.innerHTML = html;
-    }
-
-    function updateHoursInfo() {
-        const empId = document.getElementById('stempelEmp').value;
-        const emp = employees.find(e => e.id === empId);
-        const infoDiv = document.getElementById('stempelHoursInfo');
-        if (!emp) { infoDiv.innerHTML = getTranslation('hoursInfoDefault'); return; }
-        const { total, bank } = getHoursAndBank(emp, getCurrentMonthKey());
-        let txt = `${getTranslation('hoursThisMonth')}: ${total.toFixed(2)} | ${getTranslation('overtimeAccount')}: ${bank.toFixed(2)}`;
-        if (total > MAX_HOURS) txt += ` <span class="warning">${getTranslation('limitWarning')}</span>`;
-        infoDiv.innerHTML = txt;
-    }
-
-    function updatePlanHoursInfo() {
-        const empId = document.getElementById('planEmp').value;
-        const emp = employees.find(e => e.id === empId);
-        const infoDiv = document.getElementById('planHoursInfo');
-        if (!emp) { infoDiv.innerHTML = getTranslation('hoursInfoDefault'); return; }
-        const { total, bank } = getHoursAndBank(emp, getCurrentMonthKey());
-        let txt = `${getTranslation('hoursThisMonth')}: ${total.toFixed(2)} | ${getTranslation('overtimeAccount')}: ${bank.toFixed(2)}`;
-        if (total > MAX_HOURS) txt += ` <span class="warning">${getTranslation('limitWarning')}</span>`;
-        infoDiv.innerHTML = txt;
-    }
-
-    function renderMonthlyReport() {
-        const container = document.getElementById('monthlyReport');
-        if (!container) return;
-        if (!employees.length) { container.innerHTML = `<em>${getTranslation('noEmployees')}</em>`; return; }
-        const monthKey = getCurrentMonthKey();
-        let html = ` <thead><tr><th>${getTranslation('employee')}</th><th style="text-align:right">${getTranslation('hoursPerMonth')}</th><th style="text-align:right">${getTranslation('overtimeAccount')}</th><th style="text-align:center">${getTranslation('vacationDays')}</th></tr></thead><tbody>`;
-        let totalAll = 0, bankAll = 0;
-        employees.forEach(emp => {
-            const { total, bank } = getHoursAndBank(emp, monthKey);
-            totalAll += total;
-            bankAll += bank;
-            const vacDays = emp.vacations?.length || 0;
-            html += `<tr><td>${emp.name}</td><td style="text-align:right">${total.toFixed(2)}</td><td style="text-align:right">${bank.toFixed(2)}</td><td style="text-align:center">${vacDays}</td></tr>`;
-        });
-        html += `<tr style="font-weight:bold"><td>${getTranslation('sum')}</td><td style="text-align:right">${totalAll.toFixed(2)}</td><td style="text-align:right">${bankAll.toFixed(2)}</td><td></td></tr>`;
-        html += `</tbody>`;
-        container.innerHTML = `<table>${html}</table>`;
-    }
-
-    function renderRecordsTable() {
-        const empId = document.getElementById('recordsEmp').value;
-        const monthKey = document.getElementById('recordsMonth').value || getCurrentMonthKey();
-        const infoDiv = document.getElementById('recordsInfo');
-        const container = document.getElementById('recordsContainer');
-        if (!empId) { infoDiv.textContent = getTranslation('selectEmployeeFirst'); container.innerHTML = ''; return; }
-        const emp = employees.find(e => e.id === empId);
-        if (!emp) { infoDiv.textContent = getTranslation('employeeNotFound'); return; }
-        const sessions = (emp.sessions || []).filter(s => s.start.substring(0,7) === monthKey);
-        infoDiv.textContent = `${emp.name} – ${sessions.length} ${getTranslation('entriesInMonth')} ${monthKey}`;
-        if (!sessions.length) { container.innerHTML = `<em>${getTranslation('noEntries')}</em>`; return; }
-        let html = `<table><thead><tr><th>${getTranslation('date')}</th><th>${getTranslation('startExact')}</th><th>${getTranslation('endExact')}</th><th style="text-align:right">${getTranslation('hours')}</th><th>${getTranslation('type')}</th><th>${getTranslation('action')}</th></tr></thead><tbody>`;
-        sessions.forEach(s => {
-            const originalIdx = emp.sessions.indexOf(s);
-            const dateStr = formatDate(s.start);
-            html += `<tr>
-                        <td>${dateStr}</td>
-                        <td>${formatTime(s.start)}</td>
-                        <td>${formatTime(s.end)}</td>
-                        <td style="text-align:right">${(s.hours||0).toFixed(2)}</td>
-                        <td>${s.manual ? getTranslation('manual') : getTranslation('auto')}</td>
-                        <td><button class="btn-secondary" onclick="editSession('${emp.id}',${originalIdx})">${getTranslation('edit')}</button>
-                            <button class="btn-danger" onclick="deleteSession('${emp.id}',${originalIdx})">${getTranslation('delete')}</button></td>
-                      </tr>`;
-        });
-        html += `</tbody></table>`;
-        container.innerHTML = html;
-    }
-
-    function buildMonthlyRows(emp, year, month) {
-        const daysInMonth = new Date(year, month, 0).getDate();
-        const sessions = emp.sessions || [];
-        const vacations = emp.vacations || [];
-        const rows = [];
-        let totalHours = 0;
-
-        for (let d = 1; d <= daysInMonth; d++) {
-            const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const isVac = vacations.some(v => new Date(dateStr) >= new Date(v.start) && new Date(dateStr) <= new Date(v.end));
-            const daySessions = sessions.filter(s => s.start.substring(0,10) === dateStr);
-
-            if (daySessions.length === 0 && !isVac) {
-                rows.push({ date: `${d}.${String(month).padStart(2,'0')}.${year}`, start: '', end: '', hours: '', payType: '', isVac: false });
-            } else if (isVac) {
-                rows.push({ date: `${d}.${String(month).padStart(2,'0')}.${year}`, start: getTranslation('vacation'), end: '', hours: '0', payType: getTranslation('vacation'), isVac: true });
-            } else {
-                daySessions.forEach((s, idx) => {
-                    const startTime = formatTime(s.start);
-                    const endTime = formatTime(s.end);
-                    totalHours += s.hours;
-                    rows.push({
-                        date: idx === 0 ? `${d}.${String(month).padStart(2,'0')}.${year}` : '',
-                        start: startTime,
-                        end: endTime,
-                        hours: s.hours.toFixed(2).replace('.',','),
-                        payType: s.manual ? getTranslation('manual') : '',
-                        isVac: false
-                    });
-                });
-            }
-        }
-        return { rows, totalHours };
-    }
-
-    function openMonthlyPrintWindow(emp, year, month) {
-        const { rows, totalHours } = buildMonthlyRows(emp, year, month);
-        const monthLabel = getMonthLabel(year, month);
-        const win = window.open('', '_blank');
-        win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${getTranslation('timeRecord')} – ${emp.name} – ${monthLabel}</title>
-        <style>
-            body { font-family: Arial, sans-serif; padding: 16px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-            th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
-            th { background: #f0f0f0; text-align: center; }
-            .vacation-row { background-color: #fff3e0; }
-            tfoot td { font-weight: bold; }
-        </style></head><body>
-        <h2>${getTranslation('timeRecord')}</h2>
-        <h3>${getTranslation('employee')}: ${emp.name}</h3>
-        <p>${getTranslation('month')}: ${monthLabel}</p>
-        <table><thead><tr><th>${getTranslation('day')}</th><th>${getTranslation('startExact')}</th><th>${getTranslation('endExact')}</th><th>${getTranslation('hours')}</th><th>${getTranslation('payType')}</th></tr></thead><tbody>`);
-        rows.forEach(r => {
-            const rowClass = r.isVac ? 'class="vacation-row"' : '';
-            win.document.write(`<tr ${rowClass}><td>${r.date}</td><td>${r.start}</td><td>${r.end}</td><td style="text-align:right">${r.hours}</td><td>${r.payType}</td></tr>`);
-        });
-        win.document.write(`</tbody><tfoot><tr><td colspan="3" style="text-align:right">${getTranslation('totalHours')}:</td><td style="text-align:right">${totalHours.toFixed(2).replace('.',',')}</td><td></td></tr></tfoot></table></body></html>`);
-        win.document.close();
-        win.focus();
-    }
-
-    function printMonthlyReport() {
-        const container = document.getElementById('monthlyReport');
-        if (!container) return;
-        const win = window.open('', '_blank');
-        win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${getTranslation('monthlyReport')}</title>
-        <style>body{font-family:Arial;padding:16px;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #ccc;padding:6px;}</style></head><body>
-        <h2>${getTranslation('monthlyReport')}</h2><p>${getTranslation('month')}: ${getCurrentMonthKey()}</p>${container.innerHTML}</body></html>`);
-        win.document.close();
-        win.focus();
-        win.print();
-    }
-
-    function buildMonthSelectors() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const selects = ['recordsMonth', 'exportMonth'];
-        selects.forEach(id => {
-            const sel = document.getElementById(id);
-            if (!sel) return;
-            sel.innerHTML = '';
-            for (let m = 1; m <= 12; m++) {
-                const val = `${year}-${String(m).padStart(2,'0')}`;
-                const opt = document.createElement('option');
-                opt.value = val;
-                opt.textContent = getMonthLabel(year, m);
-                sel.appendChild(opt);
-            }
-            sel.value = getCurrentMonthKey();
-        });
-    }
-
-    // ======================== EVENT-HANDLER ========================
-    function setChefLogin(state) {
-        isChef = state;
-        if (state) {
-            chefArea.style.display = 'block';
-            datenschutzBox.style.display = 'block';
-            chefStatus.style.color = 'green';
-            chefStatus.innerText = getTranslation('loginSuccess');
-            chefPin.value = '';
-        } else {
-            chefArea.style.display = 'none';
-            datenschutzBox.style.display = 'none';
-            chefStatus.style.color = '#555';
-            chefStatus.innerText = getTranslation('loggedOut');
-        }
-    }
-
-    btnChefLogin.onclick = () => {
-        if (chefPin.value.trim() === CHEF_PIN) setChefLogin(true);
-        else chefStatus.innerText = getTranslation('wrongPin');
-    };
-    btnChefLogout.onclick = () => setChefLogin(false);
-
-    document.getElementById('btnAddEmp').onclick = () => {
-        const name = document.getElementById('empName').value.trim();
-        const phone = document.getElementById('empPhone').value.trim();
-        if (!name) { alert(getTranslation('enterName')); return; }
-        employees.push({
-            id: generateId(),
-            name,
-            phone,
-            sessions: [],
-            monthlyHours: {},
-            timeBank: {},
-            vacations: []
-        });
-        saveData();
-        document.getElementById('empName').value = '';
-        document.getElementById('empPhone').value = '';
-        refreshAll();
-    };
-
-    document.getElementById('btnManualAdd').onclick = () => {
-        if (!isChef) { alert(getTranslation('chefOnly')); return; }
-        const empId = document.getElementById('manualEmp').value;
-        const date = document.getElementById('manualDate').value;
-        const startTime = document.getElementById('manualStart').value;
-        const endTime = document.getElementById('manualEnd').value;
-        if (!empId || !date || !startTime || !endTime) { alert(getTranslation('fillAllFields')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (!emp) return;
-        const start = new Date(`${date}T${startTime}`);
-        const end = new Date(`${date}T${endTime}`);
-        if (isNaN(start) || isNaN(end) || end <= start) { alert(getTranslation('invalidTime')); return; }
-        const hours = (end - start) / 3600000;
-        emp.sessions.push({
-            start: start.toISOString(),
-            end: end.toISOString(),
-            realStart: start.toISOString(),
-            realEnd: end.toISOString(),
-            hours,
-            manual: true
-        });
-        emp.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start));
-        recalcTotals(emp);
-        saveData();
-        document.getElementById('manualDate').value = '';
-        document.getElementById('manualStart').value = '';
-        document.getElementById('manualEnd').value = '';
-        refreshAll();
-        addLog(`${emp.name} – ${getTranslation('manualEntryAdded')} (${hours.toFixed(2)} Std.)`);
-        alert(getTranslation('entrySaved'));
-    };
-
-    document.getElementById('btnAddVacation').onclick = () => {
-        if (!isChef) { alert(getTranslation('chefOnly')); return; }
-        const empId = document.getElementById('vacationEmp').value;
-        const start = document.getElementById('vacStart').value;
-        const end = document.getElementById('vacEnd').value;
-        if (!empId || !start || !end) { alert(getTranslation('fillAllFields')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (emp) {
-            if (!emp.vacations) emp.vacations = [];
-            emp.vacations.push({ start, end, registeredAt: new Date().toISOString() });
-            saveData();
-            refreshVacationList();
-            renderMonthlyReport();
-            addLog(`${emp.name} – ${getTranslation('vacationRegistered')} ${start} bis ${end}`);
-            alert(getTranslation('vacationSaved'));
-        }
-    };
-
-    // Stempeln
-    document.getElementById('btnIn').onclick = () => {
-        const empId = document.getElementById('stempelEmp').value;
-        if (!empId) { alert(getTranslation('selectEmployee')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (emp.activeSessionStart) { alert(getTranslation('alreadyClockedIn')); return; }
-        const now = new Date();
-        emp.activeSessionStart = now.toISOString();
-        emp.activeSessionRealStart = now.toISOString();
-        saveData();
-        document.getElementById('stempelStatus').innerText = `${getTranslation('clockedInAt')} ${now.toLocaleTimeString('de-DE')}.`;
-        addLog(`${emp.name} ${getTranslation('clockedInAt')} ${now.toLocaleTimeString('de-DE')}`);
-    };
-    document.getElementById('btnOut').onclick = () => {
-        const empId = document.getElementById('stempelEmp').value;
-        if (!empId) { alert(getTranslation('selectEmployee')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (!emp.activeSessionStart) { alert(getTranslation('notClockedIn')); return; }
-        const start = new Date(emp.activeSessionStart);
-        const end = new Date();
-        const hours = (end - start) / 3600000;
-        emp.sessions.push({
-            start: start.toISOString(),
-            end: end.toISOString(),
-            realStart: emp.activeSessionRealStart,
-            realEnd: end.toISOString(),
-            hours,
-            manual: false
-        });
-        recalcTotals(emp);
-        emp.activeSessionStart = null;
-        emp.activeSessionRealStart = null;
-        saveData();
-        document.getElementById('stempelStatus').innerText = `${getTranslation('clockedOutAt')} ${end.toLocaleTimeString('de-DE')}. ${getTranslation('duration')}: ${hours.toFixed(2)} Std.`;
-        addLog(`${emp.name} ${getTranslation('clockedOutAt')} ${end.toLocaleTimeString('de-DE')} (${hours.toFixed(2)} Std.)`);
-        updateHoursInfo();
-        renderMonthlyReport();
-        renderRecordsTable();
-        updatePlanHoursInfo();
-    };
-    document.getElementById('btnUndo').onclick = () => {
-        const empId = document.getElementById('stempelEmp').value;
-        if (!empId) { alert(getTranslation('selectEmployee')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (!emp.sessions.length) { alert(getTranslation('noEntriesToDelete')); return; }
-        if (confirm(getTranslation('confirmDeleteLast'))) {
-            emp.sessions.pop();
-            recalcTotals(emp);
-            saveData();
-            refreshAll();
-            addLog(`${emp.name} – ${getTranslation('lastEntryDeleted')}`);
-        }
-    };
-
-    // Dienstplan WhatsApp
-    const planEmp = document.getElementById('planEmp');
-    const planDate = document.getElementById('planDate');
-    const planFrom = document.getElementById('planFrom');
-    const planTo = document.getElementById('planTo');
-    const previewMsg = document.getElementById('previewMsg');
-    function buildWhatsAppMsg() {
-        const emp = employees.find(e => e.id === planEmp.value);
-        if (!emp || !planDate.value || !planFrom.value || !planTo.value) return '';
-        const { total, bank } = getHoursAndBank(emp, getCurrentMonthKey());
-        return `Eiscafé Sanremo – Dienstplan\n\nHallo ${emp.name},\n\ndein Dienst:\n📅 Datum: ${new Date(planDate.value).toLocaleDateString('de-DE')}\n⏰ Zeit: ${planFrom.value} – ${planTo.value} Uhr\n📍 Ort: Eiscafé Sanremo\n\nAktueller Monat: ${total.toFixed(2)} Std. (Überstundenkonto: ${bank.toFixed(2)} Std.)\n\nBitte bestätige mit OK.`;
-    }
-    document.getElementById('btnPreviewMsg').onclick = () => {
-        const msg = buildWhatsAppMsg();
-        if (msg) previewMsg.innerText = msg;
-        else alert(getTranslation('fillShiftPlan'));
-    };
-    document.getElementById('btnSendWhatsapp').onclick = () => {
-        const emp = employees.find(e => e.id === planEmp.value);
-        const msg = buildWhatsAppMsg();
-        if (!emp || !msg) { alert(getTranslation('fillShiftPlan')); return; }
-        if (!emp.phone) { alert(getTranslation('noPhoneNumber')); return; }
-        window.open(`https://wa.me/${emp.phone}?text=${encodeURIComponent(msg)}`, '_blank');
-    };
-
-    // Export
-    document.getElementById('btnExport').onclick = () => {
-        const empId = document.getElementById('exportEmp').value;
-        const monthVal = document.getElementById('exportMonth').value;
-        if (!empId || !monthVal) { alert(getTranslation('selectEmployeeMonth')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (!emp) return;
-        const [year, month] = monthVal.split('-').map(Number);
-        openMonthlyPrintWindow(emp, year, month);
-    };
-
-    // Drucken Monatsbericht
-    document.getElementById('btnPrintReport').onclick = () => printMonthlyReport();
-
-    // Impressum/Datenschutz
-    document.getElementById('linkImpressum').onclick = e => { e.preventDefault(); alert(getTranslation('impressumText')); };
-    document.getElementById('linkDatenschutz').onclick = e => { e.preventDefault(); if (isChef) datenschutzBox.scrollIntoView({behavior:'smooth'}); else alert(getTranslation('chefOnly')); };
-
-    // Globale Funktionen für edit/delete
-    window.editSession = (empId, idx) => {
-        if (!isChef) { alert(getTranslation('chefOnly')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (!emp || !emp.sessions[idx]) return;
-        const s = emp.sessions[idx];
-        const oldStart = new Date(s.realStart || s.start);
-        const oldEnd = new Date(s.realEnd || s.end);
-        const newDate = prompt(getTranslation('enterDate'), oldStart.toISOString().slice(0,10));
-        if (!newDate) return;
-        const newStart = prompt(getTranslation('enterStartTime'), oldStart.toLocaleTimeString('de-DE'));
-        if (!newStart) return;
-        const newEnd = prompt(getTranslation('enterEndTime'), oldEnd.toLocaleTimeString('de-DE'));
-        if (!newEnd) return;
-        const start = new Date(`${newDate}T${newStart}`);
-        const end = new Date(`${newDate}T${newEnd}`);
-        if (isNaN(start) || isNaN(end) || end <= start) { alert(getTranslation('invalidTime')); return; }
-        s.start = start.toISOString();
-        s.end = end.toISOString();
-        s.realStart = start.toISOString();
-        s.realEnd = end.toISOString();
-        s.hours = (end - start) / 3600000;
-        s.manual = true;
-        emp.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start));
-        recalcTotals(emp);
-        saveData();
-        refreshAll();
-        addLog(`${emp.name} – ${getTranslation('entryEdited')}`);
-    };
-    window.deleteSession = (empId, idx) => {
-        if (!isChef) { alert(getTranslation('chefOnly')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (emp && emp.sessions[idx] && confirm(getTranslation('confirmDeleteEntry'))) {
-            emp.sessions.splice(idx,1);
-            recalcTotals(emp);
-            saveData();
-            refreshAll();
-            addLog(`${emp.name} – ${getTranslation('entryDeleted')}`);
-        }
-    };
-    window.deleteVacation = (empId, idx) => {
-        if (!isChef) { alert(getTranslation('chefOnly')); return; }
-        const emp = employees.find(e => e.id === empId);
-        if (emp && emp.vacations && emp.vacations[idx] && confirm(getTranslation('confirmDeleteVacation'))) {
-            emp.vacations.splice(idx,1);
-            saveData();
-            refreshVacationList();
-            renderMonthlyReport();
-            addLog(`${emp.name} – ${getTranslation('vacationDeleted')}`);
-        }
-    };
-
-    function refreshAll() {
-        refreshAllSelects();
-        refreshEmployeeList();
-        refreshVacationList();
-        updateHoursInfo();
-        updatePlanHoursInfo();
-        renderMonthlyReport();
-        renderRecordsTable();
-        buildMonthSelectors();
-    }
-
-    // ======================== ÜBERSETZUNGEN ========================
-    let currentLang = 'de';
-    const translations = {
-        de: {
-            // Allgemein
-            selectEmployee: "Mitarbeiter wählen",
-            delete: "Löschen",
-            confirmDeleteEmp: "Mitarbeiter wirklich löschen?",
-            noEmployees: "Keine Mitarbeiter. Chef muss zuerst Mitarbeiter anlegen.",
-            readyToStamp: "Bereit zum Stempeln.",
-            hoursInfoDefault: "Stunden diesen Monat: 0 | Überstundenkonto: 0",
-            hoursThisMonth: "Stunden diesen Monat",
-            overtimeAccount: "Überstundenkonto",
-            limitWarning: "Limit 160h überschritten!",
-            employee: "Mitarbeiter",
-            hoursPerMonth: "Stunden im Monat",
-            vacationDays: "Urlaubstage",
-            sum: "Summe",
-            entriesInMonth: "Einträge im Monat",
-            noEntries: "Keine Einträge in diesem Monat.",
-            date: "Datum",
-            startExact: "Start (exakt)",
-            endExact: "Ende (exakt)",
-            hours: "Std.",
-            type: "Art",
-            action: "Aktion",
-            manual: "Manuell",
-            auto: "Auto",
-            edit: "Bearbeiten",
-            vacation: "URLAUB",
-            payType: "Entlohnungsart",
-            day: "Tag",
-            totalHours: "Summe Arbeitsstunden",
-            month: "Monat",
-            timeRecord: "Stundennachweis",
-            monthlyReport: "Monatsbericht",
-            // Chef
-            loginSuccess: "Login erfolgreich. Chef-Bereiche freigeschaltet.",
-            loggedOut: "Abgemeldet.",
-            wrongPin: "Falscher PIN.",
-            enterName: "Bitte Namen eingeben.",
-            chefOnly: "Nur nach Chef-Login möglich.",
-            fillAllFields: "Bitte alle Felder ausfüllen.",
-            invalidTime: "Ungültige Zeitangabe.",
-            manualEntryAdded: "manueller Eintrag hinzugefügt",
-            entrySaved: "Eintrag gespeichert.",
-            vacationRegistered: "Urlaub registriert",
-            vacationSaved: "Urlaub registriert.",
-            selectEmployeeFirst: "Bitte Mitarbeiter auswählen",
-            noVacations: "Keine Urlaubstage registriert.",
-            registeredVacations: "Registrierte Urlaubstage",
-            employeeNotFound: "Mitarbeiter nicht gefunden.",
-            selectEmployee: "Mitarbeiter wählen.",
-            alreadyClockedIn: "Bereits eingestempelt.",
-            clockedInAt: "Eingestempelt um",
-            notClockedIn: "Nicht eingestempelt.",
-            clockedOutAt: "Ausgestempelt um",
-            duration: "Dauer",
-            noEntriesToDelete: "Keine Einträge zum Löschen.",
-            confirmDeleteLast: "Letzten Eintrag löschen?",
-            lastEntryDeleted: "letzter Eintrag gelöscht",
-            fillShiftPlan: "Bitte Mitarbeiter, Tag und Zeiten ausfüllen.",
-            noPhoneNumber: "Keine Telefonnummer hinterlegt.",
-            selectEmployeeMonth: "Bitte Mitarbeiter und Monat auswählen.",
-            impressumText: "Impressum: Hier können Sie Ihre Firmenadresse eintragen.",
-            confirmDeleteEntry: "Eintrag löschen?",
-            entryEdited: "Eintrag bearbeitet",
-            entryDeleted: "Eintrag gelöscht",
-            confirmDeleteVacation: "Urlaubseintrag löschen?",
-            vacationDeleted: "Urlaubseintrag gelöscht",
-            todayEntries: "Heutige Einträge",
-            // UI-Text IDs
-            chefLoginTitle: "Chef Login",
-            chefPinLabel: "PIN eingeben:",
-            chefLoginBtn: "Login",
-            chefLogoutBtn: "Logout",
-            chefInfoText: "Nach erfolgreichem Login werden die Chef-Bereiche freigeschaltet.",
-            manageEmpsTitle: "Mitarbeiter verwalten",
-            empNameLabel: "Name des Mitarbeiters:",
-            empPhoneLabel: "WhatsApp / Telefonnummer (optional):",
-            addEmpBtn: "Mitarbeiter hinzufügen",
-            storageNote: "Daten werden nur lokal gespeichert.",
-            manualEntryTitle: "Vergessenen Eintrag hinzufügen",
-            manualEmpLabel: "Mitarbeiter auswählen:",
-            manualDateLabel: "Datum:",
-            manualStartLabel: "Arbeitsbeginn (exakt):",
-            manualEndLabel: "Arbeitsende (exakt):",
-            manualAddBtn: "Eintrag speichern",
-            manualNote: "Nur für vergessene Stempelungen.",
-            vacationTitle: "Urlaub / Ferien registrieren",
-            vacationEmpLabel: "Mitarbeiter auswählen:",
-            vacStartLabel: "Startdatum:",
-            vacEndLabel: "Enddatum:",
-            addVacationBtn: "Urlaub registrieren",
-            vacationNote: "Urlaubstage werden im Monatsbericht gekennzeichnet.",
-            recordsTitle: "Einträge verwalten",
-            recordsEmpLabel: "Mitarbeiter:",
-            recordsMonthLabel: "Monat:",
-            recordsNote: "Einträge bearbeiten oder löschen.",
-            shiftTitle: "Dienstplan & WhatsApp",
-            planEmpLabel: "Mitarbeiter:",
-            planDateLabel: "Tag:",
-            planFromLabel: "Von (Uhrzeit):",
-            planToLabel: "Bis (Uhrzeit):",
-            previewBtn: "Nachricht anzeigen",
-            whatsappBtn: "WhatsApp öffnen",
-            waHint: "WhatsApp wird mit vorbereiteter Nachricht geöffnet.",
-            previewTitle: "Vorschau Nachricht:",
-            monthlyReportTitle: "Monatsbericht (Chef)",
-            monthlyReportDesc: "Übersicht aller Mitarbeiter für den aktuellen Monat.",
-            printReportBtn: "Drucken / als PDF speichern",
-            exportTitle: "Monats-Export (Word / Drucker)",
-            exportDesc: "Export pro Mitarbeiter und Monat – ideal für Steuerberater.",
-            exportEmpLabel: "Mitarbeiter:",
-            exportMonthLabel: "Monat:",
-            exportBtn: "Monatsblatt erstellen",
-            exportHint: "Es öffnet sich ein neues Fenster zum Drucken/PDF.",
-            privacyTitle: "Datenschutz & Nutzungshinweise",
-            privacy1Title: "1. Datenschutz",
-            privacy1Text: "Dieses System speichert alle Daten ausschließlich lokal im Browser/Tablet des Betriebs. Es werden keine Daten auf externen Servern übertragen oder gespeichert. Zugriff auf die gespeicherten Daten haben nur der Betrieb/Chef und von ihm autorisierte Personen. Der Arbeitgeber ist verpflichtet, seine Mitarbeiter über die Datenerfassung zu informieren.",
-            privacy2Title: "2. Nutzung & Urheberrecht",
-            privacy2Text: "Diese Anwendung ist nur für den lizenzierten Betrieb bestimmt. Eine Weitergabe, Vervielfältigung, der Verkauf oder das Kopieren des Quellcodes und Designs an Dritte ohne ausdrückliche schriftliche Zustimmung des Entwicklers ist untersagt.",
-            privacy3Title: "3. Haftungsausschluss",
-            privacy3Text: "Die Anwendung unterstützt bei der Erfassung von Arbeitszeiten. Die rechtlich korrekte Lohnabrechnung und Einhaltung arbeitsrechtlicher Vorschriften bleiben in der Verantwortung des Arbeitgebers.",
-            privacy4Title: "4. Technische Hinweise",
-            privacy4Text: "Für die Nutzung wird ein moderner Webbrowser empfohlen. Die gespeicherten Daten können über die Entwicklertools des Browsers eingesehen werden. Bei Wechsel des Geräts oder Löschen des Browser-Cache gehen alle Daten verloren.",
-            stampTitle: "Stempeluhr (für Mitarbeiter)",
-            stempelEmpLabel: "Mitarbeiter auswählen:",
-            inBtn: "Einstempeln",
-            outBtn: "Ausstempeln",
-            undoBtn: "Letzten Eintrag löschen",
-            stampRule: "Maximal 160 Stunden im Monat, alles darüber geht ins Überstundenkonto. Die exakten Stempelzeiten werden erfasst (mit Sekunden).",
-            impressumLink: "Impressum",
-            privacyLink: "Datenschutz"
-        },
-        pt: {
-            selectEmployee: "Escolher funcionário",
-            delete: "Excluir",
-            confirmDeleteEmp: "Excluir funcionário?",
-            noEmployees: "Nenhum funcionário. O chefe deve adicionar primeiro.",
-            readyToStamp: "Pronto para marcar ponto.",
-            hoursInfoDefault: "Horas este mês: 0 | Banco de horas: 0",
-            hoursThisMonth: "Horas este mês",
-            overtimeAccount: "Banco de horas",
-            limitWarning: "Limite de 160h excedido!",
-            employee: "Funcionário",
-            hoursPerMonth: "Horas no mês",
-            vacationDays: "Dias de férias",
-            sum: "Total",
-            entriesInMonth: "registos no mês",
-            noEntries: "Nenhum registo neste mês.",
-            date: "Data",
-            startExact: "Início (exato)",
-            endExact: "Fim (exato)",
-            hours: "Horas",
-            type: "Tipo",
-            action: "Ação",
-            manual: "Manual",
-            auto: "Auto",
-            edit: "Editar",
-            vacation: "FÉRIAS",
-            payType: "Tipo de pagamento",
-            day: "Dia",
-            totalHours: "Total de horas trabalhadas",
-            month: "Mês",
-            timeRecord: "Registo de horas",
-            monthlyReport: "Relatório mensal",
-            loginSuccess: "Login bem-sucedido. Áreas do chefe liberadas.",
-            loggedOut: "Desconectado.",
-            wrongPin: "PIN incorreto.",
-            enterName: "Por favor, insira o nome.",
-            chefOnly: "Apenas após login do chefe.",
-            fillAllFields: "Preencha todos os campos.",
-            invalidTime: "Horário inválido.",
-            manualEntryAdded: "registo manual adicionado",
-            entrySaved: "Registo salvo.",
-            vacationRegistered: "Férias registadas",
-            vacationSaved: "Férias registadas.",
-            selectEmployeeFirst: "Escolha um funcionário",
-            noVacations: "Nenhum dia de férias registado.",
-            registeredVacations: "Dias de férias registados",
-            employeeNotFound: "Funcionário não encontrado.",
-            selectEmployee: "Escolha um funcionário.",
-            alreadyClockedIn: "Já está marcado ponto de entrada.",
-            clockedInAt: "Entrada registada às",
-            notClockedIn: "Não está marcado ponto de entrada.",
-            clockedOutAt: "Saída registada às",
-            duration: "Duração",
-            noEntriesToDelete: "Nenhum registo para excluir.",
-            confirmDeleteLast: "Excluir último registo?",
-            lastEntryDeleted: "último registo excluído",
-            fillShiftPlan: "Preencha funcionário, data e horários.",
-            noPhoneNumber: "Nenhum número de telefone cadastrado.",
-            selectEmployeeMonth: "Escolha funcionário e mês.",
-            impressumText: "Impressão: Aqui pode adicionar o endereço da empresa.",
-            confirmDeleteEntry: "Excluir registo?",
-            entryEdited: "Registo editado",
-            entryDeleted: "Registo excluído",
-            confirmDeleteVacation: "Excluir registo de férias?",
-            vacationDeleted: "Registo de férias excluído",
-            todayEntries: "Registos de hoje",
-            chefLoginTitle: "Login do Chefe",
-            chefPinLabel: "Inserir PIN:",
-            chefLoginBtn: "Login",
-            chefLogoutBtn: "Logout",
-            chefInfoText: "Após login, áreas do chefe são liberadas.",
-            manageEmpsTitle: "Gerir funcionários",
-            empNameLabel: "Nome do funcionário:",
-            empPhoneLabel: "WhatsApp / Telefone (opcional):",
-            addEmpBtn: "Adicionar funcionário",
-            storageNote: "Dados são armazenados apenas localmente.",
-            manualEntryTitle: "Adicionar registo esquecido",
-            manualEmpLabel: "Escolher funcionário:",
-            manualDateLabel: "Data:",
-            manualStartLabel: "Início do trabalho (exato):",
-            manualEndLabel: "Fim do trabalho (exato):",
-            manualAddBtn: "Salvar registo",
-            manualNote: "Apenas para marcações esquecidas.",
-            vacationTitle: "Registrar férias",
-            vacationEmpLabel: "Escolher funcionário:",
-            vacStartLabel: "Data de início:",
-            vacEndLabel: "Data de fim:",
-            addVacationBtn: "Registrar férias",
-            vacationNote: "Dias de férias são marcados no relatório mensal.",
-            recordsTitle: "Gerir registos",
-            recordsEmpLabel: "Funcionário:",
-            recordsMonthLabel: "Mês:",
-            recordsNote: "Ver, editar ou excluir registos.",
-            shiftTitle: "Plano de turnos & WhatsApp",
-            planEmpLabel: "Funcionário:",
-            planDateLabel: "Dia:",
-            planFromLabel: "Das (hora):",
-            planToLabel: "Até (hora):",
-            previewBtn: "Mostrar mensagem",
-            whatsappBtn: "Abrir WhatsApp",
-            waHint: "O WhatsApp abre com a mensagem preparada.",
-            previewTitle: "Pré-visualização da mensagem:",
-            monthlyReportTitle: "Relatório mensal (Chefe)",
-            monthlyReportDesc: "Resumo de todos os funcionários para o mês atual.",
-            printReportBtn: "Imprimir / salvar em PDF",
-            exportTitle: "Exportação mensal (Word / Impressora)",
-            exportDesc: "Exportar por funcionário e mês – ideal para o contabilista.",
-            exportEmpLabel: "Funcionário:",
-            exportMonthLabel: "Mês:",
-            exportBtn: "Criar folha mensal",
-            exportHint: "Abre uma nova janela para imprimir/PDF.",
-            privacyTitle: "Proteção de dados & instruções de uso",
-            privacy1Title: "1. Proteção de dados",
-            privacy1Text: "Este sistema armazena todos os dados exclusivamente localmente no navegador/tablet da empresa. Nenhum dado é transmitido ou armazenado em servidores externos. Apenas a empresa/chefe e pessoas autorizadas têm acesso aos dados armazenados. O empregador é responsável por informar seus funcionários sobre a coleta de dados.",
-            privacy2Title: "2. Uso & direitos autorais",
-            privacy2Text: "Esta aplicação é destinada apenas ao negócio licenciado. É proibido compartilhar, reproduzir, vender ou copiar o código-fonte e design para terceiros sem permissão expressa por escrito do desenvolvedor.",
-            privacy3Title: "3. Isenção de responsabilidade",
-            privacy3Text: "O aplicativo auxilia no registro de horas de trabalho. A conformidade legal com os regulamentos trabalhistas permanece sob responsabilidade do empregador.",
-            privacy4Title: "4. Notas técnicas",
-            privacy4Text: "Recomenda-se um navegador moderno. Os dados armazenados podem ser visualizados através das ferramentas de desenvolvedor do navegador. A mudança de dispositivo ou exclusão do cache do navegador resultará na perda de todos os dados.",
-            stampTitle: "Relógio de ponto (Funcionários)",
-            stempelEmpLabel: "Escolher funcionário:",
-            inBtn: "Entrar",
-            outBtn: "Sair",
-            undoBtn: "Apagar último registo",
-            stampRule: "Máximo de 160 horas por mês, acima disso vai para o banco de horas. As horas exatas são registradas (com segundos).",
-            impressumLink: "Impressão",
-            privacyLink: "Proteção de dados"
-        },
-        it: {
-            selectEmployee: "Seleziona dipendente",
-            delete: "Elimina",
-            confirmDeleteEmp: "Eliminare il dipendente?",
-            noEmployees: "Nessun dipendente. Il capo deve aggiungerne prima.",
-            readyToStamp: "Pronto per timbrare.",
-            hoursInfoDefault: "Ore questo mese: 0 | Banca ore: 0",
-            hoursThisMonth: "Ore questo mese",
-            overtimeAccount: "Banca ore",
-            limitWarning: "Limite 160h superato!",
-            employee: "Dipendente",
-            hoursPerMonth: "Ore nel mese",
-            vacationDays: "Giorni di ferie",
-            sum: "Totale",
-            entriesInMonth: "registrazioni nel mese",
-            noEntries: "Nessuna registrazione in questo mese.",
-            date: "Data",
-            startExact: "Inizio (esatto)",
-            endExact: "Fine (esatta)",
-            hours: "Ore",
-            type: "Tipo",
-            action: "Azione",
-            manual: "Manuale",
-            auto: "Auto",
-            edit: "Modifica",
-            vacation: "FERIE",
-            payType: "Tipo retribuzione",
-            day: "Giorno",
-            totalHours: "Totale ore lavorate",
-            month: "Mese",
-            timeRecord: "Registro ore",
-            monthlyReport: "Report mensile",
-            loginSuccess: "Login riuscito. Aree capo attivate.",
-            loggedOut: "Disconnesso.",
-            wrongPin: "PIN errato.",
-            enterName: "Inserire il nome.",
-            chefOnly: "Solo dopo login capo.",
-            fillAllFields: "Compilare tutti i campi.",
-            invalidTime: "Orario non valido.",
-            manualEntryAdded: "registrazione manuale aggiunta",
-            entrySaved: "Registrazione salvata.",
-            vacationRegistered: "Ferie registrate",
-            vacationSaved: "Ferie registrate.",
-            selectEmployeeFirst: "Seleziona un dipendente",
-            noVacations: "Nessun giorno di ferie registrato.",
-            registeredVacations: "Giorni di ferie registrati",
-            employeeNotFound: "Dipendente non trovato.",
-            selectEmployee: "Seleziona un dipendente.",
-            alreadyClockedIn: "Già timbrato in entrata.",
-            clockedInAt: "Entrata timbrata alle",
-            notClockedIn: "Non timbrato in entrata.",
-            clockedOutAt: "Uscita timbrata alle",
-            duration: "Durata",
-            noEntriesToDelete: "Nessuna registrazione da eliminare.",
-            confirmDeleteLast: "Eliminare l'ultima registrazione?",
-            lastEntryDeleted: "ultima registrazione eliminata",
-            fillShiftPlan: "Compila dipendente, data e orari.",
-            noPhoneNumber: "Nessun numero di telefono registrato.",
-            selectEmployeeMonth: "Seleziona dipendente e mese.",
-            impressumText: "Impressum: Qui puoi aggiungere l'indirizzo aziendale.",
-            confirmDeleteEntry: "Eliminare la registrazione?",
-            entryEdited: "Registrazione modificata",
-            entryDeleted: "Registrazione eliminata",
-            confirmDeleteVacation: "Eliminare il giorno di ferie?",
-            vacationDeleted: "Giorno di ferie eliminato",
-            todayEntries: "Registrazioni di oggi",
-            chefLoginTitle: "Accesso Capo",
-            chefPinLabel: "Inserire PIN:",
-            chefLoginBtn: "Login",
-            chefLogoutBtn: "Logout",
-            chefInfoText: "Dopo il login si attivano le aree del capo.",
-            manageEmpsTitle: "Gestione dipendenti",
-            empNameLabel: "Nome del dipendente:",
-            empPhoneLabel: "WhatsApp / Telefono (opzionale):",
-            addEmpBtn: "Aggiungi dipendente",
-            storageNote: "I dati vengono salvati solo localmente.",
-            manualEntryTitle: "Aggiungi registrazione dimenticata",
-            manualEmpLabel: "Seleziona dipendente:",
-            manualDateLabel: "Data:",
-            manualStartLabel: "Inizio lavoro (esatto):",
-            manualEndLabel: "Fine lavoro (esatta):",
-            manualAddBtn: "Salva registrazione",
-            manualNote: "Solo per timbrature dimenticate.",
-            vacationTitle: "Registrare ferie",
-            vacationEmpLabel: "Seleziona dipendente:",
-            vacStartLabel: "Data inizio:",
-            vacEndLabel: "Data fine:",
-            addVacationBtn: "Registra ferie",
-            vacationNote: "I giorni di ferie vengono contrassegnati nel report mensile.",
-            recordsTitle: "Gestione registrazioni",
-            recordsEmpLabel: "Dipendente:",
-            recordsMonthLabel: "Mese:",
-            recordsNote: "Visualizza, modifica o elimina registrazioni.",
-            shiftTitle: "Pianificazione turni & WhatsApp",
-            planEmpLabel: "Dipendente:",
-            planDateLabel: "Giorno:",
-            planFromLabel: "Dalle (ora):",
-            planToLabel: "Alle (ora):",
-            previewBtn: "Mostra messaggio",
-            whatsappBtn: "Apri WhatsApp",
-            waHint: "WhatsApp si apre con il messaggio precompilato.",
-            previewTitle: "Anteprima messaggio:",
-            monthlyReportTitle: "Report mensile (Capo)",
-            monthlyReportDesc: "Panoramica di tutti i dipendenti per il mese corrente.",
-            printReportBtn: "Stampa / salva in PDF",
-            exportTitle: "Export mensile (Word / Stampante)",
-            exportDesc: "Export per dipendente e mese – ideale per il commercialista.",
-            exportEmpLabel: "Dipendente:",
-            exportMonthLabel: "Mese:",
-            exportBtn: "Crea foglio mensile",
-            exportHint: "Si apre una nuova finestra per stampare/PDF.",
-            privacyTitle: "Protezione dati & istruzioni d'uso",
-            privacy1Title: "1. Protezione dati",
-            privacy1Text: "Questo sistema memorizza tutti i dati esclusivamente localmente nel browser/tablet dell'azienda. Nessun dato viene trasmesso o memorizzato su server esterni. L'accesso ai dati memorizzati è riservato all'azienda/capo e alle persone autorizzate. Il datore di lavoro è tenuto a informare i dipendenti sulla raccolta dei dati.",
-            privacy2Title: "2. Utilizzo & diritti d'autore",
-            privacy2Text: "Questa applicazione è destinata esclusivamente all'azienda autorizzata. La condivisione, riproduzione, vendita o copia del codice sorgente e del design a terzi senza esplicito consenso scritto dello sviluppatore è vietata.",
-            privacy3Title: "3. Esclusione di responsabilità",
-            privacy3Text: "L'applicazione supporta la registrazione dell'orario di lavoro. La corretta conformità legale alle normative sul lavoro rimane di responsabilità del datore di lavoro.",
-            privacy4Title: "4. Note tecniche",
-            privacy4Text: "Si consiglia un browser moderno. I dati memorizzati possono essere visualizzati tramite gli strumenti di sviluppo del browser. Il cambio di dispositivo o la cancellazione della cache del browser comporterà la perdita di tutti i dati.",
-            stampTitle: "Orologio presenze (Dipendenti)",
-            stempelEmpLabel: "Seleziona dipendente:",
-            inBtn: "Entrata",
-            outBtn: "Uscita",
-            undoBtn: "Cancella ultima registrazione",
-            stampRule: "Massimo 160 ore al mese, il surplus va nella banca ore. Vengono registrate le ore esatte (con secondi).",
-            impressumLink: "Impressum",
-            privacyLink: "Protezione dati"
-        }
-    };
-
-    function getTranslation(key) {
-        return translations[currentLang][key] || translations.de[key] || key;
-    }
-
-    function setLanguage(lang) {
-        currentLang = lang;
-        // Aktualisiere alle Elemente mit data-key Attribut (Buttons, etc.)
-        document.querySelectorAll('[data-key]').forEach(el => {
-            const key = el.getAttribute('data-key');
-            if (translations[lang][key]) el.textContent = translations[lang][key];
-        });
-        // Aktualisiere feste IDs
-        const idMap = [
-            'chefLoginTitle','chefPinLabel','chefInfoText','manageEmpsTitle','empNameLabel','empPhoneLabel','storageNote',
-            'manualEntryTitle','manualEmpLabel','manualDateLabel','manualStartLabel','manualEndLabel','manualNote',
-            'vacationTitle','vacationEmpLabel','vacStartLabel','vacEndLabel','vacationNote','recordsTitle','recordsEmpLabel',
-            'recordsMonthLabel','recordsNote','shiftTitle','planEmpLabel','planDateLabel','planFromLabel','planToLabel','waHint',
-            'previewTitle','monthlyReportTitle','monthlyReportDesc','exportTitle','exportDesc','exportEmpLabel','exportMonthLabel',
-            'exportHint','privacyTitle','privacy1Title','privacy1Text','privacy2Title','privacy2Text','privacy3Title','privacy3Text',
-            'privacy4Title','privacy4Text','stampTitle','stempelEmpLabel','stampRule','impressumLink','privacyLink'
-        ];
-        idMap.forEach(id => {
-            const el = document.getElementById(id);
-            if (el && translations[lang][id]) el.textContent = translations[lang][id];
-        });
-        // Spezielle Elemente ohne ID
-        const previewTitleSpan = document.querySelector('#previewTitle');
-        if (previewTitleSpan) previewTitleSpan.textContent = getTranslation('previewTitle');
-        const todayEntriesSpan = document.querySelector('#stempelLog b');
-        if (todayEntriesSpan) todayEntriesSpan.textContent = getTranslation('todayEntries') + ':';
-        // Dynamische Texte aktualisieren
-        updateHoursInfo();
-        updatePlanHoursInfo();
-        renderMonthlyReport();
-        renderRecordsTable();
-        refreshEmployeeList();
-        refreshVacationList();
-        // Statusmeldungen aktualisieren
-        if (!isChef) {
-            chefStatus.innerText = getTranslation('loggedOut');
-        } else {
-            chefStatus.innerText = getTranslation('loginSuccess');
-        }
-        const anyEmp = employees.length > 0;
-        if (!anyEmp) document.getElementById('stempelStatus').innerText = getTranslation('noEmployees');
-        else document.getElementById('stempelStatus').innerText = getTranslation('readyToStamp');
-    }
-
-    // Initialisierung
-    loadData();
-    refreshAll();
-    setLanguage('de');
-    window.setLanguage = setLanguage; // für globale Aufrufe
+const CHEF_PIN="1234";
+const DEFAULT_TARGET_HOURS=160;
+let employees=[];
+let isChef=false;
+const $=id=>document.getElementById(id);
+function nowLocalParts(date=new Date()){const y=date.getFullYear();const m=String(date.getMonth()+1).padStart(2,'0');const d=String(date.getDate()).padStart(2,'0');const h=String(date.getHours()).padStart(2,'0');const mi=String(date.getMinutes()).padStart(2,'0');const s=String(date.getSeconds()).padStart(2,'0');return{y,m,d,h,mi,s,date:`${y}-${m}-${d}`,time:`${h}:${mi}:${s}`,iso:`${y}-${m}-${d}T${h}:${mi}:${s}`}}
+function parseLocalIso(v){return new Date(v)}
+function fmtTime(v){if(!v)return'';return parseLocalIso(v).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+function fmtDate(v){if(!v)return'';return parseLocalIso(v).toLocaleDateString('de-DE')}
+function monthKey(date=new Date()){const p=nowLocalParts(date);return`${p.y}-${p.m}`}
+function monthLabel(key){const[y,m]=key.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('de-DE',{month:'long',year:'numeric'})}
+function minutesBetween(start,end){return Math.max(0,Math.round((parseLocalIso(end)-parseLocalIso(start))/60000))}
+function hoursFromMinutes(min){return min/60}
+function fmtHours(h){return (Math.round((h||0)*100)/100).toFixed(2).replace('.',',')}
+function fmtMinutes(min){const sign=min<0?'-':'';min=Math.abs(Math.round(min));const h=Math.floor(min/60);const m=min%60;return h?`${sign}${h} Std. ${m} Min.`:`${sign}${m} Min.`}
+function id(){return Date.now()+'_'+Math.random().toString(36).slice(2,8)}
+function save(){localStorage.setItem('worktime_tablet_data_v1',JSON.stringify(employees))}
+function load(){const data=localStorage.getItem('worktime_tablet_data_v1')||localStorage.getItem('worktime_data');employees=data?JSON.parse(data):[];employees.forEach(e=>{e.sessions=e.sessions||[];e.vacations=e.vacations||[];e.plans=e.plans||[];e.targetHours=Number(e.targetHours||DEFAULT_TARGET_HOURS);if(e.activeSessionStart===undefined)e.activeSessionStart=null})}
+function recalc(emp){emp.sessions.forEach(s=>{s.minutes=s.minutes||minutesBetween(s.start,s.end);s.hours=hoursFromMinutes(s.minutes)});emp.sessions.sort((a,b)=>parseLocalIso(a.start)-parseLocalIso(b.start))}
+function getMonthSessions(emp,mk){return(emp.sessions||[]).filter(s=>s.start.slice(0,7)===mk)}
+function getWorkedMinutes(emp,mk){return getMonthSessions(emp,mk).reduce((sum,s)=>sum+(s.minutes||Math.round((s.hours||0)*60)),0)}
+function getPlannedMinutes(emp,mk){return(emp.plans||[]).filter(p=>p.date.slice(0,7)===mk).reduce((sum,p)=>sum+(p.minutes||0),0)}
+function isVacation(emp,dateStr){return(emp.vacations||[]).some(v=>dateStr>=v.start&&dateStr<=v.end)}
+function escapeHtml(str){return String(str??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function tick(){const n=new Date();$('liveClock').textContent=n.toLocaleTimeString('de-DE');$('liveDate').textContent=n.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'})}
+setInterval(tick,1000);
+function addLog(text){const div=$('stempelLog');const item=document.createElement('div');item.className='log-item';item.innerHTML=`${escapeHtml(text)}<br><span class="muted">${new Date().toLocaleString('de-DE')}</span>`;div.insertBefore(item,div.children[1]||null)}
+function fillSelect(idName){const sel=$(idName);if(!sel)return;const old=sel.value;sel.innerHTML='<option value="">-- wählen --</option>';employees.forEach(e=>{const o=document.createElement('option');o.value=e.id;o.textContent=e.name;sel.appendChild(o)});if(old&&employees.some(e=>e.id===old))sel.value=old}
+function buildMonthSelectors(){const now=new Date();const year=now.getFullYear();['recordsMonth','exportMonth','reportMonth'].forEach(sid=>{const sel=$(sid);if(!sel)return;const old=sel.value;sel.innerHTML='';for(let m=1;m<=12;m++){const key=`${year}-${String(m).padStart(2,'0')}`;const o=document.createElement('option');o.value=key;o.textContent=monthLabel(key);sel.appendChild(o)}sel.value=old||monthKey()})}
+function refreshSelects(){['stempelEmp','manualEmp','planEmp','vacationEmp','recordsEmp','exportEmp'].forEach(fillSelect)}
+function refreshEmployeeStatus(){const emp=employees.find(e=>e.id===$('stempelEmp').value);const box=$('employeeStatus');if(!emp){box.innerHTML='<div class="status-line"><strong>Status:</strong><span>Bitte Mitarbeiter auswählen.</span></div>';return}const mk=monthKey();const worked=getWorkedMinutes(emp,mk);const target=(emp.targetHours||DEFAULT_TARGET_HOURS)*60;const diff=worked-target;const active=emp.activeSessionStart?`<span class="active-badge">Eingestempelt seit ${fmtTime(emp.activeSessionStart)}</span>`:'<span class="inactive-badge">Nicht eingestempelt</span>';box.innerHTML=`<div class="status-line"><strong>${escapeHtml(emp.name)}</strong>${active}</div><div class="status-line"><span>Gearbeitet diesen Monat:</span><strong>${fmtHours(hoursFromMinutes(worked))} Std.</strong></div><div class="status-line"><span>Sollstunden:</span><strong>${fmtHours(emp.targetHours||DEFAULT_TARGET_HOURS)} Std.</strong></div><div class="status-line"><span>Differenz:</span><strong class="${diff<0?'bad':'ok'}">${fmtMinutes(diff)}</strong></div>`}
+function refreshEmployeeList(){const div=$('employeeList');div.innerHTML='';employees.forEach(emp=>{const row=document.createElement('div');row.className='employee-row';row.innerHTML=`<div><strong>${escapeHtml(emp.name)}</strong><br><span class="muted">Soll: ${fmtHours(emp.targetHours||DEFAULT_TARGET_HOURS)} Std./Monat ${emp.phone?'· Tel: '+escapeHtml(emp.phone):''}</span></div>`;const actions=document.createElement('div');const edit=document.createElement('button');edit.className='btn-secondary btn-small';edit.textContent='Bearbeiten';edit.onclick=()=>editEmployee(emp.id);const del=document.createElement('button');del.className='btn-danger btn-small';del.textContent='Löschen';del.onclick=()=>{if(confirm('Mitarbeiter wirklich löschen? Alle Daten dieses Mitarbeiters werden gelöscht.')){employees=employees.filter(e=>e.id!==emp.id);save();refreshAll()}};actions.append(edit,del);row.appendChild(actions);div.appendChild(row)})}
+function editEmployee(empId){const emp=employees.find(e=>e.id===empId);if(!emp)return;const name=prompt('Name:',emp.name);if(!name)return;const phone=prompt('Telefon optional:',emp.phone||'')||'';const target=prompt('Sollstunden pro Monat:',emp.targetHours||DEFAULT_TARGET_HOURS);emp.name=name.trim();emp.phone=phone.trim();emp.targetHours=Number(String(target).replace(',','.'))||DEFAULT_TARGET_HOURS;save();refreshAll()}
+function refreshVacationList(){const emp=employees.find(e=>e.id===$('vacationEmp').value);const div=$('vacationList');if(!emp){div.innerHTML='<em>Bitte Mitarbeiter auswählen.</em>';return}if(!emp.vacations.length){div.innerHTML='<em>Keine Urlaubstage registriert.</em>';return}div.innerHTML=emp.vacations.map((v,i)=>`<div class="employee-row"><span>📅 ${v.start} bis ${v.end}</span><button class="btn-danger btn-small" onclick="deleteVacation('${emp.id}',${i})">Löschen</button></div>`).join('')}
+function refreshPlanList(){const emp=employees.find(e=>e.id===$('planEmp').value);const div=$('planList');if(!emp){div.innerHTML='<em>Bitte Mitarbeiter auswählen.</em>';return}const mk=monthKey();const plans=(emp.plans||[]).filter(p=>p.date.slice(0,7)===mk).sort((a,b)=>a.date.localeCompare(b.date));if(!plans.length){div.innerHTML='<em>Keine Sollzeiten im aktuellen Monat.</em>';return}div.innerHTML=plans.map((p,i)=>`<div class="employee-row"><span>${p.date}: ${p.from}–${p.to} (${fmtHours(hoursFromMinutes(p.minutes))} Std.)</span><button class="btn-danger btn-small" onclick="deletePlan('${emp.id}','${p.id}')">Löschen</button></div>`).join('')}
+function renderRecords(){const emp=employees.find(e=>e.id===$('recordsEmp').value);const mk=$('recordsMonth').value||monthKey();const info=$('recordsInfo');const cont=$('recordsContainer');if(!emp){info.textContent='Bitte Mitarbeiter auswählen.';cont.innerHTML='';return}const sessions=getMonthSessions(emp,mk);info.textContent=`${emp.name} – ${sessions.length} Einträge im Monat ${monthLabel(mk)}`;if(!sessions.length){cont.innerHTML='<em>Keine Einträge.</em>';return}let html='<table><thead><tr><th>Datum</th><th>Start</th><th>Ende</th><th>Arbeitszeit</th><th>Art</th><th>Bemerkung</th><th>Aktion</th></tr></thead><tbody>';sessions.forEach(s=>{const idx=emp.sessions.indexOf(s);html+=`<tr><td>${fmtDate(s.start)}</td><td>${fmtTime(s.start)}</td><td>${fmtTime(s.end)}</td><td style="text-align:right">${fmtHours(hoursFromMinutes(s.minutes||0))}</td><td>${s.manual?'Manuell':'Tablet'}</td><td>${escapeHtml(s.reason||'')}</td><td><button class="btn-secondary btn-small" onclick="editSession('${emp.id}',${idx})">Bearbeiten</button><button class="btn-danger btn-small" onclick="deleteSession('${emp.id}',${idx})">Löschen</button></td></tr>`});html+='</tbody></table>';cont.innerHTML=html}
+function renderReport(){const mk=$('reportMonth')?.value||monthKey();let html='<table><thead><tr><th>Mitarbeiter</th><th>Gearbeitet</th><th>Sollstunden</th><th>Differenz zu Soll</th><th>Geplant</th><th>Differenz Plan/Real</th><th>Urlaubstage</th></tr></thead><tbody>';let totalWorked=0,totalTarget=0,totalPlan=0;employees.forEach(emp=>{const worked=getWorkedMinutes(emp,mk);const target=(emp.targetHours||DEFAULT_TARGET_HOURS)*60;const planned=getPlannedMinutes(emp,mk);const vacDays=countVacationDaysInMonth(emp,mk);totalWorked+=worked;totalTarget+=target;totalPlan+=planned;html+=`<tr><td>${escapeHtml(emp.name)}</td><td style="text-align:right">${fmtHours(hoursFromMinutes(worked))}</td><td style="text-align:right">${fmtHours(hoursFromMinutes(target))}</td><td style="text-align:right" class="${worked-target<0?'bad':'ok'}">${fmtMinutes(worked-target)}</td><td style="text-align:right">${fmtHours(hoursFromMinutes(planned))}</td><td style="text-align:right" class="${worked-planned<0?'bad':'ok'}">${fmtMinutes(worked-planned)}</td><td style="text-align:center">${vacDays}</td></tr>`});html+=`<tr style="font-weight:800"><td>Summe</td><td style="text-align:right">${fmtHours(hoursFromMinutes(totalWorked))}</td><td style="text-align:right">${fmtHours(hoursFromMinutes(totalTarget))}</td><td style="text-align:right">${fmtMinutes(totalWorked-totalTarget)}</td><td style="text-align:right">${fmtHours(hoursFromMinutes(totalPlan))}</td><td style="text-align:right">${fmtMinutes(totalWorked-totalPlan)}</td><td></td></tr>`;html+='</tbody></table>';$('monthlyReport').innerHTML=html}
+function countVacationDaysInMonth(emp,mk){const[y,m]=mk.split('-').map(Number);const days=new Date(y,m,0).getDate();let c=0;for(let d=1;d<=days;d++){const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;if(isVacation(emp,ds))c++}return c}
+function refreshAll(){buildMonthSelectors();refreshSelects();refreshEmployeeStatus();refreshEmployeeList();refreshVacationList();refreshPlanList();renderRecords();renderReport();save()}
+$('btnChefLogin').onclick=()=>{if($('chefPin').value.trim()===CHEF_PIN){isChef=true;$('chefArea').style.display='block';$('chefStatus').innerHTML='<span class="ok">Chef-Bereich freigeschaltet.</span>';$('chefPin').value=''}else{$('chefStatus').innerHTML='<span class="bad">Falscher PIN.</span>'}};
+$('btnChefLogout').onclick=()=>{isChef=false;$('chefArea').style.display='none';$('chefStatus').textContent='Chef-Bereich ist gesperrt.'};
+$('btnAddEmp').onclick=()=>{const name=$('empName').value.trim();if(!name){alert('Bitte Namen eingeben.');return}employees.push({id:id(),name,phone:$('empPhone').value.trim(),targetHours:Number($('empTargetHours').value)||DEFAULT_TARGET_HOURS,sessions:[],vacations:[],plans:[],activeSessionStart:null});$('empName').value='';$('empPhone').value='';$('empTargetHours').value='';refreshAll()};
+$('btnIn').onclick=()=>{const emp=employees.find(e=>e.id===$('stempelEmp').value);if(!emp){alert('Bitte Mitarbeiter auswählen.');return}if(emp.activeSessionStart){alert('Dieser Mitarbeiter ist bereits eingestempelt.');return}emp.activeSessionStart=nowLocalParts().iso;save();refreshEmployeeStatus();addLog(`${emp.name} eingestempelt um ${fmtTime(emp.activeSessionStart)}`)};
+$('btnOut').onclick=()=>{const emp=employees.find(e=>e.id===$('stempelEmp').value);if(!emp){alert('Bitte Mitarbeiter auswählen.');return}if(!emp.activeSessionStart){alert('Dieser Mitarbeiter ist nicht eingestempelt.');return}const start=emp.activeSessionStart;const end=nowLocalParts().iso;const minutes=minutesBetween(start,end);if(minutes<1&&!confirm('Arbeitszeit unter 1 Minute speichern?'))return;emp.sessions.push({id:id(),start,end,minutes,hours:hoursFromMinutes(minutes),manual:false,createdAt:nowLocalParts().iso,reason:''});emp.activeSessionStart=null;recalc(emp);save();refreshAll();addLog(`${emp.name} ausgestempelt um ${fmtTime(end)} (${fmtHours(hoursFromMinutes(minutes))} Std.)`)};
+$('stempelEmp').onchange=refreshEmployeeStatus;
+$('btnManualAdd').onclick=()=>{const emp=employees.find(e=>e.id===$('manualEmp').value);const date=$('manualDate').value,st=$('manualStart').value,en=$('manualEnd').value;if(!emp||!date||!st||!en){alert('Bitte alle Felder ausfüllen.');return}const start=`${date}T${st.length===5?st+':00':st}`;const end=`${date}T${en.length===5?en+':00':en}`;if(parseLocalIso(end)<=parseLocalIso(start)){alert('Ende muss nach Beginn liegen.');return}const minutes=minutesBetween(start,end);emp.sessions.push({id:id(),start,end,minutes,hours:hoursFromMinutes(minutes),manual:true,createdAt:nowLocalParts().iso,reason:$('manualReason').value.trim()||'Chef-Korrektur'});recalc(emp);$('manualDate').value='';$('manualStart').value='';$('manualEnd').value='';$('manualReason').value='';refreshAll();addLog(`${emp.name} manueller Eintrag: ${fmtHours(hoursFromMinutes(minutes))} Std.`)};
+$('btnAddVacation').onclick=()=>{const emp=employees.find(e=>e.id===$('vacationEmp').value);const start=$('vacStart').value,end=$('vacEnd').value;if(!emp||!start||!end){alert('Bitte alle Felder ausfüllen.');return}if(end<start){alert('Enddatum darf nicht vor Startdatum liegen.');return}emp.vacations.push({start,end,createdAt:nowLocalParts().iso});$('vacStart').value='';$('vacEnd').value='';refreshAll()};
+$('btnAddPlan').onclick=()=>{const emp=employees.find(e=>e.id===$('planEmp').value);const date=$('planDate').value,from=$('planFrom').value,to=$('planTo').value;if(!emp||!date||!from||!to){alert('Bitte alle Felder ausfüllen.');return}const start=`${date}T${from}:00`,end=`${date}T${to}:00`;if(parseLocalIso(end)<=parseLocalIso(start)){alert('Ende muss nach Beginn liegen.');return}const minutes=minutesBetween(start,end);emp.plans=emp.plans||[];const existing=emp.plans.find(p=>p.date===date);if(existing&&confirm('Für diesen Tag gibt es schon eine Sollzeit. Ersetzen?')){Object.assign(existing,{from,to,minutes})}else if(!existing){emp.plans.push({id:id(),date,from,to,minutes})}refreshAll()};
+$('recordsEmp').onchange=renderRecords;$('recordsMonth').onchange=renderRecords;$('vacationEmp').onchange=refreshVacationList;$('planEmp').onchange=refreshPlanList;$('reportMonth').onchange=renderReport;$('btnRefreshReport').onclick=renderReport;
+window.deleteVacation=(empId,idx)=>{const emp=employees.find(e=>e.id===empId);if(emp&&confirm('Urlaub löschen?')){emp.vacations.splice(idx,1);refreshAll()}};
+window.deletePlan=(empId,pid)=>{const emp=employees.find(e=>e.id===empId);if(emp&&confirm('Sollzeit löschen?')){emp.plans=emp.plans.filter(p=>p.id!==pid);refreshAll()}};
+window.deleteSession=(empId,idx)=>{const emp=employees.find(e=>e.id===empId);if(emp&&emp.sessions[idx]&&confirm('Eintrag wirklich löschen?')){emp.sessions.splice(idx,1);recalc(emp);refreshAll()}};
+window.editSession=(empId,idx)=>{const emp=employees.find(e=>e.id===empId);if(!emp||!emp.sessions[idx])return;const s=emp.sessions[idx];const date=prompt('Datum YYYY-MM-DD:',s.start.slice(0,10));if(!date)return;const startT=prompt('Start HH:MM:',s.start.slice(11,16));if(!startT)return;const endT=prompt('Ende HH:MM:',s.end.slice(11,16));if(!endT)return;const reason=prompt('Grund/Bemerkung:',s.reason||'Chef-Korrektur')||'Chef-Korrektur';const start=`${date}T${startT}:00`,end=`${date}T${endT}:00`;if(parseLocalIso(end)<=parseLocalIso(start)){alert('Ungültige Zeit.');return}s.start=start;s.end=end;s.minutes=minutesBetween(start,end);s.hours=hoursFromMinutes(s.minutes);s.manual=true;s.reason=reason;recalc(emp);refreshAll()};
+function buildMonthlyRows(emp,mk){const[y,m]=mk.split('-').map(Number);const days=new Date(y,m,0).getDate();let rows=[],total=0,totalPlan=0;for(let d=1;d<=days;d++){const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const sessions=(emp.sessions||[]).filter(s=>s.start.slice(0,10)===ds);const plans=(emp.plans||[]).filter(p=>p.date===ds);const planMin=plans.reduce((a,p)=>a+p.minutes,0);totalPlan+=planMin;if(isVacation(emp,ds)){rows.push({date:`${String(d).padStart(2,'0')}.${String(m).padStart(2,'0')}.${y}`,start:'URLAUB',end:'',worked:0,planned:planMin,diff:-planMin,note:'Urlaub',vac:true});continue}if(!sessions.length){rows.push({date:`${String(d).padStart(2,'0')}.${String(m).padStart(2,'0')}.${y}`,start:'',end:'',worked:0,planned:planMin,diff:-planMin,note:'',vac:false});continue}sessions.forEach((s,i)=>{const min=s.minutes||0;total+=min;rows.push({date:i===0?`${String(d).padStart(2,'0')}.${String(m).padStart(2,'0')}.${y}`:'',start:fmtTime(s.start),end:fmtTime(s.end),worked:min,planned:i===0?planMin:0,diff:i===0?min-planMin:min,note:s.manual?'Manuell: '+(s.reason||''): '',vac:false})})}return{rows,total,totalPlan}}
+function openMonthlyPrint(emp,mk){const{rows,total,totalPlan}=buildMonthlyRows(emp,mk);const win=window.open('','_blank');win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Stundennachweis ${escapeHtml(emp.name)} ${monthLabel(mk)}</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h2,h3{margin:0 0 8px}table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px}th,td{border:1px solid #bbb;padding:5px;text-align:left}th{background:#eee}.right{text-align:right}.vac{background:#fff3e0}.sig{margin-top:32px;display:flex;gap:60px}.line{border-top:1px solid #111;padding-top:6px;width:260px}</style></head><body>`);win.document.write(`<h2>Stundennachweis</h2><h3>Mitarbeiter: ${escapeHtml(emp.name)}</h3><p>Monat: ${monthLabel(mk)}</p><table><thead><tr><th>Tag</th><th>Beginn</th><th>Ende</th><th class="right">Gearbeitet</th><th class="right">Geplant</th><th class="right">Differenz</th><th>Bemerkung</th></tr></thead><tbody>`);rows.forEach(r=>{win.document.write(`<tr class="${r.vac?'vac':''}"><td>${r.date}</td><td>${r.start}</td><td>${r.end}</td><td class="right">${r.worked?fmtHours(hoursFromMinutes(r.worked)):''}</td><td class="right">${r.planned?fmtHours(hoursFromMinutes(r.planned)):''}</td><td class="right">${r.diff?fmtMinutes(r.diff):''}</td><td>${escapeHtml(r.note)}</td></tr>`)});win.document.write(`</tbody><tfoot><tr><td colspan="3" class="right"><b>Summe</b></td><td class="right"><b>${fmtHours(hoursFromMinutes(total))}</b></td><td class="right"><b>${fmtHours(hoursFromMinutes(totalPlan))}</b></td><td class="right"><b>${fmtMinutes(total-totalPlan)}</b></td><td></td></tr></tfoot></table><div class="sig"><div class="line">Unterschrift Mitarbeiter</div><div class="line">Unterschrift Arbeitgeber</div></div></body></html>`);win.document.close();win.focus()}
+$('btnExport').onclick=()=>{const emp=employees.find(e=>e.id===$('exportEmp').value);const mk=$('exportMonth').value;if(!emp||!mk){alert('Bitte Mitarbeiter und Monat wählen.');return}openMonthlyPrint(emp,mk)};
+$('btnPrintAll').onclick=()=>{renderReport();const win=window.open('','_blank');win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Monatsbericht</title><style>body{font-family:Arial;padding:18px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:6px}th{background:#eee}.bad{color:#b91c1c}.ok{color:#166534}</style></head><body><h2>Monatsbericht Chef</h2><p>Monat: ${monthLabel($('reportMonth').value||monthKey())}</p>${$('monthlyReport').innerHTML}</body></html>`);win.document.close();win.focus();win.print()};
+$('btnBackupJson').onclick=()=>{const blob=new Blob([JSON.stringify({exportedAt:nowLocalParts().iso,employees},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`worktime_backup_${nowLocalParts().date}.json`;a.click();URL.revokeObjectURL(a.href)};
+$('importJson').onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);const imported=Array.isArray(data)?data:data.employees;if(!Array.isArray(imported))throw new Error('Ungültig');if(confirm('Aktuelle Daten durch Backup ersetzen?')){employees=imported;employees.forEach(recalc);refreshAll()}}catch(err){alert('Backup konnte nicht importiert werden.')}};r.readAsText(file)};
+$('linkImpressum').onclick=()=>alert('Impressum: Eiscafé Sanremo, Bad Berleburg. Bitte vollständige Firmenadresse ergänzen.');
+$('linkInfo').onclick=()=>alert('Tablet-Stempeluhr: Keine Foto- und keine GPS-Erfassung. Daten lokal auf diesem Tablet. Regelmäßig Backup erstellen.');
+load();employees.forEach(recalc);tick();refreshAll();
 </script>
 </body>
 </html>
