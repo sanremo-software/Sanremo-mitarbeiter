@@ -63,6 +63,7 @@ button{border:none;cursor:pointer;font-weight:800}.btn-primary{background:#1976d
     <button id="btnBackupJson" class="btn-secondary btn-small">Backup JSON herunterladen</button>
     <label class="btn-secondary btn-small" style="cursor:pointer">Backup JSON importieren<input id="importJson" type="file" accept="application/json" style="display:none"></label>
     <button id="btnPrintAll" class="btn-primary btn-small">Monatsbericht drucken/PDF</button>
+    <button id="btnResetAll" class="btn-danger btn-small">Alle Daten löschen / Neustart</button>
   </div>
 
   <div class="grid">
@@ -208,6 +209,16 @@ function openMonthlyPrint(emp,mk){const{rows,total,totalPlan}=buildMonthlyRows(e
 $('btnExport').onclick=()=>{const emp=employees.find(e=>e.id===$('exportEmp').value);const mk=$('exportMonth').value;if(!emp||!mk){alert('Bitte Mitarbeiter und Monat wählen.');return}openMonthlyPrint(emp,mk)};
 $('btnPrintAll').onclick=()=>{renderReport();const win=window.open('','_blank');win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Monatsbericht</title><style>body{font-family:Arial;padding:18px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:6px}th{background:#eee}.bad{color:#b91c1c}.ok{color:#166534}</style></head><body><h2>Monatsbericht Chef</h2><p>Monat: ${monthLabel($('reportMonth').value||monthKey())}</p>${$('monthlyReport').innerHTML}</body></html>`);win.document.close();win.focus();win.print()};
 $('btnBackupJson').onclick=()=>{const blob=new Blob([JSON.stringify({exportedAt:nowLocalParts().iso,employees},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`worktime_backup_${nowLocalParts().date}.json`;a.click();URL.revokeObjectURL(a.href)};
+$('btnResetAll').onclick=()=>{
+if(!confirm('Wirklich alle Daten löschen?')) return;
+if(!confirm('Alle Mitarbeiter, Stempelungen, Urlaube und Berichte werden gelöscht. Fortfahren?')) return;
+employees=[];
+localStorage.removeItem('worktime_tablet_data_v1');
+localStorage.removeItem('worktime_data');
+refreshAll();
+$('stempelLog').innerHTML='<b>Letzte Stempelungen:</b>';
+alert('Alle Daten wurden gelöscht. System wurde zurückgesetzt.');
+};
 $('importJson').onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);const imported=Array.isArray(data)?data:data.employees;if(!Array.isArray(imported))throw new Error('Ungültig');if(confirm('Aktuelle Daten durch Backup ersetzen?')){employees=imported;employees.forEach(recalc);refreshAll()}}catch(err){alert('Backup konnte nicht importiert werden.')}};r.readAsText(file)};
 $('linkImpressum').onclick=()=>alert('Impressum: Eiscafé Sanremo, Bad Berleburg. Bitte vollständige Firmenadresse ergänzen.');
 $('linkInfo').onclick=()=>alert('Tablet-Stempeluhr: Keine Foto- und keine GPS-Erfassung. Daten lokal auf diesem Tablet. Regelmäßig Backup erstellen.');
